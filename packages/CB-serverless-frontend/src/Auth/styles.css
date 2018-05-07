@@ -1,0 +1,15 @@
+.tab-container {
+  width: 50%;
+  margin: auto;
+  padding: 15px;
+}
+
+.root-container {
+  text-align: center;
+  color: red;
+}
+
+.login-input {
+  margin-top: 10px;
+  margin-bottom: 15px;
+}

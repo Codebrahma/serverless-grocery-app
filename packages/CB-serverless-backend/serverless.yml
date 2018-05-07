@@ -1,0 +1,50 @@
+# NOTE: update this with your service name
+service: cb-serverless-nodejs
+
+# Use the serverless-webpack plugin to transpile ES6
+plugins:
+  - serverless-webpack
+  - serverless-offline
+
+# serverless-webpack configuration
+# Enable auto-packing of external modules
+custom:
+  webpack:
+    webpackConfig: ./webpack.config.js
+    includeModules: true
+
+provider:
+  name: aws
+  runtime: nodejs8.10
+  stage: dev
+  region: ap-south-1
+  memorySize: 128 # set the maximum memory of the Lambdas in Megabytes
+  timeout: 30 # the timeout is 10 seconds (default is 6 seconds)
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - "cloudformation:DescribeStackResource"
+      Resource: "*"
+  # To load environment variables externally
+  # rename env.example to env.yml and uncomment
+  # the following line. Also, make sure to not
+  # commit your env.yml.
+  #
+  #environment: ${file(env.yml):${self:provider.stage}}
+
+functions:
+  manage:
+    handler: handler.processTodos
+    events:
+      - http:
+          path: todos
+          method: post
+          cors: true
+
+  index:
+    handler: handler.getAllTodos
+    events:
+      - http:
+          path: todos
+          method: get
+          cors: true

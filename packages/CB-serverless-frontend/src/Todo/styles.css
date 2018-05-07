@@ -1,0 +1,23 @@
+.todo-container {
+  position: relative;
+  min-height: 100px;
+  text-align: left;
+}
+
+.add-todo-button {
+  margin-top: 20px;
+  margin-left: 20px;
+}
+
+.submit-todo-button {
+  margin-left: 30px;
+}
+
+.each-todo-card {
+  margin-top: 15px;
+  margin-bottom: 25px;
+}
+
+.form-input {
+  margin-bottom: 15px;
+}
