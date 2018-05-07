@@ -1,7 +1,41 @@
-import { getAllTodos } from './api/todos/getAllTodos';
-import { processTodos } from './api/todos/processTodos';
+import { getAllProfile, createProfile } from './api/profile';
+import { getAllTodos, processTodos } from './api/todos';
 
-export {
-  getAllTodos,
-  processTodos,
+export { 
+	getAllProfile,
+	createProfile,
+	getAllTodos,
+	processTodos,
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

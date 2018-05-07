@@ -1,3 +1,5 @@
+import Profile from './Forms/profile';
+
 import React from 'react'
 import {
   BrowserRouter as Router,
@@ -64,6 +66,8 @@ class Routes extends React.Component {
   
     return (
       <Router>
+         <Route path="/profile" component={Profile} />
+
         {
           /*
             <div className="root-container">
@@ -130,6 +134,11 @@ const mapDispatchToProps = dispatch => ({
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Routes);
+
+
+
+
+
 
 
 

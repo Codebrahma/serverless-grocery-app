@@ -2,7 +2,7 @@ var path = require('path');
 var fs = require('fs-extra');
 var util = require('util');
 const _ = require('lodash');
-
+const { generateBackEndFiles } = require('./backendScripts');
 
 var {
   InputText,
@@ -104,11 +104,21 @@ function renderContent(fileName, formElements) {
 function rootIndexContent(fileName) {
   return (
     `import React from 'react';\n` +
+    
     `import FormComponent from './${fileName}';\n\n` +
+    `import config from '../../config';\n` +
+    `import { API } from 'aws-amplify';\n\n` +
+
     `const ${_.capitalize(fileName)} = () => {\n` +
+    `const  handleSubmit = async (values) => {\n` +
+    `  API.post('todo', '/${fileName}', {\n` +
+    `    body: values,\n` +
+    `  })\n` +
+    `};\n` +
+
     '\treturn (\n' +
     '\t\t<FormComponent\n' +
-    '\t\t\tonSubmit={(values) => { console.log(values) }}\n' +
+    '\t\t\tonSubmit={handleSubmit}\n' +
     '\t\t/>\n' +
     '\t);\n' +
     '}\n' +
@@ -117,6 +127,7 @@ function rootIndexContent(fileName) {
 }
 
 function scaffoldForm(fileName, configName) {
+  /* Add Front end related scaffolds */
 
   // Component root folder
   const componentRootFolder = `./packages/CB-serverless-frontend/src/Forms/${fileName}`;
@@ -186,5 +197,9 @@ function scaffoldForm(fileName, configName) {
       result += (newArray[u]+'\n');
     }
     fs.writeFileSync(Routes, result);
+
   });
+
+  /* Add Backened related scaffolds */
+  generateBackEndFiles(fileName, formElementValues);
 }

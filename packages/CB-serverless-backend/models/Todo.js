@@ -7,7 +7,4 @@ const TodoSchema = new mongoose.Schema({
   userId: String,
 });
 
-export default () => {
-  return mongoose
-}
 export default mongoose.model('Todo', TodoSchema);

@@ -5,7 +5,7 @@
   "main": "handler.js",
   "scripts": {
     "test": "jest",
-    "start": "serverless offline"
+    "start": "serverless offline --skipCacheInvalidation"
   },
   "author": "",
   "license": "MIT",

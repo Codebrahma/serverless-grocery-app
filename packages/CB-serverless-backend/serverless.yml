@@ -40,11 +40,26 @@ functions:
           path: todos
           method: post
           cors: true
-
+          
   index:
     handler: handler.getAllTodos
     events:
       - http:
           path: todos
+          method: get
+          cors: true
+  create:
+    handler: handler.createProfile
+    events:
+      - http:
+          path: profile
+          method: post
+          cors: true
+
+  get:
+    handler: handler.getAllProfile
+    events:
+      - http:
+          path: profile
           method: get
           cors: true

@@ -77,6 +77,73 @@
 /************************************************************************/
 /******/ ({
 
+/***/ "./api/profile/index.js":
+/*!******************************!*\
+  !*** ./api/profile/index.js ***!
+  \******************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+exports.createProfile = exports.getAllProfile = undefined;
+
+var _stringify = __webpack_require__(/*! babel-runtime/core-js/json/stringify */ "babel-runtime/core-js/json/stringify");
+
+var _stringify2 = _interopRequireDefault(_stringify);
+
+__webpack_require__(/*! source-map-support/register */ "source-map-support/register");
+
+var _mongoose = __webpack_require__(/*! mongoose */ "mongoose");
+
+var _mongoose2 = _interopRequireDefault(_mongoose);
+
+var _db = __webpack_require__(/*! ../../db */ "./db/index.js");
+
+var _db2 = _interopRequireDefault(_db);
+
+var _Profile = __webpack_require__(/*! ../../models/Profile */ "./models/Profile.js");
+
+var _Profile2 = _interopRequireDefault(_Profile);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var renderServerError = function renderServerError(response, errorMessage) {
+	return response(null, {
+		statusCode: 500,
+		headers: { 'Content-Type': 'application/json' },
+		body: { success: false, error: errorMessage }
+	});
+};
+
+var getAllProfile = exports.getAllProfile = function getAllProfile(event, context, callback) {
+	context.callbackWaitsForEmptyEventLoop = false;
+	(0, _db2.default)().then(function () {
+		_Profile2.default.find({}, function (error, data) {
+			callback(null, { statusCode: 200, headers: { 'Content-Type': 'application/json' }, body: (0, _stringify2.default)(data) });
+		});
+	}).catch(function () {
+		return renderServerError(callback, 'Unable to fetch! Try again later');
+	});
+};
+
+var createProfile = exports.createProfile = function createProfile(event, context, callback) {
+	context.callbackWaitsForEmptyEventLoop = false;
+	(0, _db2.default)().then(function () {
+		_Profile2.default.create(JSON.parse(event.body), function (error, data) {
+			callback(null, { statusCode: 200, headers: { 'Content-Type': 'application/json' }, body: (0, _stringify2.default)(data) });
+		});
+	}).catch(function () {
+		return renderServerError(callback, 'Unable to create! Try again later');
+	});
+};
+
+/***/ }),
+
 /***/ "./api/todos/getAllTodos.js":
 /*!**********************************!*\
   !*** ./api/todos/getAllTodos.js ***!
@@ -127,9 +194,7 @@ var getAllTodos = exports.getAllTodos = function getAllTodos(event, context, cal
       userId = _ref.userId;
 
   (0, _db2.default)().then(function () {
-    console.log('Database connection done');
     _Todo2.default.find({ userId: userId }, function (error, data) {
-      console.log('Result', data);
       callback(null, { statusCode: 200, headers: { 'Content-Type': 'application/json' }, body: (0, _stringify2.default)(data) });
     });
   }).catch(function () {
@@ -139,14 +204,121 @@ var getAllTodos = exports.getAllTodos = function getAllTodos(event, context, cal
 
 /***/ }),
 
+/***/ "./api/todos/index.js":
+/*!****************************!*\
+  !*** ./api/todos/index.js ***!
+  \****************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.processTodos = exports.getAllTodos = undefined;
+
+__webpack_require__(/*! source-map-support/register */ "source-map-support/register");
+
+var _getAllTodos = __webpack_require__(/*! ./getAllTodos */ "./api/todos/getAllTodos.js");
+
+var _processTodos = __webpack_require__(/*! ./processTodos */ "./api/todos/processTodos.js");
+
+exports.getAllTodos = _getAllTodos.getAllTodos;
+exports.processTodos = _processTodos.processTodos;
+
+/***/ }),
+
 /***/ "./api/todos/processTodos.js":
 /*!***********************************!*\
   !*** ./api/todos/processTodos.js ***!
   \***********************************/
 /*! no static exports found */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
-throw new Error("Module build failed: Error: ENOENT: no such file or directory, open '/Users/codebrhama/Documents/projects/cb-serverless-starter/packages/CB-serverless-backend/api/todos/processTodos.js'");
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.processTodos = undefined;
+
+var _stringify = __webpack_require__(/*! babel-runtime/core-js/json/stringify */ "babel-runtime/core-js/json/stringify");
+
+var _stringify2 = _interopRequireDefault(_stringify);
+
+var _promise = __webpack_require__(/*! babel-runtime/core-js/promise */ "babel-runtime/core-js/promise");
+
+var _promise2 = _interopRequireDefault(_promise);
+
+__webpack_require__(/*! source-map-support/register */ "source-map-support/register");
+
+var _mongoose = __webpack_require__(/*! mongoose */ "mongoose");
+
+var _mongoose2 = _interopRequireDefault(_mongoose);
+
+var _db = __webpack_require__(/*! ../../db */ "./db/index.js");
+
+var _db2 = _interopRequireDefault(_db);
+
+var _Todo = __webpack_require__(/*! ../../models/Todo */ "./models/Todo.js");
+
+var _Todo2 = _interopRequireDefault(_Todo);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var processTodo = function processTodo(todo) {
+  var promise = new _promise2.default(function (resolve, reject) {
+    var query = { _id: todo.id };
+    var isDeleteOperation = todo.deleted;
+    var callback = function callback(err, data) {
+      console.log('Error', err);
+      console.log('data', data);
+      err ? reject(err) : resolve(isDeleteOperation ? null : data._id);
+    };
+
+    if (todo.id) {
+      isDeleteOperation ? _Todo2.default.findByIdAndRemove(query, callback) : _Todo2.default.findByIdAndUpdate(todo.id, todo, {}, callback);
+    } else {
+      _Todo2.default.create(todo, callback);
+    }
+  });
+  return promise;
+};
+
+var renderServerError = function renderServerError(response, errorMessage) {
+  return response(null, {
+    statusCode: 500,
+    headers: { 'Content-Type': 'application/json' },
+    body: { success: false, error: errorMessage }
+  });
+};
+
+var processTodos = exports.processTodos = function processTodos(event, context, callback) {
+  context.callbackWaitsForEmptyEventLoop = false;
+
+  var _ref = JSON.parse(event.body) || {},
+      todos = _ref.todos;
+
+  (0, _db2.default)().then(function () {
+    _promise2.default.all(todos.map(processTodo)).then(function (ids) {
+      var todoIds = ids.filter(function (id) {
+        return !!id;
+      }).map(function (id) {
+        return new _mongoose2.default.Types.ObjectId(id);
+      });
+      _Todo2.default.find({ '_id': { $in: todoIds } }, function (error, data) {
+        return callback(null, { statusCode: 200, body: (0, _stringify2.default)(data) });
+      });
+    }).catch(function (e) {
+      return renderServerError(callback, 'Unable to process todos! Try again later' + e.stack);
+    });
+  }).catch(function (e) {
+    return renderServerError(callback, 'Unable to process todos! Try again later' + e.stack);
+  });
+};
 
 /***/ }),
 
@@ -180,6 +352,7 @@ _mongoose2.default.Promise = global.Promise;
 var isConnected = void 0;
 
 var dbConnection = function dbConnection() {
+  console.log('isConnected at start ', isConnected);
   if (isConnected) {
     console.log('=> From Existing DB connection');
     return _promise2.default.resolve();
@@ -207,18 +380,52 @@ exports.default = dbConnection;
 
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+	value: true
 });
-exports.processTodos = exports.getAllTodos = undefined;
+exports.processTodos = exports.getAllTodos = exports.createProfile = exports.getAllProfile = undefined;
 
 __webpack_require__(/*! source-map-support/register */ "source-map-support/register");
 
-var _getAllTodos = __webpack_require__(/*! ./api/todos/getAllTodos */ "./api/todos/getAllTodos.js");
+var _profile = __webpack_require__(/*! ./api/profile */ "./api/profile/index.js");
 
-var _processTodos = __webpack_require__(/*! ./api/todos/processTodos */ "./api/todos/processTodos.js");
+var _todos = __webpack_require__(/*! ./api/todos */ "./api/todos/index.js");
 
-exports.getAllTodos = _getAllTodos.getAllTodos;
-exports.processTodos = _processTodos.processTodos;
+exports.getAllProfile = _profile.getAllProfile;
+exports.createProfile = _profile.createProfile;
+exports.getAllTodos = _todos.getAllTodos;
+exports.processTodos = _todos.processTodos;
+
+/***/ }),
+
+/***/ "./models/Profile.js":
+/*!***************************!*\
+  !*** ./models/Profile.js ***!
+  \***************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+__webpack_require__(/*! source-map-support/register */ "source-map-support/register");
+
+var mongoose = __webpack_require__(/*! mongoose */ "mongoose");
+
+var ProfileSchema = new mongoose.Schema({
+	firstName: String,
+	lastName: String,
+	password: String,
+	country: String,
+	subscribe: String,
+	dateOfBirth: Date,
+	married: String
+});
+
+exports.default = mongoose.model('Profile', ProfileSchema);
 
 /***/ }),
 

@@ -1,74 +1,57 @@
-/*
-Must:
-1. Get the config file with -config command
-
-Config:
-
-name: Component name
-
-type: Pure / Class based
-
-form: [
-  {
-    type: can be one of text, select, check, button, radio
-    design: material / html'
-    props: {
-      prop1: value1,
-      prop2: value2,
-      ...
-    }
-  },
-  {
-    type: can be one of text, select, check, button, radio
-    design: material / html'
-    props: {
-      prop1: value1,
-      prop2: value2,
-      ...
-    }
-  },
-]
-*/
-
 const formConfig = {
   form: [
     {
       type: 'text',
       props: {
-        name: 'text',
-        floatingLabelText: 'TextField'
+        name: 'firstName',
+        floatingLabelText: 'First Name'
+      }
+    },
+    {
+      type: 'text',
+      props: {
+        name: 'lastName',
+        floatingLabelText: 'Last Name'
+      }
+    },
+    {
+      type: 'text',
+      props: {
+        name: 'password',
+        type: 'password',
+        floatingLabelText: 'Password'
       }
     },
     {
       type: 'select',
       options: [
-        { label: 'option 1', value: 'option1' },
-        { label: 'option 2', value: 'option2' },
+        { label: 'USA', value: 'USA' },
+        { label: 'India', value: 'India' },
       ],
       props: {
-        name: 'select',
-        floatingLabelText: 'SelectField'
+        name: 'country',
+        floatingLabelText: 'Select Country'
       }
     },
     {
       type: 'check',
       props: {
-        name: 'check',
-        floatingLabelText: 'CheckField'
+        name: 'subscribe',
+        floatingLabelText: 'Subscribe ?'
       }
     },
     {
       type: 'date',
       props: {
-        name: 'date',
-        floatingLabelText: 'DateField'
+        name: 'dateOfBirth',
+        floatingLabelText: 'DOB'
       }
     },
     {
       type: 'toggle',
       props: {
-        name: 'toggle',
-        floatingLabelText: 'ToggleField'
+        name: 'married',
+        floatingLabelText: 'Are you married?'
       }
     },
   ]

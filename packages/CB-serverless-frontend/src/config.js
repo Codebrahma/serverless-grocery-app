@@ -1,8 +1,8 @@
 export default {
   apiGateway: {
     REGION: "ap-south-1",
-    URL: "https://p58pva5vpi.execute-api.ap-south-1.amazonaws.com/dev"
-    // URL: "http://localhost:3000"
+    // URL: "https://p58pva5vpi.execute-api.ap-south-1.amazonaws.com/dev"
+    URL: "http://localhost:3000"
   },
   cognito: {
     REGION: "ap-south-1",
