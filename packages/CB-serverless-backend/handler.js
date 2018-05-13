@@ -1,11 +1,9 @@
-import { getAllProfile, createProfile } from './api/profile';
-import { getAllTodos, processTodos } from './api/todos';
+import { getGrocery } from './api/todos';
+import { getGroceries } from './api/todos';
 
 export { 
-	getAllProfile,
-	createProfile,
-	getAllTodos,
-	processTodos,
+  getGrocery,
+  getGroceries,
 }
 
 

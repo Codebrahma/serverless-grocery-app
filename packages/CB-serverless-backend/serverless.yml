@@ -33,33 +33,17 @@ provider:
   #environment: ${file(env.yml):${self:provider.stage}}
 
 functions:
-  manage:
-    handler: handler.processTodos
+  getGrocery:
+    handler: handler.getGrocery
     events:
       - http:
-          path: todos
-          method: post
-          cors: true
-          
-  index:
-    handler: handler.getAllTodos
-    events:
-      - http:
-          path: todos
+          path: grocery
           method: get
           cors: true
-  create:
-    handler: handler.createProfile
+  getGroceries:
+    handler: handler.getGroceries
     events:
       - http:
-          path: profile
-          method: post
-          cors: true
-
-  get:
-    handler: handler.getAllProfile
-    events:
-      - http:
-          path: profile
+          path: groceries
           method: get
           cors: true

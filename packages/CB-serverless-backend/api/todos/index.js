@@ -1,7 +1,7 @@
-import { getAllTodos } from './getAllTodos';
-import { processTodos } from './processTodos';
+import { getGrocery } from './getGrocery';
+import { getGroceries } from './getGroceries';
 
 export {
-  getAllTodos,
-  processTodos,
+  getGrocery,
+  getGroceries,
 }
