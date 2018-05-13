@@ -77,77 +77,10 @@
 /************************************************************************/
 /******/ ({
 
-/***/ "./api/profile/index.js":
-/*!******************************!*\
-  !*** ./api/profile/index.js ***!
-  \******************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-exports.createProfile = exports.getAllProfile = undefined;
-
-var _stringify = __webpack_require__(/*! babel-runtime/core-js/json/stringify */ "babel-runtime/core-js/json/stringify");
-
-var _stringify2 = _interopRequireDefault(_stringify);
-
-__webpack_require__(/*! source-map-support/register */ "source-map-support/register");
-
-var _mongoose = __webpack_require__(/*! mongoose */ "mongoose");
-
-var _mongoose2 = _interopRequireDefault(_mongoose);
-
-var _db = __webpack_require__(/*! ../../db */ "./db/index.js");
-
-var _db2 = _interopRequireDefault(_db);
-
-var _Profile = __webpack_require__(/*! ../../models/Profile */ "./models/Profile.js");
-
-var _Profile2 = _interopRequireDefault(_Profile);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var renderServerError = function renderServerError(response, errorMessage) {
-	return response(null, {
-		statusCode: 500,
-		headers: { 'Content-Type': 'application/json' },
-		body: { success: false, error: errorMessage }
-	});
-};
-
-var getAllProfile = exports.getAllProfile = function getAllProfile(event, context, callback) {
-	context.callbackWaitsForEmptyEventLoop = false;
-	(0, _db2.default)().then(function () {
-		_Profile2.default.find({}, function (error, data) {
-			callback(null, { statusCode: 200, headers: { 'Content-Type': 'application/json' }, body: (0, _stringify2.default)(data) });
-		});
-	}).catch(function () {
-		return renderServerError(callback, 'Unable to fetch! Try again later');
-	});
-};
-
-var createProfile = exports.createProfile = function createProfile(event, context, callback) {
-	context.callbackWaitsForEmptyEventLoop = false;
-	(0, _db2.default)().then(function () {
-		_Profile2.default.create(JSON.parse(event.body), function (error, data) {
-			callback(null, { statusCode: 200, headers: { 'Content-Type': 'application/json' }, body: (0, _stringify2.default)(data) });
-		});
-	}).catch(function () {
-		return renderServerError(callback, 'Unable to create! Try again later');
-	});
-};
-
-/***/ }),
-
-/***/ "./api/todos/getAllTodos.js":
-/*!**********************************!*\
-  !*** ./api/todos/getAllTodos.js ***!
-  \**********************************/
+/***/ "./api/todos/getGroceries.js":
+/*!***********************************!*\
+  !*** ./api/todos/getGroceries.js ***!
+  \***********************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -157,7 +90,7 @@ var createProfile = exports.createProfile = function createProfile(event, contex
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.getAllTodos = undefined;
+exports.getGroceries = undefined;
 
 var _stringify = __webpack_require__(/*! babel-runtime/core-js/json/stringify */ "babel-runtime/core-js/json/stringify");
 
@@ -169,15 +102,16 @@ var _mongoose = __webpack_require__(/*! mongoose */ "mongoose");
 
 var _mongoose2 = _interopRequireDefault(_mongoose);
 
-var _db = __webpack_require__(/*! ../../db */ "./db/index.js");
+var _awsSdk = __webpack_require__(/*! aws-sdk */ "aws-sdk");
 
-var _db2 = _interopRequireDefault(_db);
-
-var _Todo = __webpack_require__(/*! ../../models/Todo */ "./models/Todo.js");
-
-var _Todo2 = _interopRequireDefault(_Todo);
+var _awsSdk2 = _interopRequireDefault(_awsSdk);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+_awsSdk2.default.config.update({
+  region: 'ap-south-1',
+  endpoint: 'http://localhost:8000'
+});
 
 var renderServerError = function renderServerError(response, errorMessage) {
   return response(null, {
@@ -187,18 +121,117 @@ var renderServerError = function renderServerError(response, errorMessage) {
   });
 };
 
-var getAllTodos = exports.getAllTodos = function getAllTodos(event, context, callback) {
+var getResponse = function getResponse(data) {
+  return {
+    statusCode: 200,
+    headers: { 'Content-Type': 'application/json' },
+    body: (0, _stringify2.default)(data)
+  };
+};
+
+var getGroceries = exports.getGroceries = function getGroceries(event, context, callback) {
   context.callbackWaitsForEmptyEventLoop = false;
 
-  var _ref = event.queryStringParameters || {},
-      userId = _ref.userId;
+  var documentClient = new _awsSdk2.default.DynamoDB.DocumentClient();
+  var category = event.queryStringParameters.category;
+  var params = {
+    TableName: 'grocery',
+    ExpressionAttributeNames: {
+      '#groceryId': 'groceryId',
+      '#category': 'category',
+      '#subCategory': 'subCategory',
+      '#name': 'name',
+      '#url': 'url'
+    },
+    ExpressionAttributeValues: {
+      ':category': category
+    },
+    FilterExpression: '#category = :category',
+    ProjectionExpression: "#groceryId, #category, #subCategory, #name, #url"
+  };
+  documentClient.scan(params, function (err, data) {
+    if (err) {
+      console.log(err);
+      renderServerError(callback, 'Unable to fetch! Try again later');
+    } else {
+      callback(null, getResponse(data));
+    }
+  });
+};
 
-  (0, _db2.default)().then(function () {
-    _Todo2.default.find({ userId: userId }, function (error, data) {
-      callback(null, { statusCode: 200, headers: { 'Content-Type': 'application/json' }, body: (0, _stringify2.default)(data) });
-    });
-  }).catch(function () {
-    return renderServerError(callback, 'Unable to fetch todos! Try again later');
+/***/ }),
+
+/***/ "./api/todos/getGrocery.js":
+/*!*********************************!*\
+  !*** ./api/todos/getGrocery.js ***!
+  \*********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.getGrocery = undefined;
+
+var _stringify = __webpack_require__(/*! babel-runtime/core-js/json/stringify */ "babel-runtime/core-js/json/stringify");
+
+var _stringify2 = _interopRequireDefault(_stringify);
+
+__webpack_require__(/*! source-map-support/register */ "source-map-support/register");
+
+var _mongoose = __webpack_require__(/*! mongoose */ "mongoose");
+
+var _mongoose2 = _interopRequireDefault(_mongoose);
+
+var _awsSdk = __webpack_require__(/*! aws-sdk */ "aws-sdk");
+
+var _awsSdk2 = _interopRequireDefault(_awsSdk);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+_awsSdk2.default.config.update({
+  region: 'ap-south-1',
+  endpoint: 'http://localhost:8000'
+});
+
+var renderServerError = function renderServerError(response, errorMessage) {
+  return response(null, {
+    statusCode: 500,
+    headers: { 'Content-Type': 'application/json' },
+    body: { success: false, error: errorMessage }
+  });
+};
+
+var getResponse = function getResponse(data) {
+  return {
+    statusCode: 200,
+    headers: { 'Content-Type': 'application/json' },
+    body: (0, _stringify2.default)(data)
+  };
+};
+
+var getGrocery = exports.getGrocery = function getGrocery(event, context, callback) {
+  context.callbackWaitsForEmptyEventLoop = false;
+
+  var documentClient = new _awsSdk2.default.DynamoDB.DocumentClient();
+
+  var params = {
+    TableName: 'grocery',
+    Key: {
+      groceryId: event.queryStringParameters.id
+    }
+  };
+
+  documentClient.get(params, function (err, data) {
+    if (err) {
+      console.log(err);
+      renderServerError(callback, 'Unable to fetch! Try again later');
+    } else {
+      callback(null, getResponse(data));
+    }
   });
 };
 
@@ -217,155 +250,16 @@ var getAllTodos = exports.getAllTodos = function getAllTodos(event, context, cal
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.processTodos = exports.getAllTodos = undefined;
+exports.getGroceries = exports.getGrocery = undefined;
 
 __webpack_require__(/*! source-map-support/register */ "source-map-support/register");
 
-var _getAllTodos = __webpack_require__(/*! ./getAllTodos */ "./api/todos/getAllTodos.js");
+var _getGrocery = __webpack_require__(/*! ./getGrocery */ "./api/todos/getGrocery.js");
 
-var _processTodos = __webpack_require__(/*! ./processTodos */ "./api/todos/processTodos.js");
+var _getGroceries = __webpack_require__(/*! ./getGroceries */ "./api/todos/getGroceries.js");
 
-exports.getAllTodos = _getAllTodos.getAllTodos;
-exports.processTodos = _processTodos.processTodos;
-
-/***/ }),
-
-/***/ "./api/todos/processTodos.js":
-/*!***********************************!*\
-  !*** ./api/todos/processTodos.js ***!
-  \***********************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.processTodos = undefined;
-
-var _stringify = __webpack_require__(/*! babel-runtime/core-js/json/stringify */ "babel-runtime/core-js/json/stringify");
-
-var _stringify2 = _interopRequireDefault(_stringify);
-
-var _promise = __webpack_require__(/*! babel-runtime/core-js/promise */ "babel-runtime/core-js/promise");
-
-var _promise2 = _interopRequireDefault(_promise);
-
-__webpack_require__(/*! source-map-support/register */ "source-map-support/register");
-
-var _mongoose = __webpack_require__(/*! mongoose */ "mongoose");
-
-var _mongoose2 = _interopRequireDefault(_mongoose);
-
-var _db = __webpack_require__(/*! ../../db */ "./db/index.js");
-
-var _db2 = _interopRequireDefault(_db);
-
-var _Todo = __webpack_require__(/*! ../../models/Todo */ "./models/Todo.js");
-
-var _Todo2 = _interopRequireDefault(_Todo);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var processTodo = function processTodo(todo) {
-  var promise = new _promise2.default(function (resolve, reject) {
-    var query = { _id: todo.id };
-    var isDeleteOperation = todo.deleted;
-    var callback = function callback(err, data) {
-      console.log('Error', err);
-      console.log('data', data);
-      err ? reject(err) : resolve(isDeleteOperation ? null : data._id);
-    };
-
-    if (todo.id) {
-      isDeleteOperation ? _Todo2.default.findByIdAndRemove(query, callback) : _Todo2.default.findByIdAndUpdate(todo.id, todo, {}, callback);
-    } else {
-      _Todo2.default.create(todo, callback);
-    }
-  });
-  return promise;
-};
-
-var renderServerError = function renderServerError(response, errorMessage) {
-  return response(null, {
-    statusCode: 500,
-    headers: { 'Content-Type': 'application/json' },
-    body: { success: false, error: errorMessage }
-  });
-};
-
-var processTodos = exports.processTodos = function processTodos(event, context, callback) {
-  context.callbackWaitsForEmptyEventLoop = false;
-
-  var _ref = JSON.parse(event.body) || {},
-      todos = _ref.todos;
-
-  (0, _db2.default)().then(function () {
-    _promise2.default.all(todos.map(processTodo)).then(function (ids) {
-      var todoIds = ids.filter(function (id) {
-        return !!id;
-      }).map(function (id) {
-        return new _mongoose2.default.Types.ObjectId(id);
-      });
-      _Todo2.default.find({ '_id': { $in: todoIds } }, function (error, data) {
-        return callback(null, { statusCode: 200, body: (0, _stringify2.default)(data) });
-      });
-    }).catch(function (e) {
-      return renderServerError(callback, 'Unable to process todos! Try again later' + e.stack);
-    });
-  }).catch(function (e) {
-    return renderServerError(callback, 'Unable to process todos! Try again later' + e.stack);
-  });
-};
-
-/***/ }),
-
-/***/ "./db/index.js":
-/*!*********************!*\
-  !*** ./db/index.js ***!
-  \*********************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _promise = __webpack_require__(/*! babel-runtime/core-js/promise */ "babel-runtime/core-js/promise");
-
-var _promise2 = _interopRequireDefault(_promise);
-
-__webpack_require__(/*! source-map-support/register */ "source-map-support/register");
-
-var _mongoose = __webpack_require__(/*! mongoose */ "mongoose");
-
-var _mongoose2 = _interopRequireDefault(_mongoose);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-_mongoose2.default.Promise = global.Promise;
-var isConnected = void 0;
-
-var dbConnection = function dbConnection() {
-  console.log('isConnected at start ', isConnected);
-  if (isConnected) {
-    console.log('=> From Existing DB connection');
-    return _promise2.default.resolve();
-  }
-
-  console.log('=> Using new DB connection');
-  return _mongoose2.default.connect("mongodb://prasanna1211:hellomid125@cluster0-shard-00-00-m5ypw.mongodb.net:27017,cluster0-shard-00-01-m5ypw.mongodb.net:27017,cluster0-shard-00-02-m5ypw.mongodb.net:27017/test?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin").then(function (db) {
-    console.log('Connected : ' + db.connections[0].readyState);
-    isConnected = db.connections[0].readyState;
-  });
-};
-
-exports.default = dbConnection;
+exports.getGrocery = _getGrocery.getGrocery;
+exports.getGroceries = _getGroceries.getGroceries;
 
 /***/ }),
 
@@ -380,81 +274,27 @@ exports.default = dbConnection;
 
 
 Object.defineProperty(exports, "__esModule", {
-	value: true
+  value: true
 });
-exports.processTodos = exports.getAllTodos = exports.createProfile = exports.getAllProfile = undefined;
+exports.getGroceries = exports.getGrocery = undefined;
 
 __webpack_require__(/*! source-map-support/register */ "source-map-support/register");
-
-var _profile = __webpack_require__(/*! ./api/profile */ "./api/profile/index.js");
 
 var _todos = __webpack_require__(/*! ./api/todos */ "./api/todos/index.js");
 
-exports.getAllProfile = _profile.getAllProfile;
-exports.createProfile = _profile.createProfile;
-exports.getAllTodos = _todos.getAllTodos;
-exports.processTodos = _todos.processTodos;
+exports.getGrocery = _todos.getGrocery;
+exports.getGroceries = _todos.getGroceries;
 
 /***/ }),
 
-/***/ "./models/Profile.js":
-/*!***************************!*\
-  !*** ./models/Profile.js ***!
-  \***************************/
+/***/ "aws-sdk":
+/*!**************************!*\
+  !*** external "aws-sdk" ***!
+  \**************************/
 /*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-
-__webpack_require__(/*! source-map-support/register */ "source-map-support/register");
-
-var mongoose = __webpack_require__(/*! mongoose */ "mongoose");
-
-var ProfileSchema = new mongoose.Schema({
-	firstName: String,
-	lastName: String,
-	password: String,
-	country: String,
-	subscribe: String,
-	dateOfBirth: Date,
-	married: String
-});
-
-exports.default = mongoose.model('Profile', ProfileSchema);
-
-/***/ }),
-
-/***/ "./models/Todo.js":
-/*!************************!*\
-  !*** ./models/Todo.js ***!
-  \************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-__webpack_require__(/*! source-map-support/register */ "source-map-support/register");
-
-var mongoose = __webpack_require__(/*! mongoose */ "mongoose");
-
-var TodoSchema = new mongoose.Schema({
-  title: String,
-  description: String,
-  dueDate: Date,
-  userId: String
-});
-
-exports.default = mongoose.model('Todo', TodoSchema);
+module.exports = require("aws-sdk");
 
 /***/ }),
 
@@ -466,17 +306,6 @@ exports.default = mongoose.model('Todo', TodoSchema);
 /***/ (function(module, exports) {
 
 module.exports = require("babel-runtime/core-js/json/stringify");
-
-/***/ }),
-
-/***/ "babel-runtime/core-js/promise":
-/*!************************************************!*\
-  !*** external "babel-runtime/core-js/promise" ***!
-  \************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = require("babel-runtime/core-js/promise");
 
 /***/ }),
 
