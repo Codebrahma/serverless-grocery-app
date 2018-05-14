@@ -1,3 +1,10 @@
+Prerequisites:
+1. Install AWS CLI
+2. Add user based on AWS credentials which will be shared directly.
+3. Auth will be currently based on AWS Cognito. Login / Registration will be handled by the front end auth module directly with the cognito. Lambda functions won't be responsible for auth. It requires an userId (AccessKeyId) based on which we will maintain the DB.
+4. All other APIs will be curently running locally.
+5. Front End would be developed locally and finally deployed on S3.
+
 To setup Backend:
 
 1. Install AWS DynamoDB locally and run the server which will default to port 8000.
