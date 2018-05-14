@@ -47,3 +47,17 @@ functions:
           path: groceries
           method: get
           cors: true
+  registerUser:
+    handler: handler.registerUser
+    events:
+      - http:
+          path: registerUser
+          method: post
+          cors: true
+  verifyUser:
+    handler: handler.verifyUser
+    events:
+      - http:
+          path: verifyUser
+          method: post
+          cors: true

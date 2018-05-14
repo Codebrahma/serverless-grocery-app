@@ -27,6 +27,7 @@
     "webpack-node-externals": "^1.6.0"
   },
   "dependencies": {
+    "aws-amplify": "^0.3.3",
     "aws-sdk": "^2.238.1",
     "babel-runtime": "^6.26.0",
     "mongoose": "^5.0.16",
