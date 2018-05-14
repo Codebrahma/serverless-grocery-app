@@ -3,3 +3,4 @@ node_modules/
 packages/.DS_Store
 packages/CB-serverless-backend/.DS_Store
 packages/CB-serverless-frontend/.DS_Store
+.webpack
