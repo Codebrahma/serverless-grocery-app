@@ -1,5 +1,3 @@
-import Profile from './Forms/profile';
-
 import React from 'react'
 import {
   BrowserRouter as Router,
@@ -7,45 +5,36 @@ import {
 } from 'react-router-dom';
 import { Auth } from 'aws-amplify';
 import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
-import CircularProgress from 'material-ui/CircularProgress';
 import { bindActionCreators } from 'redux';
 
 import AuthModule from './Auth';
-import TodoModule from './Todo';
 import { updateAuth } from './Auth/actionCreators';
-import { submitTodo, fetchInitial } from './Todo/actionCreators';
-import { getInitialTodos, getTodoFormValues } from './Todo/selector';
 
 class Routes extends React.Component {
   constructor(props) {
     super(props);
-
     this.state = {
-      
-    };
+      loginReady: false
+    }
+    // Remove when real signout component is ready
+    this.handleLogout = this.handleLogout.bind(this);
   }
 
   async componentDidMount() {
-    
-    if (!this.props.isAuthenticatedFromLogin) {
-      try {
+    try {
+      this.resetAndStartAuthentication();
+      Auth.currentSession().then(async (response) => {
+        const data = await Auth.currentAuthenticatedUser();
         this.props.updateAuth({
           isAuthenticating: false,
-          isAuthenticated: false,
-          identityId: null,
+          isAuthenticated: true,
+          identityId: data,
         })
-        if (await Auth.currentSession()) {
-          const data = await Auth.currentCredentials();
-          this.props.updateAuth({
-            isAuthenticating: false,
-            isAuthenticated: true,
-            identityId: data.params.IdentityId,
-          })
-        }
-      } catch (e) {
-
-      }
+      }).catch((error) => {
+        this.finishAuthentication();
+      });
+    } catch (e) {
+      // to do
     }
   }
 
@@ -57,88 +46,63 @@ class Routes extends React.Component {
     });
   }
 
+  resetAndStartAuthentication = () => {
+    this.props.updateAuth({
+      isAuthenticating: true,
+      isAuthenticated: false,
+      identityId: null,
+    });
+  }
+
+  finishAuthentication = () => {
+    this.props.updateAuth({
+      isAuthenticating: false
+    });
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (!this.state.loginReady && this.props.isAuthenticating && !nextProps.isAuthenticating) {
+      this.setState({loginReady: true});
+    }
+  }
+
+  // Remove when real signout component is ready
+  async handleLogout() {
+    await Auth.signOut();
+    this.resetInitialState();
+  }
+
+  // Remove when real component is ready
+  Path1 = () => <div><h3>Path1</h3><button onClick={this.handleLogout}>Signout</button></div>
+  Path2 = () => <div><h3>Path2</h3><button onClick={this.handleLogout}>Signout</button></div>
+
   render() {
-    const {
-      isAuthenticated,
-      isAuthenticating,
-      identityId,
-    } = this.props;
-  
     return (
       <Router>
-         
-
+        <div className="root-container">
         {
-         
-            <div className="root-container">
-            {
-              isAuthenticating && (
-                <CircularProgress
-                  size={80}
-                  thickness={5}
-                />
-              )
-            }
-            {
-              (!isAuthenticating && isAuthenticated) ? (
-                <Route
-                  render={() => (
-                    <TodoModule
-                      identityId={identityId} 
-                      resetInitialState={this.resetInitialState}
-                      submitTodo={this.props.submitTodo}
-                      fetchInitial={this.props.fetchInitial}
-                      initialTodos={this.props.initialTodos}
-                      currentTodoFormValues={this.props.currentTodoFormValues}
-                      todosFetchStatus={this.props.todosFetchStatus}
-                    />
-                  )}
-                /> 
-              ) : (
-                !isAuthenticating && <Route render = {() => (
-                  <AuthModule
-                    errorMessage={this.props.errorMessage}
-                  />
-                )} />
-              )
-            }
-            {this.props.isError && this.props.errorMessage}
-          </div>
-          
+          !this.props.isAuthenticated && this.state.loginReady?
+          <Route render={() => <AuthModule />} />
+          :
+          <React.Fragment>
+            <Route exact path="/" component={this.Path1} />
+            <Route path='/other' component={this.Path2} />
+          </React.Fragment>
         }
-        
+        </div>
       </Router>
     )
   }
-
 }
 
-const mapStateToProps = state => ({
-  isAuthenticating: state.auth.isAuthenticating,
+const mapStateToProps = (state) => ({
   isAuthenticated: state.auth.isAuthenticated,
-  isError: state.auth.isError,
-  errorMessage: state.auth.errorMessage,
+  isAuthenticating: state.auth.isAuthenticating,
   identityId: state.auth.identityId,
-  initialTodos: getInitialTodos(state),
-  todosFetchStatus: {
-    isFetching: state.todos.isFetching,
-    isFetched: state.todos.isFetched,
-  },
-  currentTodoFormValues: getTodoFormValues(state),
 });
 
 const mapDispatchToProps = dispatch => ({
   updateAuth: bindActionCreators(updateAuth, dispatch),
-  submitTodo: bindActionCreators(submitTodo, dispatch),
-  fetchInitial: bindActionCreators(fetchInitial, dispatch),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Routes);
-
-
-
-
-
-
-
-

@@ -36,7 +36,7 @@ export default (state = initialState, { type, payload = {}}) => {
         ...state,
         ...payload,
       }
-    default: 
+    default:
       return state;
   }
 }
