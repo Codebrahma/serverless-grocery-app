@@ -1,4 +1,5 @@
 var AWS = require('aws-sdk');
+var indexOf = require('lodash/indexOf');
 
 // Configure the AWS to lookup the right server and endpoint for DynamoDB
 // In case of local set endpoint to localhost
@@ -8,26 +9,75 @@ AWS.config.update({
 });
 
 var dynamodb = new AWS.DynamoDB();
+/* Delete Tables */
+const getDeleteParams = (tableName) => ({
+  TableName: tableName
+});
 
-// Params are must
-var params = {
-  TableName: 'grocery',
-  KeySchema: [
-    { AttributeName: 'groceryId', KeyType: 'HASH' },
-  ],
-  AttributeDefinitions: [
-    { AttributeName: 'groceryId', AttributeType: 'N' },
-  ],
-  ProvisionedThroughput: {
-    ReadCapacityUnits: 2,
-    WriteCapacityUnits: 2
-  }
+const createGroceryTable = () => {
+  var groceryParams = {
+    TableName: 'grocery',
+    KeySchema: [
+      { AttributeName: 'groceryId', KeyType: 'HASH' },
+    ],
+    AttributeDefinitions: [
+      { AttributeName: 'groceryId', AttributeType: 'N' },
+    ],
+    ProvisionedThroughput: {
+      ReadCapacityUnits: 2,
+      WriteCapacityUnits: 2
+    }
+  };
+  return dynamodb.createTable(groceryParams).promise();
 };
 
-createTable = dynamodb.createTable(params, (err, data) => {
-  if (err) {
-    console.log('unable to create table. Error ', JSON.stringify(err, null, 2));
-  } else {
-    console.log('Table created successfully')
+const createOrderTable = () => {
+  var orderParams = {
+    TableName: 'order',
+    KeySchema: [
+      { AttributeName: 'orderId', KeyType: 'HASH' },
+    ],
+    AttributeDefinitions: [
+      { AttributeName: 'orderId', AttributeType: 'N' },
+    ],
+    ProvisionedThroughput: {
+      ReadCapacityUnits: 2,
+      WriteCapacityUnits: 2
+    }
   }
-});
+  
+  return dynamodb.createTable(orderParams).promise();
+}
+
+const createUserTable = () => {
+  var userParams = {
+    TableName: 'user',
+    KeySchema: [
+      { AttributeName: 'userId', KeyType: 'HASH' },
+    ],
+    AttributeDefinitions: [
+      { AttributeName: 'userId', AttributeType: 'N' },
+    ],
+    ProvisionedThroughput: {
+      ReadCapacityUnits: 2,
+      WriteCapacityUnits: 2
+    }
+  }
+  
+  return dynamodb.createTable(userParams).promise();
+}
+let tables;
+
+const listTables = dynamodb.listTables({}).promise();
+
+listTables
+  .then((data, err) => {
+    console.log(data);
+    let groceryTablePromise, userTablePromise, orderTablePromise;
+
+    groceryTablePromise = (indexOf(data.TableNames, 'grocery') === -1) ? createGroceryTable() : Promise.resolve();
+    userTablePromise = (indexOf(data.TableNames, 'user') === -1) ? createUserTable() : Promise.resolve();
+    orderTablePromise = (indexOf(data.TableNames, 'order') === -1) ? createOrderTable() : Promise.resolve();
+      
+    return Promise.all([groceryTablePromise, userTablePromise, orderTablePromise]);
+  });
