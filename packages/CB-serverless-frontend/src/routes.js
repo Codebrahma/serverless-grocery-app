@@ -66,10 +66,10 @@ class Routes extends React.Component {
   
     return (
       <Router>
-         <Route path="/profile" component={Profile} />
+         
 
         {
-          /*
+         
             <div className="root-container">
             {
               isAuthenticating && (
@@ -104,7 +104,7 @@ class Routes extends React.Component {
             }
             {this.props.isError && this.props.errorMessage}
           </div>
-          */ 
+          
         }
         
       </Router>
