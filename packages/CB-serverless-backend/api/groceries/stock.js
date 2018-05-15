@@ -6,28 +6,28 @@ import getSuccessResponse from '../../utils/getSuccessResponse';
 
 awsConfigUpdate();
 
-export const updateStock = (event, context, callback) => {
+export const updateStock = async (event, context, callback) => {
   context.callbackWaitsForEmptyEventLoop = false;
-	const { groceryId, availableQty } = JSON.parse(event.body);
+	const dataToUpdate = JSON.parse(event.body);
+  const documentClient = new AWS.DynamoDB.DocumentClient();	
+	const promiseArray = [];
 
-  const documentClient = new AWS.DynamoDB.DocumentClient();
-  const params = {
-    TableName : 'grocery',
-    Key: {
-      groceryId: parseInt(groceryId),
-		},
-		UpdateExpression: `set availableQty=:updatedQty`,
-		ExpressionAttributeValues:{
-			":updatedQty":availableQty,
-		},
-		ReturnValues: "UPDATED_NEW"
-	};
-	
-	documentClient.update(params, function(error, data) {
-		if (error) {
-			getErrorResponse(callback, 500, error);
-		} else {
-			callback(null, getSuccessResponse({ success: true}));
-		}
-	})
+	dataToUpdate.forEach(rowData => {
+		const params = {
+			TableName : 'grocery',
+			Key: {
+				groceryId: parseInt(rowData.groceryId),
+			},
+			UpdateExpression: `set availableQty=:updatedQty`,
+			ExpressionAttributeValues:{
+				":updatedQty":rowData.availableQty,
+			},
+			ReturnValues: "UPDATED_NEW"
+		};
+		promiseArray.push(documentClient.update(params).promise())
+	});
+
+	Promise.all(promiseArray)
+		.then(data => callback(null, getSuccessResponse({success: true})))
+		.catch(error => getErrorResponse(callback, 500, error))
 };
