@@ -1,13 +1,10 @@
-import { getGrocery } from './api/todos';
-import { getGroceries } from './api/todos';
+import { getGrocery } from './api/groceries';
+import { getGroceries } from './api/groceries';
 
 export { 
   getGrocery,
   getGroceries,
-}
-
-
-
+};
 
 
 

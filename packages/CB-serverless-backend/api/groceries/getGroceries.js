@@ -6,24 +6,11 @@ import uniqBy from 'lodash/uniqBy';
 import map from 'lodash/map';
 import slice from 'lodash/slice';
 
-AWS.config.update({
-  region: 'ap-south-1',
-  endpoint: 'http://localhost:8000',
-});
+import awsConfigUpdate from '../../utils/awsConfigUpdate';
+import getErrorResponse from '../../utils/getErrorResponse';
+import getSuccessResponse from '../../utils/getSuccessResponse';
 
-const renderServerError = (response, errorMessage) => response(null, {
-  statusCode: 500,
-  headers: { 'Content-Type': 'application/json' },
-  body: { success: false, error: errorMessage },
-});
-
-const getResponse = (data) => {
-  return { 
-    statusCode: 200, 
-    headers: { 'Content-Type' : 'application/json' }, 
-    body: JSON.stringify(data) 
-  };
-}
+awsConfigUpdate();
 
 export const getGroceries = (event, context, callback) => {
   context.callbackWaitsForEmptyEventLoop = false;
@@ -58,10 +45,10 @@ export const getGroceries = (event, context, callback) => {
 
     queryPromise
       .then((data) => {
-        callback(null, getResponse(data))
+        callback(null, getSuccessResponse(data))
       })
       .catch((error) => {
-        renderServerError(callback, 'Unable to fetch! Try again later')
+        getErrorResponse(callback, 'Unable to fetch! Try again later')
       });
   } else {
     // If not scan and filter categories and bring the top 3 items,
@@ -88,11 +75,11 @@ export const getGroceries = (event, context, callback) => {
           .value();
         
         // Sends the response
-        callback(null, getResponse(uniqueCategories))
+        callback(null, getSuccessResponse(uniqueCategories))
       })
       .catch((error) => {
         console.log(error);
-        renderServerError(callback, 'Unable to fetch! Try again later')
+        getErrorResponse(callback, 500, JSON.stringify(error.message))
       });
   }
 }
