@@ -12,7 +12,8 @@ const ItemsWrapper = styled.div`
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: flex-start;
-  align-content: flex-end;
+  align-items: flex-start;
+  align-content: flex-start;
   padding-bottom: 1em;
   margin: 1em auto;
   box-shadow: 0 0 26px 0 #eee;

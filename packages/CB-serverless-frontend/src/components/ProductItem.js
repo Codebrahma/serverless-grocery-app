@@ -6,15 +6,15 @@ import { pink500, pink800, pinkA200 } from 'material-ui/styles/colors';
 
 const ItemWrap = styled(Card)`
   box-shadow: none !important;
-  margin: 1em auto;
+  margin: 1em;
   overflow: hidden;
   border-radius: 4px;
   position: relative;
-  max-width: 280px;
+  width: 270px;
   border: 1px solid transparent;
   &:hover{
     border: 1px solid #eee;
-    box-shadow: 0px 0px 6px 0px rgba(144,144,144,0.44) !important;
+    box-shadow: 1px 3px 4px 0px rgba(144,144,144,0.44), 0px 0px 2px rgba(144,144,144,1) !important;
   }
 `;
 
@@ -109,7 +109,7 @@ class ProductItem extends Component {
         <CardTitle
           title={name}
           titleStyle={{
-            fontSize: 22,
+            fontSize: 20,
             whiteSpace: 'nowrap',
             overflow: 'hidden',
             textOverflow: 'ellipsis',
