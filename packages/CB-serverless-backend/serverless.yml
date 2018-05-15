@@ -1,5 +1,5 @@
 # NOTE: update this with your service name
-service: cb-serverless-nodejs
+service: online-grocery-api
 
 # Use the serverless-webpack plugin to transpile ES6
 plugins:
@@ -23,7 +23,14 @@ provider:
   iamRoleStatements:
     - Effect: Allow
       Action:
-        - "cloudformation:DescribeStackResource"
+        - cloudformation:DescribeStackResource
+        - dynamodb:DescribeTable
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
       Resource: "*"
   # To load environment variables externally
   # rename env.example to env.yml and uncomment
@@ -34,16 +41,18 @@ provider:
 
 functions:
   getGrocery:
-    handler: handler.getGrocery
+    handler: api/groceries/getGrocery.main
     events:
       - http:
           path: grocery
           method: get
           cors: true
   getGroceries:
-    handler: handler.getGroceries
+    handler: api/groceries/getGroceries.main
     events:
       - http:
           path: groceries
           method: get
           cors: true
+          authorizer:
+            arn: arn:aws:cognito-idp:ap-south-1:872196253669:userpool/ap-south-1_50ZoISXiG
