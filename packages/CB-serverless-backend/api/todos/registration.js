@@ -37,8 +37,6 @@ const onRegistrationSuccess = (userData, response) => {
 
 	documentClient.put(params, function(err, data) {
 		if (err) {
-			console.log(err)
-			
 			renderServerError(response, err)
 		} else {
 			response(null, getResponse({success: true}));
@@ -60,10 +58,7 @@ export const registerUser = (event, context, callback) => {
 	.catch(err => renderServerError(callback, err));
 }
 
-const verfiyUser = (event, context, callback) => {
-	context.callbackWaitsForEmptyEventLoop = false;
-	const data = JSON.parse(event.body);
-	
+const onUserConfirmed = (reponseData, response) => {
 	let documentClient = new AWS.DynamoDB.DocumentClient();
 	var params = {
     TableName: 'user',
@@ -78,14 +73,23 @@ const verfiyUser = (event, context, callback) => {
 	};
 	documentClient.update(params, function(err, data) {
     if (err) {
-        console.error("Unable to update item. Error JSON:", JSON.stringify(err, null, 2));
-    } else {
-        console.log("UpdateItem succeeded:", JSON.stringify(data, null, 2));
-    }
+			renderServerError(response, err)
+		} else {
+			response(null, getResponse({success: true}));
+		}
 	});
 }
 
-// export default {
-// 	registerUser,
-// 	verfiyUser,
-// }
+export const verifyUser = (event, context, callback) => {
+	context.callbackWaitsForEmptyEventLoop = false;
+	const {username, verification} = JSON.parse(event.body);
+	const data = {
+		username,
+		'code': verification
+	}
+	console.log(JSON.stringify(data))
+	
+	Auth.confirmSignUp(username, verification)
+	.then(resposneData => onUserConfirmed(resposneData, callback))
+	.catch(error => renderServerError(callback, error));
+}

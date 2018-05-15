@@ -2,6 +2,7 @@ import Amplify from 'aws-amplify';
 import { getGrocery } from './api/todos';
 import { getGroceries } from './api/todos';
 import { registerUser } from './api/todos'
+import { verifyUser } from './api/todos'
 import config from './config';
 
 Amplify.configure({
@@ -27,5 +28,5 @@ export {
   getGrocery,
 	getGroceries,
 	registerUser,
-	// verifyUser,
+	verifyUser,
 }
