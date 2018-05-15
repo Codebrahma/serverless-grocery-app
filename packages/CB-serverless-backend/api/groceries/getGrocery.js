@@ -12,22 +12,26 @@ export const getGrocery = (event, context, callback) => {
   
   var documentClient = new AWS.DynamoDB.DocumentClient();
   
+  if (!event.queryStringParameters || !event.queryStringParameters.id) {
+    renderServerError(callback, 400, 'id should be provided')
+  }
+
   var params = {
     TableName : 'grocery',
     Key: {
-      groceryId: event.queryStringParameters.id,
+      groceryId: parseInt(event.queryStringParameters.id),
     }
   };
 
-  documentClient.get(params, function(err, data) {
-    if (err) {
-      console.log(err);
-      renderServerError(callback, 'Unable to fetch! Try again later');
-    }
-    else {
+  const responsePromise = documentClient.get(params).promise();
+  
+  responsePromise
+    .then((data) => {
       callback(null, getResponse(data));
-    }
-  });
+    })
+    .catch((err) => {
+      renderServerError(callback, 500, JSON.stringify(err.message));
+    });
 }
 
 
