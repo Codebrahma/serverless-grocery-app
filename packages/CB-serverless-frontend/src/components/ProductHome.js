@@ -16,32 +16,25 @@ class ProductHome extends Component {
 
 
   componentDidMount() {
-    const categories = ['eatable', 'drinkable', 'cookable', 'hygiene'];
-    let catData = [];
-    categories.forEach(cat => {
-      axios.get('http://localhost:3000/groceries?category=' + cat)
-        .then(res => {
-          const top3 = res.data.Items.splice(0, 5);
-          catData.push({
-            [cat]: top3
-          });
-          this.setState({
-            catData: catData
-          });
+    axios.get('http://localhost:3000/groceries')
+      .then(res => {
+        this.setState({
+          catData: res.data
         });
-    });
+      });
   }
 
 
   render() {
-    const {catData} = this.state;
+    const { catData } = this.state;
     console.log('catData', this.state.catData);
     return (
       <React.Fragment>
         <Wrapper>
-          {catData && catData.map(obj=>{
-            const key = Object.keys(obj)[0];
-            return (<ProductRow title={key} key={key} items={obj[key]} />);
+          {catData && catData.map(obj => {
+            const title = obj.category.toProperCase();
+            const items = obj.groceries;
+            return (<ProductRow title={title} key={title} items={items} />);
           })}
         </Wrapper>
       </React.Fragment>
