@@ -5,3 +5,4 @@ packages/CB-serverless-backend/.DS_Store
 packages/CB-serverless-frontend/.DS_Store
 packages/CB-serverless-backend/dynamoDb/shared-local-instance.db
 .webpack
+.serverless
