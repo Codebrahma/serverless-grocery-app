@@ -2,8 +2,8 @@ import mongoose from 'mongoose';
 import AWS from 'aws-sdk';
 
 import awsConfigUpdate from '../../utils/awsConfigUpdate';
-import renderServerError from '../../utils/renderServerError';
-import getResponse from '../../utils/getResponse';
+import getErrorResponse from '../../utils/getErrorResponse';
+import getSuccessResponse from '../../utils/getSuccessResponse';
 
 awsConfigUpdate();
 
@@ -13,7 +13,7 @@ export const getGrocery = (event, context, callback) => {
   var documentClient = new AWS.DynamoDB.DocumentClient();
   
   if (!event.queryStringParameters || !event.queryStringParameters.id) {
-    renderServerError(callback, 400, 'id should be provided')
+    getErrorResponse(callback, 400, 'id should be provided')
   }
 
   var params = {
@@ -27,10 +27,10 @@ export const getGrocery = (event, context, callback) => {
   
   responsePromise
     .then((data) => {
-      callback(null, getResponse(data));
+      callback(null, getSuccessResponse(data));
     })
     .catch((err) => {
-      renderServerError(callback, 500, JSON.stringify(err.message));
+      getErrorResponse(callback, 500, JSON.stringify(err.message));
     });
 }
 

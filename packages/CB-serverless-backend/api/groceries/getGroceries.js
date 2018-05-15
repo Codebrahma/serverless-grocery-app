@@ -7,8 +7,8 @@ import map from 'lodash/map';
 import slice from 'lodash/slice';
 
 import awsConfigUpdate from '../../utils/awsConfigUpdate';
-import renderServerError from '../../utils/renderServerError';
-import getResponse from '../../utils/getResponse';
+import getErrorResponse from '../../utils/getErrorResponse';
+import getSuccessResponse from '../../utils/getSuccessResponse';
 
 awsConfigUpdate();
 
@@ -45,10 +45,10 @@ export const getGroceries = (event, context, callback) => {
 
     queryPromise
       .then((data) => {
-        callback(null, getResponse(data))
+        callback(null, getSuccessResponse(data))
       })
       .catch((error) => {
-        renderServerError(callback, 'Unable to fetch! Try again later')
+        getErrorResponse(callback, 'Unable to fetch! Try again later')
       });
   } else {
     // If not scan and filter categories and bring the top 3 items,
@@ -75,11 +75,11 @@ export const getGroceries = (event, context, callback) => {
           .value();
         
         // Sends the response
-        callback(null, getResponse(uniqueCategories))
+        callback(null, getSuccessResponse(uniqueCategories))
       })
       .catch((error) => {
         console.log(error);
-        renderServerError(callback, 500, JSON.stringify(error.message))
+        getErrorResponse(callback, 500, JSON.stringify(error.message))
       });
   }
 }
