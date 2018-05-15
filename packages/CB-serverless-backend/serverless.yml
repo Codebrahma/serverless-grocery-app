@@ -41,14 +41,14 @@ provider:
 
 functions:
   getGrocery:
-    handler: handler.getGrocery
+    handler: api/groceries/getGrocery.main
     events:
       - http:
           path: grocery
           method: get
           cors: true
   getGroceries:
-    handler: handler.getGroceries
+    handler: api/groceries/getGroceries.main
     events:
       - http:
           path: groceries

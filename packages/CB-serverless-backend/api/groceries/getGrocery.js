@@ -7,7 +7,7 @@ import getSuccessResponse from '../../utils/getSuccessResponse';
 
 awsConfigUpdate();
 
-export const getGrocery = (event, context, callback) => {
+export const main = (event, context, callback) => {
   context.callbackWaitsForEmptyEventLoop = false;
   
   var documentClient = new AWS.DynamoDB.DocumentClient();
