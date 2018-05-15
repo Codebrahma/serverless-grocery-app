@@ -20,7 +20,9 @@ groceryList.forEach(function(item) {
       url: item.url,
       category: item.category,
       subCategory: item.subCategory,
-      price: item.price,
+			price: item.price,
+			availableQty: item.availableQty,
+			soldQty: item.soldQty
     },
   };
   
