@@ -7,6 +7,7 @@ import { pink500, pink800, pinkA200 } from 'material-ui/styles/colors';
 const ItemWrap = styled(Card)`
   box-shadow: none !important;
   margin: 1em auto;
+  overflow: hidden;
   border-radius: 4px;
   position: relative;
   max-width: 280px;
@@ -61,6 +62,22 @@ const SoldOut = styled.span`
   }
 `;
 
+const CrossSoldOut = styled.span`
+    background: ${soldOutColor};
+    color: #fff;
+    position: absolute;
+    z-index: 1;
+    padding: 15px;
+    margin: 0 auto;
+    top: 20%;
+    left: 0px;
+    width: calc(140% + 10px);
+    -webkit-transform: translate(-16px,0%);
+    -ms-transform: translate(-16px,0%);
+    transform: translate(-12%,40%) rotate(40deg);
+    text-align: center;
+`;
+
 
 class ProductItem extends Component {
   render() {
@@ -72,9 +89,9 @@ class ProductItem extends Component {
         }}>
         {
           isSoldOut &&
-          <SoldOut>
+          <CrossSoldOut>
             Sold out
-          </SoldOut>
+          </CrossSoldOut>
         }
 
         <CardMedia
@@ -85,6 +102,7 @@ class ProductItem extends Component {
             width: 250,
             padding: 10,
             height: 250,
+            opacity: isSoldOut ? '0.4' : '1'
           }}>
           <img src={url} alt="" />
         </CardMedia>
