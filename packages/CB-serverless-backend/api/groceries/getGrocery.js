@@ -2,22 +2,10 @@ import mongoose from 'mongoose';
 import AWS from 'aws-sdk';
 
 import awsConfigUpdate from '../../utils/awsConfigUpdate';
+import renderServerError from '../../utils/renderServerError';
+import getResponse from '../../utils/getResponse';
 
 awsConfigUpdate();
-
-const renderServerError = (response, errorMessage) => response(null, {
-  statusCode: 500,
-  headers: { 'Content-Type': 'application/json' },
-  body: { success: false, error: errorMessage },
-});
-
-const getResponse = (data) => {
-  return { 
-    statusCode: 200, 
-    headers: { 'Content-Type' : 'application/json' }, 
-    body: JSON.stringify(data) 
-  };
-}
 
 export const getGrocery = (event, context, callback) => {
   context.callbackWaitsForEmptyEventLoop = false;

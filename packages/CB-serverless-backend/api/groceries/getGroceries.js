@@ -6,24 +6,11 @@ import uniqBy from 'lodash/uniqBy';
 import map from 'lodash/map';
 import slice from 'lodash/slice';
 
-AWS.config.update({
-  region: 'ap-south-1',
-  endpoint: 'http://localhost:8000',
-});
+import awsConfigUpdate from '../../utils/awsConfigUpdate';
+import renderServerError from '../../utils/renderServerError';
+import getResponse from '../../utils/getResponse';
 
-const renderServerError = (response, errorMessage) => response(null, {
-  statusCode: 500,
-  headers: { 'Content-Type': 'application/json' },
-  body: { success: false, error: errorMessage },
-});
-
-const getResponse = (data) => {
-  return { 
-    statusCode: 200, 
-    headers: { 'Content-Type' : 'application/json' }, 
-    body: JSON.stringify(data) 
-  };
-}
+awsConfigUpdate();
 
 export const getGroceries = (event, context, callback) => {
   context.callbackWaitsForEmptyEventLoop = false;
@@ -92,7 +79,7 @@ export const getGroceries = (event, context, callback) => {
       })
       .catch((error) => {
         console.log(error);
-        renderServerError(callback, 'Unable to fetch! Try again later')
+        renderServerError(callback, 500, JSON.stringify(error.message))
       });
   }
 }

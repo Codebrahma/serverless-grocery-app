@@ -1,12 +1,11 @@
 import AWS from 'aws-sdk';
 import {
-  dbLocalUrl,
-  dbRegion,
+  config
 } from './config';
 
 export default () => {
   AWS.config.update({
-    region: dbRegion,
-    endpoint: dbLocalUrl,
-  }); 
+    region: config.dbRegion,
+    endpoint: config.dbLocalUrl,
+  });
 };
