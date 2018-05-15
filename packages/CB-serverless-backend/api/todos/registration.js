@@ -26,8 +26,8 @@ const onRegistrationSuccess = (userData, response) => {
 	let params = {
 		TableName: 'user',
 		Item: {
-			'userId' : userData.userId,
-			'email' : userData.email,
+			'userId' : userData.userSub,
+			'email' : userData.user.username,
 			'firstname' : userData.userName,
 			'lastname' : userData.lastName,
 			'mobile' : userData.mobile,
@@ -35,8 +35,10 @@ const onRegistrationSuccess = (userData, response) => {
 		}
 	};
 
-	documentClient.putItem(params, function(err, data) {
+	documentClient.put(params, function(err, data) {
 		if (err) {
+			console.log(err)
+			
 			renderServerError(response, err)
 		} else {
 			response(null, getResponse({success: true}));
@@ -44,7 +46,7 @@ const onRegistrationSuccess = (userData, response) => {
 	});
 }
 
-const registerUser = (event, context, callback) => {
+export const registerUser = (event, context, callback) => {
   context.callbackWaitsForEmptyEventLoop = false;
 	const data = JSON.parse(event.body);
 	const { username, password } = data;
@@ -52,7 +54,9 @@ const registerUser = (event, context, callback) => {
 	Auth.signUp({
 		username,
 		password,
-	}).then(data => onRegistrationSuccess(data, callback))
+	}).then(responseData => {
+		onRegistrationSuccess(responseData, callback)
+	})
 	.catch(err => renderServerError(callback, err));
 }
 
@@ -81,7 +85,7 @@ const verfiyUser = (event, context, callback) => {
 	});
 }
 
-export default {
-	registerUser,
-	verfiyUser,
-}
+// export default {
+// 	registerUser,
+// 	verfiyUser,
+// }
