@@ -3,6 +3,7 @@ import forEach from 'lodash/forEach';
 import awsConfigUpdate from '../../utils/awsConfigUpdate';
 import getErrorResponse from '../../utils/getErrorResponse';
 import getSuccessResponse from '../../utils/getSuccessResponse';
+import { GROCERIES_TABLE_NAME } from '../../dynamoDb/constants';
 
 awsConfigUpdate();
 
@@ -19,7 +20,7 @@ export const updateStock = async (event, context, callback) => {
 		}
 
 		const params = {
-			TableName : 'grocery',
+			TableName : GROCERIES_TABLE_NAME,
 			Key: {
 				groceryId: parseInt(groceryId),
 			},

@@ -4,6 +4,7 @@ import AWS from 'aws-sdk';
 import awsConfigUpdate from '../../utils/awsConfigUpdate';
 import getErrorResponse from '../../utils/getErrorResponse';
 import getSuccessResponse from '../../utils/getSuccessResponse';
+import { GROCERIES_TABLE_NAME } from '../../dynamoDb/constants';
 
 awsConfigUpdate();
 
@@ -17,7 +18,7 @@ export const main = (event, context, callback) => {
   }
 
   var params = {
-    TableName : 'grocery',
+    TableName : GROCERIES_TABLE_NAME,
     Key: {
       groceryId: parseInt(event.queryStringParameters.id),
     }

@@ -6,6 +6,7 @@ import awsConfigUpdate from '../../utils/awsConfigUpdate';
 import getErrorResponse from '../../utils/getErrorResponse';
 import getSuccessResponse from '../../utils/getSuccessResponse';
 import generateId from '../../utils/orderIdGenerator';
+import { ORDERS_TABLE_NAME, GROCERIES_TABLE_NAME, CART_TABLE_NAME } from '../../dynamoDb/constants';
 
 awsConfigUpdate();
 const documentClient = new AWS.DynamoDB.DocumentClient();
@@ -75,7 +76,7 @@ export const main = (event, context, callback) => {
 
 const createAndSaveOrder = (orderData) => {
 	const createOrderParams = {
-		TableName: 'orders',
+		TableName: ORDERS_TABLE_NAME,
 		Item: {
 			...orderData
 		}
@@ -88,7 +89,7 @@ const getPricesOfCartItems = (cartData) => {
 	const keysForBatchGet = map(cartData, item => ({'groceryId': item.groceryId}))
 	const paramsForBatchGet = {
 		RequestItems: {
-			'grocery': {
+			[GROCERIES_TABLE_NAME] : {
 				Keys: keysForBatchGet,
 				ProjectionExpression: 'groceryId, price'
 			}
@@ -100,7 +101,7 @@ const getPricesOfCartItems = (cartData) => {
 
 const getCurrentCart = (userId) => {
 	const params = {
-    TableName: 'cart',
+    TableName: CART_TABLE_NAME,
     Key: {
       'userId': parseInt(userId),
 		},	
