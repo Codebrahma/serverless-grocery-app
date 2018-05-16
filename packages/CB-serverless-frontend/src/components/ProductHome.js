@@ -30,6 +30,10 @@ class ProductHome extends Component {
   }
 
 
+  showErrorMessage = () => (
+    <div>{JSON.stringify(this.state.error)}</div>
+  );
+
   render() {
     const { catData } = this.state;
     return (
@@ -47,6 +51,10 @@ class ProductHome extends Component {
                   items={items}
                 />);
             })
+          }
+
+          {
+            this.showErrorMessage()
           }
         </Wrapper>
       </React.Fragment>
