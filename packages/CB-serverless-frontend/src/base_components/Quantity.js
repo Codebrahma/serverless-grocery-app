@@ -36,8 +36,10 @@ class Quantity extends React.PureComponent {
   }
 
   dec = () => {
+    const { disabled } = this.props;
+
     const { count: currentCount } = this.state;
-    if (currentCount >= 2) { // minimum quantity to be one
+    if (!disabled && currentCount >= 2) { // minimum quantity to be one
       this.setState((s, p) => ({
         count: s.count - 1,
       }), () => this.props.onChange(this.state.count));
@@ -45,8 +47,10 @@ class Quantity extends React.PureComponent {
   };
 
   inc = () => {
+    const { disabled } = this.props;
+
     const { count: currentCount } = this.state;
-    if (currentCount < 10) { // minimum quantity to be one
+    if (!disabled && currentCount < 10) { // minimum quantity to be one
       this.setState((s, p) => ({
         count: s.count + 1,
       }), () => this.props.onChange(this.state.count));
@@ -54,10 +58,11 @@ class Quantity extends React.PureComponent {
   };
 
   render() {
+    const { disabled } = this.props;
     return (
       <RowFlex>
         <CountSpan onClick={this.dec}>-</CountSpan>
-        <CountInput type="text" min="1" max="10" step="1" value={this.state.count} />
+        <CountInput disabled={disabled} type="text" min="1" max="10" step="1" value={this.state.count} />
         <CountSpan right onClick={this.inc}>+</CountSpan>
       </RowFlex>
     );
@@ -66,11 +71,13 @@ class Quantity extends React.PureComponent {
 
 Quantity.defaultProps = {
   initialQuantity: 1,
+  disabled: false,
 };
 
 Quantity.propTypes = {
   onChange: PropTypes.func.isRequired,
   initialQuantity: PropTypes.number,
+  disabled: PropTypes.bool,
 };
 
 
