@@ -1,5 +1,6 @@
 node_modules/
 .DS_Store
+.idea/
 packages/.DS_Store
 packages/CB-serverless-backend/.DS_Store
 packages/CB-serverless-frontend/.DS_Store
