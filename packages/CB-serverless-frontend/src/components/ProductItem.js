@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { Card, CardActions, CardMedia, CardTitle, FlatButton, FontIcon } from 'material-ui';
 import { pink500, pink800, pinkA200 } from 'material-ui/styles/colors';
+import Quantity from '../base_components/Quantity';
 
 const ItemWrap = styled(Card)`
   box-shadow: none !important;
@@ -32,6 +33,7 @@ const AddCart = styled(FlatButton)`
       }
     }
   }
+  font-size: 12px;
 `;
 
 const soldOutColor = pink500;
@@ -80,6 +82,13 @@ const CrossSoldOut = styled.span`
 
 
 class ProductItem extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      quantity: 1,
+    };
+  }
+
   displaySoldOut = () => {
     const { isSoldOut } = this.props;
 
@@ -129,16 +138,25 @@ class ProductItem extends Component {
           }}
           subtitle={price ? `${price} ₹` : ''}
         />
-        <CardActions>
+        <CardActions
+          style={{
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          }}
+        >
+
+          <Quantity onChange={data => console.log(data)} initialQuantity={this.state.quantity}/>
+
           <AddCart
             onClick={() => alert('Add to Cart')}
-            fullWidth
             disabled={isSoldOut}
             rippleColor={pink800}
             labelPosition="before"
             secondary
             label="Add to Cart"
-            icon={<FontIcon className="material-icons">add_shopping_cart</FontIcon>}
+            icon={<FontIcon style={{ fontSize: 16 }} className="material-icons">add_shopping_cart</FontIcon>}
           />
 
         </CardActions>
