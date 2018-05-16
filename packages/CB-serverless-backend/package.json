@@ -30,6 +30,7 @@
     "aws-sdk": "^2.238.1",
     "babel-runtime": "^6.26.0",
     "mongoose": "^5.0.16",
-    "source-map-support": "^0.4.18"
+    "source-map-support": "^0.4.18",
+    "stripe": "^6.0.0"
   }
 }
