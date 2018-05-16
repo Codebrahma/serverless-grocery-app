@@ -1,5 +1,5 @@
 /* eslint-disable react/forbid-prop-types */
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import _ from 'lodash';
@@ -55,6 +55,7 @@ const ProductRow = ({ title, items }) => (
       {
         _.map(items, obj => (
           <ProductItem
+            groceryId={obj.groceryId}
             name={obj.name}
             price={obj.price}
             url={obj.url}

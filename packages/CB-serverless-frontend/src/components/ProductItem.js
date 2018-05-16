@@ -117,7 +117,7 @@ class ProductItem extends Component {
 
   render() {
     const {
-      name, price, url, isSoldOut,
+      groceryId, name, price, url, isSoldOut,
     } = this.props;
     return (
       <ItemWrap
@@ -125,23 +125,26 @@ class ProductItem extends Component {
           margin: '0 auto',
         }}
       >
-        {this.displaySoldOut()}
-        <ProductImageWrap isSoldOut={isSoldOut}>
-          <img src={url} alt="" />
-        </ProductImageWrap>
-        <CardTitle
-          title={name}
-          titleStyle={{
-            fontSize: 20,
-            whiteSpace: 'nowrap',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-          }}
-          subtitleStyle={{
-            fontSize: 18,
-          }}
-          subtitle={price ? `${price} ₹` : ''}
-        />
+        <a href={`/?productId=${groceryId}`}>
+          {this.displaySoldOut()}
+          <ProductImageWrap isSoldOut={isSoldOut}>
+            <img src={url} alt="" />
+          </ProductImageWrap>
+          <CardTitle
+            title={name}
+            titleStyle={{
+              fontSize: 20,
+              whiteSpace: 'nowrap',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+            }}
+            subtitleStyle={{
+              fontSize: 18,
+            }}
+            subtitle={price ? `${price} ₹` : ''}
+          />
+        </a>
+
         <CardActions
           style={{
             display: 'flex',
@@ -176,6 +179,7 @@ ProductItem.defaultProps = {
 
 
 ProductItem.propTypes = {
+  groceryId: PropTypes.number.isRequired,
   name: PropTypes.string.isRequired,
   price: PropTypes.string.isRequired,
   url: PropTypes.string.isRequired,
