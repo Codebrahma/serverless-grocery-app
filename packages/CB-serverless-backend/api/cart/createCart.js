@@ -1,10 +1,4 @@
-import mongoose from 'mongoose';
 import AWS from 'aws-sdk';
-import _ from 'lodash';
-import filter from 'lodash/filter';
-import uniqBy from 'lodash/uniqBy';
-import map from 'lodash/map';
-import slice from 'lodash/slice';
 
 import awsConfigUpdate from '../../utils/awsConfigUpdate';
 import getErrorResponse from '../../utils/getErrorResponse';
@@ -21,7 +15,7 @@ export const main = (event, context, callback) => {
     userId,
     cartData,
   } = JSON.parse(event.body);
-  console.log(userId, cartData, typeof cartData);
+
   var params = {
     TableName: 'cart',
     Key: {
