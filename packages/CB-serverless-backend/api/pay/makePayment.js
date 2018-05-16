@@ -7,33 +7,22 @@ import getSuccessResponse from '../../utils/getSuccessResponse';
 
 // Put the stripe key in env
 const stripe = require("stripe")('sk_test_JEVvHOWUTi2mP5IA1rebWCdi');
-var documentClient = new AWS.DynamoDB.DocumentClient();
 
 awsConfigUpdate();
 
+const documentClient = new AWS.DynamoDB.DocumentClient();
+
 const getAmountFromOrderId = (orderId) => {
   const params = {
-    TableName: 'order',
+    TableName: 'orders',
     Key: {
-      ':orderId': orderId
+      'orderId': orderId,
     },
+
     ProjectionExpression: "orderId, orderTotal",
   }
 
-  const queryPromise = documentClient.scan(params).promise();
-  
-  return queryPromise
-    .then((data) => {
-      return {
-        success: true,
-        data,
-      }
-    })
-    .catch((error) => {
-      return {
-        succes: false,
-      }
-    });
+  return documentClient.get(params).promise();
 }
 
 export const main = (event, context, callback) => {
@@ -41,26 +30,29 @@ export const main = (event, context, callback) => {
   
   const {
     email,
-    id,
+    stripeId,
     orderId,
   } = JSON.parse(event.body);
-  if (!email || !id || !orderId) {
+  
+  if (!email || !stripeId || !orderId) {
     callback(null, getErrorResponse(400, JSON.stringify({
       message: 'Both Email and id is required'
     })))
   }
 
   let amount; 
+  
   getAmountFromOrderId(orderId)
     .then((response) => {
-      if (response.success) {
-        console.log('amount ', response.data);
-      }
-    });
-  console.log('amount ', amount)
+      amount = response.Item.orderTotal;
+    })
+    .catch((error) => {
+      callback(null, getErrorResponse(500, JSON.stringify(error.message)))
+    })
+
   stripe.customers.create({
     email,
-    card: id,
+    card: stripeId,
   })
   .then(customer =>
     stripe.charges.create({
