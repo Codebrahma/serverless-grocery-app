@@ -1,41 +1,53 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-
+import _ from 'lodash';
 
 import { Wrapper } from '../base_components';
 import ProductRow from './ProductRow';
 
 class ProductHome extends Component {
-
   constructor(props) {
     super(props);
     this.state = {
-      catData: null
+      catData: null,
+      error: null,
     };
   }
 
 
   componentDidMount() {
     axios.get('http://localhost:3000/groceries')
-      .then(res => {
-        this.setState({
-          catData: res.data
-        });
+      .then((res) => {
+        this.setState((state, props) => ({
+          catData: res.data,
+        }));
+      })
+      .catch((err) => {
+        this.setState((state, props) => ({
+          error: err,
+        }));
       });
   }
 
 
   render() {
     const { catData } = this.state;
-    console.log('catData', this.state.catData);
     return (
       <React.Fragment>
         <Wrapper>
-          {catData && catData.map(obj => {
-            const title = obj.category.toProperCase();
-            const items = obj.groceries;
-            return (<ProductRow title={title} key={title} items={items} />);
-          })}
+          {
+            catData &&
+            _.map(catData, (obj) => {
+              const title = obj.category.toProperCase();
+              const items = obj.groceries;
+              return (
+                <ProductRow
+                  title={title}
+                  key={title}
+                  items={items}
+                />);
+            })
+          }
         </Wrapper>
       </React.Fragment>
     );

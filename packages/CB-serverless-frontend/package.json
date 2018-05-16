@@ -5,6 +5,11 @@
   "dependencies": {
     "aws-amplify": "^0.3.3",
     "axios": "^0.18.0",
+    "eslint": "^4.19.1",
+    "eslint-config-airbnb": "^16.1.0",
+    "eslint-plugin-import": "^2.11.0",
+    "eslint-plugin-jsx-a11y": "^6.0.3",
+    "eslint-plugin-react": "^7.8.2",
     "lodash": "^4.17.10",
     "material-ui": "^0.20.1",
     "moment": "^2.22.1",

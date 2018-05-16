@@ -6,6 +6,7 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
 
 import './index.css';
+import './utils/string';
 
 import registerServiceWorker from './registerServiceWorker';
 import config from './config';

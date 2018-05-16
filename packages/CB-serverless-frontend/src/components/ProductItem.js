@@ -20,11 +20,11 @@ const ItemWrap = styled(Card)`
 
 const AddCart = styled(FlatButton)`
   &:hover{
-    ${props => !props.disabled ? `
+    ${props => (!props.disabled ? `
       color: #fff !important;
       font-weight: bold;
       background-color: ${pinkA200} !important;
-    ` : ''}
+    ` : '')}
     > div{
       color: #fff !important;      
       > span{
@@ -80,20 +80,29 @@ const CrossSoldOut = styled.span`
 
 
 class ProductItem extends Component {
+  displaySoldOut = () => {
+    const { isSoldOut } = this.props;
+
+    if (isSoldOut) {
+      return (
+        <CrossSoldOut>
+          Sold out
+        </CrossSoldOut>);
+    }
+    return null;
+  };
+
   render() {
-    const { name, price, url, isSoldOut } = this.props;
+    const {
+      name, price, url, isSoldOut,
+    } = this.props;
     return (
       <ItemWrap
         containerStyle={{
           margin: '0 auto',
-        }}>
-        {
-          isSoldOut &&
-          <CrossSoldOut>
-            Sold out
-          </CrossSoldOut>
-        }
-
+        }}
+      >
+        {this.displaySoldOut()}
         <CardMedia
           style={{
             borderBottomStyle: 'solid',
@@ -102,8 +111,9 @@ class ProductItem extends Component {
             width: 250,
             padding: 10,
             height: 250,
-            opacity: isSoldOut ? '0.4' : '1'
-          }}>
+            opacity: isSoldOut ? '0.4' : '1',
+          }}
+        >
           <img src={url} alt="" />
         </CardMedia>
         <CardTitle
@@ -117,17 +127,19 @@ class ProductItem extends Component {
           subtitleStyle={{
             fontSize: 18,
           }}
-          subtitle={price ? price + ' ₹' : ''}
+          subtitle={price ? `${price} ₹` : ''}
         />
         <CardActions>
           <AddCart
             onClick={() => alert('Add to Cart')}
-            fullWidth={true}
+            fullWidth
             disabled={isSoldOut}
             rippleColor={pink800}
             labelPosition="before"
-            secondary label="Add to Cart"
-            icon={<FontIcon className="material-icons">add_shopping_cart</FontIcon>} />
+            secondary
+            label="Add to Cart"
+            icon={<FontIcon className="material-icons">add_shopping_cart</FontIcon>}
+          />
 
         </CardActions>
       </ItemWrap>
