@@ -1,7 +1,7 @@
 var AWS = require('aws-sdk');
 var fs = require('fs');
 var { groceryList } = require('./data/groceryList');
-
+var { cart } = require('./data/sampleCart');
 // Configure the AWS to lookup the right server and endpoint for DynamoDB
 // In case of local set endpoint to localhost
 AWS.config.update({
@@ -23,6 +23,24 @@ groceryList.forEach(function(item) {
 			price: item.price,
 			availableQty: item.availableQty,
 			soldQty: item.soldQty
+    },
+  };
+  
+  docClient.put(params, function(err, data) {
+    if (err) {
+      console.log('unable to add ', err);
+    } else {
+      console.log('succeeded ', data);
+    }
+  })
+});
+
+cart.forEach(function(item) {
+  var params = {
+    TableName: 'cart',
+    Item: {
+			userId: parseInt(item.userId),
+			cartData: JSON.stringify(item.cartData),
     },
   };
   
