@@ -40,7 +40,7 @@ cart.forEach(function(item) {
     TableName: 'cart',
     Item: {
 			userId: parseInt(item.userId),
-			cartData: JSON.stringify(item.cartData),
+			cartData: item.cartData,
     },
   };
   

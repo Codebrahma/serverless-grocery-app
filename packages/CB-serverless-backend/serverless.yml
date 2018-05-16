@@ -87,7 +87,7 @@ functions:
     handler: api/order/createOrder.main
     events:
       - http:
-          path: creatOrder
+          path: createOrder
           method: post
           cors: true
           authorizer:

@@ -1,11 +1,11 @@
 import AWS from 'aws-sdk';
 import reduce from 'lodash/reduce';
 import map from 'lodash/map';
-import merge from 'lodash/merge';
+import size from 'lodash/size';
 import awsConfigUpdate from '../../utils/awsConfigUpdate';
 import getErrorResponse from '../../utils/getErrorResponse';
 import getSuccessResponse from '../../utils/getSuccessResponse';
-// import generatId from '../../utils/orderIdGenerator';
+import generateId from '../../utils/orderIdGenerator';
 
 awsConfigUpdate();
 const documentClient = new AWS.DynamoDB.DocumentClient();
@@ -16,28 +16,76 @@ export const main = (event, context, callback) => {
   const {
     userId
 	} = JSON.parse(event.body);
-	console.log('UserId ' + userId);
-	
+	if (!userId) {
+		callback(null, getErrorResponse(400, 'Missing or invalid data'));
+		return;
+	}
+	let idToGroceryDataMapping, cartItems, completeOrder;
+
 	getCurrentCart(userId)
-		.then(cart => {
-			console.log('Cart ' + JSON.stringify(cart));
-			createOrder(cart.Item);
+		.then(cart => {			
+			cartItems = cart.Item.cartData;
+
+			if (!cartItems || size(cartItems) < 1) {
+				callback(null, getSuccessResponse({success: false, message: 'Cart is empty'}));
+				return;
+			}
+
+			idToGroceryDataMapping = reduce(cartItems, (currentReducedValue, productInCart) => {
+				return {
+					...currentReducedValue,
+					[productInCart.groceryId] : productInCart
+				}
+			}, {});			
+
+			return getPricesOfCartItems(cartItems);
+		})
+		.then(dbData => dbData.Responses.grocery)
+		.then(cartItemsWithPrice => map(cartItemsWithPrice, cartItem => {
+				return {
+					...cartItem,
+					...idToGroceryDataMapping[cartItem.groceryId]
+				}
+			})
+		)
+		.then(cartItemsWithPriceAndQty => reduce(cartItemsWithPriceAndQty, (currentTotal, currentItem) => {
+				return currentTotal + (currentItem.qty * currentItem.price)
+			}, 0)
+		)
+		.then(totalAmount => {			
+			completeOrder = {
+				'orderId': generateId(),
+				'userId': userId,
+				'orderItems': JSON.stringify(cartItems),
+				'orderTotal': totalAmount,
+				'orderStatus': 'PAYMENT_PENDING',
+				'orderDate': new Date().toISOString()
+			}			
+			return createAndSaveOrder(completeOrder)
+		})
+		.then(() => {
+			callback(null, getSuccessResponse({
+				success: true,
+				orderId: completeOrder.orderId,
+				orderTotal: completeOrder.orderTotal
+			 }));
 		})
 		.catch(error => callback(null, getErrorResponse(500, error)));
 }
 
-const createOrder = (cart) => {
-	const items = JSON.parse(cart.cartData);
-	console.log('Items ' + JSON.stringify(items));
-	const idMappedCart = reduce(items, (currentValue, currentItem) => {
-		return {
-			...currentValue,
-			[currentItem.groceryId] : currentItem
+const createAndSaveOrder = (orderData) => {
+	const createOrderParams = {
+		TableName: 'orders',
+		Item: {
+			...orderData
 		}
-	}, {});
-	const keysForBatchGet = map(items, item => ({'groceryId': item.groceryId}))
-	console.log('Keys ' + JSON.stringify(idMappedCart));
-	
+	}
+
+	return documentClient.put(createOrderParams).promise();
+};
+
+const getPricesOfCartItems = (cartData) => {
+	const keysForBatchGet = map(cartData, item => ({'groceryId': item.groceryId}))
 	const paramsForBatchGet = {
 		RequestItems: {
 			'grocery': {
@@ -46,39 +94,8 @@ const createOrder = (cart) => {
 			}
 		}
 	};
-	documentClient.batchGet(paramsForBatchGet, function(err, data) {
-		if (err) {
-			console.log("Error", err);
-		} else {
-			console.log('Batch data ' + JSON.stringify(data));
-			
-			const finalArray = map(data.Responses.grocery, function(element, index, array) {
-				return {
-					...element,
-					...idMappedCart[element.groceryId]
-				};
-			});
-			console.log('Final array ' + JSON.stringify(finalArray));
-			
-			const totalAmount = reduce(finalArray, (currentTotal, currentItem) => {
-				return currentTotal + (currentItem.qty * currentItem.price)
-			}, 0);
-			console.log('Total ' + totalAmount);
-		}
-	});
-	
 
-	
-
-	// const params = {
-  //   TableName: 'orders',
-  //   Items: {
-	// 		orderId: generatId(),
-	// 		userId: cart.userId,
-	// 		items: cart.cartData,
-
-	// 	},	
-  // };
+	return documentClient.batchGet(paramsForBatchGet).promise();
 }
 
 const getCurrentCart = (userId) => {
@@ -87,6 +104,7 @@ const getCurrentCart = (userId) => {
     Key: {
       'userId': parseInt(userId),
 		},	
-  };
+	};
+	
 	return documentClient.get(params).promise();
 }

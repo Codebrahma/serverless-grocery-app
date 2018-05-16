@@ -33,12 +33,12 @@ const createGroceryTable = () => {
 
 const createOrderTable = () => {
   var orderParams = {
-    TableName: 'order',
+    TableName: 'orders',
     KeySchema: [
       { AttributeName: 'orderId', KeyType: 'HASH' },
     ],
     AttributeDefinitions: [
-      { AttributeName: 'orderId', AttributeType: 'N' },
+      { AttributeName: 'orderId', AttributeType: 'S' },
     ],
     ProvisionedThroughput: {
       ReadCapacityUnits: 2,
