@@ -6,9 +6,22 @@ import {
 import { Auth } from 'aws-amplify';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import Header from './components/header';
 
 import AuthModule from './Auth';
+import ProductHome from './components/ProductHome';
 import { updateAuth } from './Auth/actionCreators';
+
+const DefaultLayout = ({component: Component, ...rest}) => {
+  return (
+    <Route {...rest} render={matchProps => (
+      <div>
+        <Header />
+        <Component {...matchProps} />
+      </div>
+    )} />
+  )
+};
 
 class Routes extends React.Component {
   constructor(props) {
@@ -85,8 +98,7 @@ class Routes extends React.Component {
           <Route render={() => <AuthModule />} />
           :
           <React.Fragment>
-            <Route exact path="/" component={this.Path1} />
-            <Route path='/other' component={this.Path2} />
+            <DefaultLayout exact path='/' component={ProductHome} />
           </React.Fragment>
         }
         </div>
