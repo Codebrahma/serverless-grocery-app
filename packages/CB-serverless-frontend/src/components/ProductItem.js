@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { Card, CardActions, CardMedia, CardTitle, FlatButton, FontIcon } from 'material-ui';
+import { Card, CardActions, CardTitle, FlatButton, FontIcon } from 'material-ui';
 import { pink500, pink800, pinkA200 } from 'material-ui/styles/colors';
 import Quantity from '../base_components/Quantity';
+import ProductImageWrap from '../base_components/ProductImage';
 
 const ItemWrap = styled(Card)`
   box-shadow: none !important;
@@ -101,6 +102,19 @@ class ProductItem extends Component {
     return null;
   };
 
+  displayQuantityCounter = () => {
+    const { isSoldOut } = this.props;
+
+    if (!isSoldOut) {
+      return (<Quantity
+        onChange={data => console.log(data)}
+        initialQuantity={this.state.quantity}
+        disabled={isSoldOut}
+      />);
+    }
+    return null;
+  };
+
   render() {
     const {
       name, price, url, isSoldOut,
@@ -112,19 +126,9 @@ class ProductItem extends Component {
         }}
       >
         {this.displaySoldOut()}
-        <CardMedia
-          style={{
-            borderBottomStyle: 'solid',
-            borderBottomWidth: 1,
-            borderBottomColor: '#eee',
-            width: 250,
-            padding: 10,
-            height: 250,
-            opacity: isSoldOut ? '0.4' : '1',
-          }}
-        >
+        <ProductImageWrap isSoldOut={isSoldOut}>
           <img src={url} alt="" />
-        </CardMedia>
+        </ProductImageWrap>
         <CardTitle
           title={name}
           titleStyle={{
@@ -142,12 +146,13 @@ class ProductItem extends Component {
           style={{
             display: 'flex',
             flexDirection: 'row',
-            justifyContent: 'space-between',
+            justifyContent: 'space-around',
             alignItems: 'center',
           }}
         >
-
-          <Quantity onChange={data => console.log(data)} initialQuantity={this.state.quantity}/>
+          {
+            this.displayQuantityCounter()
+          }
 
           <AddCart
             onClick={() => alert('Add to Cart')}
