@@ -14,7 +14,7 @@ export const updateStock = async (event, context, callback) => {
 
 	forEach(dataToUpdate, ({ groceryId, availableQty}) => {
 		if (!groceryId || !availableQty) {
-			getErrorResponse(callback, 400, 'Missing or invalid data');
+			callback(null, getErrorResponse(400, 'Missing or invalid data'));
 		}
 
 		const params = {
@@ -33,5 +33,5 @@ export const updateStock = async (event, context, callback) => {
 
 	Promise.all(promiseArray)
 		.then(data => callback(null, getSuccessResponse({success: true})))
-		.catch(error => getErrorResponse(callback, 500, error))
+		.catch(error => callback(null, getErrorResponse(500, error)))
 };

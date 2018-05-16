@@ -48,7 +48,7 @@ export const main = (event, context, callback) => {
         callback(null, getSuccessResponse(data))
       })
       .catch((error) => {
-        getErrorResponse(callback, 'Unable to fetch! Try again later')
+        callback(null, getErrorResponse(500, 'Unable to fetch! Try again later'));
       });
   } else {
     // If not scan and filter categories and bring the top 3 items,
@@ -78,8 +78,7 @@ export const main = (event, context, callback) => {
         callback(null, getSuccessResponse(uniqueCategories))
       })
       .catch((error) => {
-        console.log(error);
-        getErrorResponse(callback, 500, JSON.stringify(error.message))
+        callback(null, getErrorResponse(500, JSON.stringify(error.message)));
       });
   }
 }
