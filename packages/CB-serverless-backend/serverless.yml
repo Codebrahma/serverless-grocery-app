@@ -65,3 +65,21 @@ functions:
             cors: true
             authorizer:
               arn: arn:aws:cognito-idp:ap-south-1:872196253669:userpool/ap-south-1_50ZoISXiG
+  createCart:
+    handler: api/cart/createCart.main
+    events:
+      - http:
+          path: cart
+          method: post
+          cors: true
+          authorizer:
+            arn: arn:aws:cognito-idp:ap-south-1:872196253669:userpool/ap-south-1_50ZoISXiG
+  getCart:
+    handler: api/cart/getCart.main
+    events:
+      - http:
+          path: cart
+          method: get
+          cors: true
+          authorizer:
+            arn: arn:aws:cognito-idp:ap-south-1:872196253669:userpool/ap-south-1_50ZoISXiG

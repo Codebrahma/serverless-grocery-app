@@ -49,9 +49,9 @@ const createOrderTable = () => {
   return dynamodb.createTable(orderParams).promise();
 }
 
-const createUserTable = () => {
+const createCartTable = () => {
   var userParams = {
-    TableName: 'user',
+    TableName: 'cart',
     KeySchema: [
       { AttributeName: 'userId', KeyType: 'HASH' },
     ],
@@ -76,7 +76,7 @@ listTables
     let groceryTablePromise, userTablePromise, orderTablePromise;
 
     groceryTablePromise = (indexOf(data.TableNames, 'grocery') === -1) ? createGroceryTable() : Promise.resolve();
-    userTablePromise = (indexOf(data.TableNames, 'user') === -1) ? createUserTable() : Promise.resolve();
+    userTablePromise = (indexOf(data.TableNames, 'cart') === -1) ? createCartTable() : Promise.resolve();
     orderTablePromise = (indexOf(data.TableNames, 'order') === -1) ? createOrderTable() : Promise.resolve();
       
     return Promise.all([groceryTablePromise, userTablePromise, orderTablePromise]);
