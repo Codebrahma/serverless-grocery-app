@@ -36,7 +36,7 @@ export const main = (event, context, callback) => {
       })
       .catch((error) => {
         console.log(error.message);
-        getErrorResponse(callback, 500, JSON.stringify(error.message))
+        callback(null, getErrorResponse(500, JSON.stringify(error.message)))
       });
 }
 

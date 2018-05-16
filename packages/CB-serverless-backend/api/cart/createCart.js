@@ -31,9 +31,10 @@ export const main = (event, context, callback) => {
       '#cartData': 'cartData'
     },
     ExpressionAttributeValues: {
-      ':cartData': JSON.stringify(CharacterData),
+      ':cartData': JSON.stringify(cartData),
     },
     UpdateExpression: 'SET #cartData = :cartData',
+    ReturnValues: 'ALL_NEW',
   };
 
     const queryPromise = documentClient.update(params).promise();
@@ -44,7 +45,7 @@ export const main = (event, context, callback) => {
       })
       .catch((error) => {
         console.log(error.message);
-        getErrorResponse(callback, 500, JSON.stringify(error.message))
+        callback(null, getErrorResponse(500, JSON.stringify(error.message)))
       });
 }
 
