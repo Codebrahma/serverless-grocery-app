@@ -21,6 +21,10 @@ const ItemsWrapper = styled.div`
   margin: 1em auto;
   box-shadow: 0 0 26px 0 #eee;
   background: #eee;
+  
+  @media (max-width: 856px) {
+    justify-content: space-evenly;
+  }
 `;
 
 const ProductTitle = styled.h1`

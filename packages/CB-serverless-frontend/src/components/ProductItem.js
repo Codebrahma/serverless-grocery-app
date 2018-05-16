@@ -8,7 +8,7 @@ import ProductImageWrap from '../base_components/ProductImage';
 
 const ItemWrap = styled(Card)`
   box-shadow: none !important;
-  margin: 1em;
+  margin: 1em 0.5em;
   overflow: hidden;
   border-radius: 4px;
   position: relative;

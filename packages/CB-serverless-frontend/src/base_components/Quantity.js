@@ -17,6 +17,7 @@ const CountSpan = styled.button`
 const CountInput = styled.input`
   height: 25px;
   width: 35px;
+  padding-left: 12px;
 `;
 
 const RowFlex = styled.div`
