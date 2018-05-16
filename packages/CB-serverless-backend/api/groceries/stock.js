@@ -1,5 +1,5 @@
 import AWS from 'aws-sdk';
-
+import forEach from 'lodash/forEach';
 import awsConfigUpdate from '../../utils/awsConfigUpdate';
 import getErrorResponse from '../../utils/getErrorResponse';
 import getSuccessResponse from '../../utils/getSuccessResponse';
@@ -12,15 +12,19 @@ export const updateStock = async (event, context, callback) => {
   const documentClient = new AWS.DynamoDB.DocumentClient();	
 	const promiseArray = [];
 
-	dataToUpdate.forEach(rowData => {
+	forEach(dataToUpdate, ({ groceryId, availableQty}) => {
+		if (!groceryId || !availableQty) {
+			getErrorResponse(callback, 400, 'Missing or invalid data');
+		}
+
 		const params = {
 			TableName : 'grocery',
 			Key: {
-				groceryId: parseInt(rowData.groceryId),
+				groceryId: parseInt(groceryId),
 			},
 			UpdateExpression: `set availableQty=:updatedQty`,
 			ExpressionAttributeValues:{
-				":updatedQty":rowData.availableQty,
+				":updatedQty":availableQty,
 			},
 			ReturnValues: "UPDATED_NEW"
 		};
