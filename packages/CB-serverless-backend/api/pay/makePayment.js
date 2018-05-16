@@ -3,6 +3,7 @@ import AWS from 'aws-sdk';
 import awsConfigUpdate from '../../utils/awsConfigUpdate';
 import getErrorResponse from '../../utils/getErrorResponse';
 import getSuccessResponse from '../../utils/getSuccessResponse';
+import { ORDERS_TABLE_NAME } from '../../dynamoDb/constants';
 
 // Put the stripe key in env
 const stripe = require("stripe")('sk_test_JEVvHOWUTi2mP5IA1rebWCdi');
@@ -13,7 +14,7 @@ const documentClient = new AWS.DynamoDB.DocumentClient();
 
 const getAmountFromOrderId = (orderId) => {
   const params = {
-    TableName: 'orders',
+    TableName: ORDERS_TABLE_NAME,
     Key: {
       'orderId': orderId,
     },

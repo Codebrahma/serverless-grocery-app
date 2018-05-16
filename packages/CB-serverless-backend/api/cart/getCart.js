@@ -3,6 +3,7 @@ import AWS from 'aws-sdk';
 import awsConfigUpdate from '../../utils/awsConfigUpdate';
 import getErrorResponse from '../../utils/getErrorResponse';
 import getSuccessResponse from '../../utils/getSuccessResponse';
+import { CART_TABLE_NAME } from '../../dynamoDb/constants';
 
 awsConfigUpdate();
 
@@ -16,7 +17,7 @@ export const main = (event, context, callback) => {
   }
   
   var params = {
-    TableName: 'cart',
+    TableName: CART_TABLE_NAME,
     Key: {
       userId: parseInt(event.queryStringParameters.userId),
     },

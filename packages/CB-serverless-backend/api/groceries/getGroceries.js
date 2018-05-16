@@ -9,6 +9,7 @@ import slice from 'lodash/slice';
 import awsConfigUpdate from '../../utils/awsConfigUpdate';
 import getErrorResponse from '../../utils/getErrorResponse';
 import getSuccessResponse from '../../utils/getSuccessResponse';
+import { GROCERIES_TABLE_NAME } from '../../dynamoDb/constants';
 
 awsConfigUpdate();
 
@@ -19,7 +20,7 @@ export const main = (event, context, callback) => {
 
   // Base params for scanning
   const getBaseGroceriesParams = () => ({
-    TableName : 'grocery',
+    TableName : GROCERIES_TABLE_NAME,
     ExpressionAttributeNames: {
       '#groceryId': 'groceryId',
       '#category': 'category',
