@@ -15,6 +15,7 @@ export const updateStock = async (event, context, callback) => {
 	forEach(dataToUpdate, ({ groceryId, availableQty}) => {
 		if (!groceryId || !availableQty) {
 			callback(null, getErrorResponse(400, 'Missing or invalid data'));
+			return;
 		}
 
 		const params = {
