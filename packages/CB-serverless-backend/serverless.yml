@@ -92,3 +92,12 @@ functions:
           cors: true
           authorizer:
             arn: arn:aws:cognito-idp:ap-south-1:872196253669:userpool/ap-south-1_50ZoISXiG
+  makePayment:
+    handler: api/pay/makePayment.main
+    events:
+      - http:
+          path: pay
+          method: post
+          cors: true
+          authorizer:
+            arn: arn:aws:cognito-idp:ap-south-1:872196253669:userpool/ap-south-1_50ZoISXiG
