@@ -1,4 +1,3 @@
-import mongoose from 'mongoose';
 import AWS from 'aws-sdk';
 
 import awsConfigUpdate from '../../utils/awsConfigUpdate';
@@ -33,7 +32,7 @@ export const main = (event, context, callback) => {
     stripeId,
     orderId,
   } = JSON.parse(event.body);
-  
+
   if (!email || !stripeId || !orderId) {
     callback(null, getErrorResponse(400, JSON.stringify({
       message: 'Both Email and id is required'
