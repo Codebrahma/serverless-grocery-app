@@ -1,7 +1,12 @@
 import React, { Component } from 'react';
-import { Wrapper } from '../base_components';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+
 import BillReceipt from './BillReceipt';
-import Quantity from '../base_components/Quantity';
+import { Wrapper } from '../base_components';
+import { addToCart } from '../actions/cartActions';
+import CartItem from './CartItem';
 
 const CartWrapper = Wrapper.extend`
   color: #222;
@@ -12,7 +17,31 @@ const CartWrapper = Wrapper.extend`
   align-items: flex-start;
 `;
 
+
 class CartHome extends Component {
+  componentDidMount() {
+    // get data from backend
+    // how to get data from backend save it in local and
+    // prevent re-renders loop
+    /*
+    API.getCart(123456).then((res) => {
+      if (res.data) {
+        //
+      }
+    }).catch((err) => {
+      console.log(err);
+    });
+    */
+  }
+
+  renderCartItems = () => {
+    const { cartItems } = this.props;
+    if (cartItems && cartItems.length > 0) {
+      return cartItems.map(obj => <CartItem id={obj.groceryId} qty={obj.quantity} />);
+    }
+    return null;
+  };
+
   render() {
     return (
       <CartWrapper>
@@ -25,13 +54,7 @@ class CartHome extends Component {
           }}
         >
           <h1>My Cart</h1>
-          <div>
-            <img src="http://sajkdhkasd.com" />
-            <div>
-              title
-            </div>
-            <Quantity onChange={() => alert('as')} />
-          </div>
+          {this.renderCartItems()}
         </div>
         <BillReceipt />
       </CartWrapper>
@@ -39,6 +62,27 @@ class CartHome extends Component {
   }
 }
 
-CartHome.propTypes = {};
+function initMapStateToProps(state) {
+  return {
+    cartItems: state.cart.cartItems,
+    lastCartSync: state.cart.lastCartSync,
+  };
+}
 
-export default CartHome;
+function initMapDispatchToProps(dispatch) {
+  return bindActionCreators({
+    addToCart,
+  }, dispatch);
+}
+
+CartHome.propTypes = {
+  cartItems: PropTypes.shape([
+    {
+      groceryId: PropTypes.string,
+      quantity: PropTypes.number,
+    },
+  ]).isRequired,
+};
+
+
+export default connect(initMapStateToProps, initMapDispatchToProps)(CartHome);
