@@ -8,6 +8,7 @@ import ProductImageWrap from '../base_components/ProductImage';
 import { connect } from 'react-redux';
 import { addToCart } from '../actions/cartActions';
 import { bindActionCreators } from 'redux';
+import API from '../service/cart';
 
 const ItemWrap = styled(Card)`
   box-shadow: none !important;
@@ -97,6 +98,13 @@ class ProductItem extends Component {
     this.props.addToCart(this.props.groceryId, this.state.quantity);
   };
 
+  saveToCart = () => {
+    const data = {
+      [this.props.groceryId]: this.state.quantity,
+    };
+    API.updateCart(123456, data);
+  };
+
   displaySoldOut = () => {
     const { isSoldOut } = this.props;
 
@@ -167,7 +175,7 @@ class ProductItem extends Component {
           }
 
           <AddCart
-            onClick={this.addToCart}
+            onClick={this.saveToCart}
             disabled={isSoldOut}
             rippleColor={pink800}
             labelPosition="before"

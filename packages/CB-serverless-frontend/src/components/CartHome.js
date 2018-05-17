@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
 
@@ -8,6 +7,7 @@ import BillReceipt from './BillReceipt';
 import { Wrapper } from '../base_components';
 import { addToCart } from '../actions/cartActions';
 import CartItem from './CartItem';
+import API from '../service/cart';
 
 const CartWrapper = Wrapper.extend`
   color: #222;
@@ -27,23 +27,30 @@ const CartMain = styled.div`
 `;
 
 class CartHome extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      cartItems: [],
+    };
+  }
+
   componentDidMount() {
     // get data from backend
     // how to get data from backend save it in local and
     // prevent re-renders loop
-    /*
     API.getCart(123456).then((res) => {
       if (res.data) {
-        //
+        this.setState({
+          cartItems: res.data.Item.cartData,
+        });
       }
     }).catch((err) => {
       console.log(err);
     });
-    */
   }
 
   renderCartItems = () => {
-    const { cartItems } = this.props;
+    const { cartItems } = this.state;
     if (cartItems && cartItems.length > 0) {
       return cartItems.map(obj => <CartItem id={obj.groceryId} qty={obj.quantity} />);
     }
@@ -86,4 +93,5 @@ CartHome.propTypes = {
 };
 
 
-export default connect(initMapStateToProps, initMapDispatchToProps)(CartHome);
+// export default connect(initMapStateToProps, initMapDispatchToProps)(CartHome);
+export default CartHome;
