@@ -1,11 +1,13 @@
-import { createStore, combineReducers, applyMiddleware } from 'redux';
-import { reducer as formReducer } from 'redux-form';
-import createSagaMiddleware from 'redux-saga';
 import { createLogger } from 'redux-logger';
+import createSagaMiddleware from 'redux-saga';
+import { reducer as formReducer } from 'redux-form';
+import { composeWithDevTools } from 'redux-devtools-extension';
+import { createStore, combineReducers, applyMiddleware } from 'redux';
 
+
+import rootSaga from './sagas';
 import authReducer from './Auth/authReducer';
 import todoReducer from './Todo/todoReducer';
-import rootSaga from './sagas';
 import cartReducer from './reducer/cartReducer';
 
 const logger = createLogger({});
@@ -18,7 +20,7 @@ const rootReducer = combineReducers({
   form: formReducer,
 });
 
-const store = createStore(rootReducer, applyMiddleware(sagaMiddleware, logger));
+const store = createStore(rootReducer, composeWithDevTools(applyMiddleware(sagaMiddleware, logger)));
 
 sagaMiddleware.run(rootSaga);
 

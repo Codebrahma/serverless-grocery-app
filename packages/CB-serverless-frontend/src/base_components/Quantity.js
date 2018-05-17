@@ -8,7 +8,10 @@ const CountSpan = styled.button`
   font-size: 14px;
   border-radius: ${props => (props.right ? '0px 4px 4px 0px' : '4px 0 0 4px')};
   background: #f5f5f5;
-  border: 1px solid #ddd;
+  
+  border-style: solid;
+  border-color: #ddd;
+  border-width: ${props => (props.right ? '1px 1px 1px 0px' : '1px 0 1px 1px')};
   
   width: 25px;
   height: 25px;
@@ -17,6 +20,9 @@ const CountSpan = styled.button`
 const CountInput = styled.input`
   height: 25px;
   width: 35px;
+  border-color: #ddd;
+  border-width: 1px 0 1px;
+  border-style: solid;
   padding-left: 12px;
 `;
 

@@ -24,6 +24,7 @@
     "redux-form-material-ui": "^4.3.4",
     "redux-logger": "^3.0.6",
     "redux-saga": "^0.16.0",
+    "redux-devtools-extension": "^2.13.2",
     "styled-components": "^3.2.6"
   },
   "scripts": {
@@ -31,5 +32,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
+  },
+  "devDependencies": {
   }
 }

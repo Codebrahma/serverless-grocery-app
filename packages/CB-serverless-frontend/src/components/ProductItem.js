@@ -109,15 +109,17 @@ class ProductItem extends Component {
     return null;
   };
 
-  displayQuantityCounter = () => {
+  displayQuantityCounter = (max) => {
     const { isSoldOut } = this.props;
 
     if (!isSoldOut) {
-      return (<Quantity
-        onChange={data => this.setState({ quantity: data })}
-        initialQuantity={this.state.quantity}
-        disabled={isSoldOut}
-      />);
+      return (
+        <Quantity
+          onChange={data => this.setState({ quantity: data })}
+          initialQuantity={this.state.quantity}
+          maxQuantity={max}
+          disabled={isSoldOut}
+        />);
     }
     return null;
   };
@@ -161,7 +163,7 @@ class ProductItem extends Component {
           }}
         >
           {
-            this.displayQuantityCounter()
+            this.displayQuantityCounter(this.props.quant)
           }
 
           <AddCart
@@ -187,6 +189,7 @@ ProductItem.defaultProps = {
 
 ProductItem.propTypes = {
   groceryId: PropTypes.number.isRequired,
+  quant: PropTypes.number.isRequired,
   name: PropTypes.string.isRequired,
   price: PropTypes.string.isRequired,
   url: PropTypes.string.isRequired,
