@@ -21,7 +21,7 @@ const createGroceryTable = () => {
       { AttributeName: 'groceryId', KeyType: 'HASH' },
     ],
     AttributeDefinitions: [
-      { AttributeName: 'groceryId', AttributeType: 'N' },
+      { AttributeName: 'groceryId', AttributeType: 'S' },
     ],
     ProvisionedThroughput: {
       ReadCapacityUnits: 2,

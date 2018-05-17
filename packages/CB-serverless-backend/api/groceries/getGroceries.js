@@ -4,7 +4,6 @@ import _ from 'lodash';
 import filter from 'lodash/filter';
 import uniqBy from 'lodash/uniqBy';
 import map from 'lodash/map';
-import slice from 'lodash/slice';
 
 import awsConfigUpdate from '../../utils/awsConfigUpdate';
 import getErrorResponse from '../../utils/getErrorResponse';
@@ -26,9 +25,10 @@ export const main = (event, context, callback) => {
       '#category': 'category',
       '#subCategory': 'subCategory',
       '#name': 'name',
-      '#url': 'url',
+			'#url': 'url',
+			'#soldQty': 'soldQty',
     },
-    ProjectionExpression: "#groceryId, #category, #subCategory, #name, #url",
+    ProjectionExpression: "#groceryId, #category, #subCategory, #name, #url, #soldQty",
   });
 
   // If category exists then return the listings for that category
@@ -36,10 +36,10 @@ export const main = (event, context, callback) => {
     const category = event.queryStringParameters.category
     var params = {
       ...getBaseGroceriesParams(),
-      ExpressionAttributeValues: {
-        ':category': category
+      FilterExpression: `#category = :categoryToFilter`,
+			ExpressionAttributeValues: {
+        ':categoryToFilter': category
       },
-      FilterExpression: `#category = :category`,
     };
 
     const queryPromise = documentClient.scan(params).promise();
@@ -67,10 +67,16 @@ export const main = (event, context, callback) => {
           .uniqBy('category')
           .map(data => data.category)
           .map((category) => {
-            const filteredResult = filter(data.Items, grocery => (grocery.category === category));
+						const filteredResult = _
+							.chain(data.Items)
+							.filter(grocery => (grocery.category === category))
+							.orderBy(['soldQty'], ['desc'])
+							.take(3)
+							.value();
+
             return {
               category,
-              groceries: slice(filteredResult, 0, 3),
+              groceries: filteredResult,
             }
           })
           .value();
