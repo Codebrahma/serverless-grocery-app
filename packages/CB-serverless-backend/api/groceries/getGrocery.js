@@ -20,7 +20,7 @@ export const main = (event, context, callback) => {
   var params = {
     TableName : GROCERIES_TABLE_NAME,
     Key: {
-      groceryId: parseInt(event.queryStringParameters.id),
+      groceryId: event.queryStringParameters.id,
     }
   };
 
