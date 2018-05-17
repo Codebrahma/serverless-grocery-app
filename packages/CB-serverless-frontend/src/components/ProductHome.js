@@ -47,7 +47,7 @@ class ProductHome extends Component {
           {
             catData &&
             _.map(catData, (obj) => {
-              const title = obj.category.toProperCase();
+              const title = obj.category;
               const items = obj.groceries;
               return (
                 <ProductRow
