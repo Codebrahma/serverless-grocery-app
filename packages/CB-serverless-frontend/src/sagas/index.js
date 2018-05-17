@@ -1,12 +1,10 @@
 import { fork } from 'redux-saga/effects';
 import attemptLoginSaga from './attemptLoginSaga';
-import todoInitialFetchSaga from './todoInitialFetchSaga';
-import submitTodoSaga from './submitTodoSaga';
+import cartItemsFetchSaga from './cartItemsFetchSaga';
 
 function* rootSaga() {
   yield fork(attemptLoginSaga);
-  yield fork(todoInitialFetchSaga);
-  yield fork(submitTodoSaga);
+  yield fork(cartItemsFetchSaga);
 }
 
 export default rootSaga;

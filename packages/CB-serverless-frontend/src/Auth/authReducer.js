@@ -14,6 +14,7 @@ export default (state = initialState, { type, payload = {}}) => {
         isAuthenticated: false,
         errorMessage: payload.authScreen === 'register' ? 'User is not confirmed.' : null,
         identityId: null,
+        userData: null
       }
     case 'ATTEMPT_LOGIN_SUCCESS':
       return {
@@ -22,6 +23,7 @@ export default (state = initialState, { type, payload = {}}) => {
         isAuthenticated: true,
         errorMessage: null,
         identityId: payload.identityId,
+        userData: payload.userData
       }
     case 'ATTEMPT_LOGIN_FAILURE':
       return {
@@ -30,6 +32,7 @@ export default (state = initialState, { type, payload = {}}) => {
         isAuthenticated: false,
         isError: true,
         identityId: payload.identityId,
+        userData: null,
         errorMessage: payload.errorMessage,
       }
     case 'UPDATE_AUTH':
