@@ -30,9 +30,14 @@ class ProductHome extends Component {
   }
 
 
-  showErrorMessage = () => (
-    <div>{JSON.stringify(this.state.error)}</div>
-  );
+  showErrorMessage = () => {
+    if (this.state.error) {
+      return (
+        <div>{JSON.stringify(this.state.error)}</div>
+      );
+    }
+    return null;
+  };
 
   render() {
     const { catData } = this.state;

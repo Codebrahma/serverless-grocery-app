@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { Card, CardActions, CardMedia, CardTitle, FlatButton, FontIcon } from 'material-ui';
+import { Card, CardActions, CardTitle, FlatButton, FontIcon } from 'material-ui';
 import { pink500, pink800, pinkA200 } from 'material-ui/styles/colors';
+import Quantity from '../base_components/Quantity';
+import ProductImageWrap from '../base_components/ProductImage';
 
 const ItemWrap = styled(Card)`
   box-shadow: none !important;
-  margin: 1em;
+  margin: 1em 0.5em;
   overflow: hidden;
   border-radius: 4px;
   position: relative;
@@ -32,6 +34,7 @@ const AddCart = styled(FlatButton)`
       }
     }
   }
+  font-size: 12px;
 `;
 
 const soldOutColor = pink500;
@@ -80,6 +83,13 @@ const CrossSoldOut = styled.span`
 
 
 class ProductItem extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      quantity: 1,
+    };
+  }
+
   displaySoldOut = () => {
     const { isSoldOut } = this.props;
 
@@ -92,9 +102,22 @@ class ProductItem extends Component {
     return null;
   };
 
+  displayQuantityCounter = () => {
+    const { isSoldOut } = this.props;
+
+    if (!isSoldOut) {
+      return (<Quantity
+        onChange={data => console.log(data)}
+        initialQuantity={this.state.quantity}
+        disabled={isSoldOut}
+      />);
+    }
+    return null;
+  };
+
   render() {
     const {
-      name, price, url, isSoldOut,
+      groceryId, name, price, url, isSoldOut,
     } = this.props;
     return (
       <ItemWrap
@@ -102,43 +125,46 @@ class ProductItem extends Component {
           margin: '0 auto',
         }}
       >
-        {this.displaySoldOut()}
-        <CardMedia
+        <a href={`/?productId=${groceryId}`}>
+          {this.displaySoldOut()}
+          <ProductImageWrap isSoldOut={isSoldOut}>
+            <img src={url} alt="" />
+          </ProductImageWrap>
+          <CardTitle
+            title={name}
+            titleStyle={{
+              fontSize: 20,
+              whiteSpace: 'nowrap',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+            }}
+            subtitleStyle={{
+              fontSize: 18,
+            }}
+            subtitle={price ? `${price} ₹` : ''}
+          />
+        </a>
+
+        <CardActions
           style={{
-            borderBottomStyle: 'solid',
-            borderBottomWidth: 1,
-            borderBottomColor: '#eee',
-            width: 250,
-            padding: 10,
-            height: 250,
-            opacity: isSoldOut ? '0.4' : '1',
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'space-around',
+            alignItems: 'center',
           }}
         >
-          <img src={url} alt="" />
-        </CardMedia>
-        <CardTitle
-          title={name}
-          titleStyle={{
-            fontSize: 20,
-            whiteSpace: 'nowrap',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-          }}
-          subtitleStyle={{
-            fontSize: 18,
-          }}
-          subtitle={price ? `${price} ₹` : ''}
-        />
-        <CardActions>
+          {
+            this.displayQuantityCounter()
+          }
+
           <AddCart
             onClick={() => alert('Add to Cart')}
-            fullWidth
             disabled={isSoldOut}
             rippleColor={pink800}
             labelPosition="before"
             secondary
             label="Add to Cart"
-            icon={<FontIcon className="material-icons">add_shopping_cart</FontIcon>}
+            icon={<FontIcon style={{ fontSize: 16 }} className="material-icons">add_shopping_cart</FontIcon>}
           />
 
         </CardActions>
@@ -153,6 +179,7 @@ ProductItem.defaultProps = {
 
 
 ProductItem.propTypes = {
+  groceryId: PropTypes.number.isRequired,
   name: PropTypes.string.isRequired,
   price: PropTypes.string.isRequired,
   url: PropTypes.string.isRequired,
