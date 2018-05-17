@@ -7,21 +7,20 @@ import { Auth } from 'aws-amplify';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import Header from './components/header';
+import CategoryItems from './components/categoryItems';
 
 import AuthModule from './Auth';
 import ProductHome from './components/ProductHome';
 import { updateAuth } from './Auth/actionCreators';
 
-const DefaultLayout = ({component: Component, ...rest}) => {
-  return (
-    <Route {...rest} render={matchProps => (
-      <div>
-        <Header />
-        <Component {...matchProps} />
-      </div>
-    )} />
-  )
-};
+const DefaultLayout = ({component: Component, ...rest}) => (
+  <Route {...rest} render={matchProps => (
+    <div>
+      <Header />
+      <Component {...matchProps} />
+    </div>
+  )} />
+);
 
 class Routes extends React.Component {
   constructor(props) {
@@ -38,9 +37,11 @@ class Routes extends React.Component {
       this.resetAndStartAuthentication();
       Auth.currentSession().then(async (response) => {
         const data = await Auth.currentAuthenticatedUser();
+        const userData = await Auth.currentUserInfo();
         this.props.updateAuth({
           isAuthenticating: false,
           isAuthenticated: true,
+          userData,
           identityId: data,
         })
       }).catch((error) => {
@@ -56,6 +57,7 @@ class Routes extends React.Component {
       isAuthenticating: false,
       isAuthenticated: false,
       identityId: null,
+      userData: null
     });
   }
 
@@ -64,6 +66,7 @@ class Routes extends React.Component {
       isAuthenticating: true,
       isAuthenticated: false,
       identityId: null,
+      userData: null
     });
   }
 
@@ -97,9 +100,14 @@ class Routes extends React.Component {
           !this.props.isAuthenticated && this.state.loginReady?
           <Route render={() => <AuthModule />} />
           :
-          <React.Fragment>
-            <DefaultLayout exact path='/' component={ProductHome} />
-          </React.Fragment>
+          (this.state.loginReady?
+            <React.Fragment>
+              <DefaultLayout exact path='/' component={ProductHome} />
+              <DefaultLayout path='/category' component={CategoryItems} />
+            </React.Fragment>
+            :
+            null
+          )
         }
         </div>
       </Router>
