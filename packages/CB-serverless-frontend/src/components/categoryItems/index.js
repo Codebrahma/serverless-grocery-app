@@ -31,7 +31,7 @@ const Container = styled.div`
   height: 100%;
 `;
 
-class Categories extends Component {
+class CategoryItems extends Component {
 
   constructor(props) {
     super(props);
@@ -127,6 +127,6 @@ class Categories extends Component {
   }
 }
 
-Categories.propTypes = {};
+CategoryItems.propTypes = {};
 
-export default Categories;
+export default CategoryItems;
