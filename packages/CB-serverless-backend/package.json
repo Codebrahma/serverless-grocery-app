@@ -5,7 +5,9 @@
   "main": "handler.js",
   "scripts": {
     "test": "jest",
-    "start": "serverless offline start"
+    "start": "serverless offline start",
+    "initialize-db": "node dynamoDb/createTable.js && node dynamoDb/populateTable.js",
+    "reinitialize-db": "node dynamoDb/deleteTable.js && npm run initialize-db"
   },
   "author": "",
   "license": "MIT",
@@ -29,6 +31,7 @@
   "dependencies": {
     "aws-sdk": "^2.238.1",
     "babel-runtime": "^6.26.0",
+    "chalk": "^2.4.1",
     "mongoose": "^5.0.16",
     "source-map-support": "^0.4.18",
     "stripe": "^6.0.0"
