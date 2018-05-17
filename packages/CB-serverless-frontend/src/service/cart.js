@@ -7,7 +7,7 @@ import { CART_URL } from './api_constants';
  * @return {AxiosPromise<any>}
  */
 function getCart(userId) {
-  const queryString = '?userId=' + userId;
+  const queryString = `?userId=${userId}`;
   return axios.get(CART_URL + queryString);
 }
 
@@ -19,8 +19,8 @@ function getCart(userId) {
  */
 function updateCart(userId, data) {
   const postData = {
-    userId: userId,
-    cartData: data
+    userId,
+    cartData: data,
   };
   return axios.post(CART_URL, postData);
 }

@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
 
-import { FlatButton } from 'material-ui';
+import { FlatButton, FontIcon } from 'material-ui';
 import { Auth } from 'aws-amplify';
 import AppBar from 'material-ui/AppBar';
 import { updateAuth } from '../Auth/actionCreators';
@@ -17,11 +17,13 @@ const AppHeader = styled(AppBar)`
 const RightElementContainer = styled.div`
   display: flex;
   flex-direction: row;
+  justify-content: space-between;
 `;
 
-const ShoppingCartIcon = styled.i`
-  font-size: 36px;
-  color: white;
+const ShoppingCartIcon = styled(FontIcon)`
+  font-size: 40px;
+  line-height: 40px;
+  color: #fff;
   margin-right: 5%;
 `;
 
@@ -60,19 +62,19 @@ class Header extends React.Component {
       isAuthenticated: false,
       identityId: null,
     });
-  }
+  };
 
   render() {
     return (
       <AppHeader
         title={<span>Serverless Shopping App</span>}
-        iconStyleRight={{marginTop: '1%'}}
+        iconStyleRight={{ marginTop: '1%' }}
         iconElementRight={
           <RightElementContainer>
             <ShoppingCartIcon className="material-icons">add_shopping_cart</ShoppingCartIcon>
             {
               // Logic should be changed after getting cartItem count
-              false? <CartItemsCount>{2}</CartItemsCount> : null
+              false ? <CartItemsCount>{2}</CartItemsCount> : null
             }
             <LogoutButton label="logout" onClick={this.handleLogout} />
           </RightElementContainer>
