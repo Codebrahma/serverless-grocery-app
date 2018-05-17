@@ -148,7 +148,7 @@ const getAvailableAndSoldQuantityForGroceries = (cartItems) => {
   });
   const params = {
     RequestItems: {
-      'grocery': {
+      [GROCERIES_TABLE_NAME]: {
         Keys: keys,
         ProjectionExpression: 'groceryId, availableQty, soldQty'
       }
@@ -167,7 +167,7 @@ const updateAvailableAndSoldQuantities = (currentData, orderedQty, revert = fals
   const updatedSoldQty = currentData.soldQty + (factor * orderedQty);
 
   const params = {
-    TableName: 'grocery',
+    TableName: GROCERIES_TABLE_NAME,
     Key: {
       'groceryId': currentData.groceryId,
     },
