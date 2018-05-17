@@ -1,10 +1,11 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
-import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
+import { Link } from 'react-router-dom';
+import { bindActionCreators } from 'redux';
 
-import { FlatButton, FontIcon } from 'material-ui';
+
+import { FlatButton, FontIcon, IconButton } from 'material-ui';
 import { Auth } from 'aws-amplify';
 import AppBar from 'material-ui/AppBar';
 import { updateAuth } from '../Auth/actionCreators';
@@ -16,15 +17,10 @@ const AppHeader = styled(AppBar)`
 
 const RightElementContainer = styled.div`
   display: flex;
+  height: 100%;
+  align-items: center;
   flex-direction: row;
   justify-content: space-between;
-`;
-
-const ShoppingCartIcon = styled(FontIcon)`
-  font-size: 40px;
-  line-height: 40px;
-  color: #fff;
-  margin-right: 5%;
 `;
 
 const LogoutButton = styled(FlatButton)`
@@ -68,14 +64,25 @@ class Header extends React.Component {
     return (
       <AppHeader
         title={<span>Serverless Shopping App</span>}
-        iconStyleRight={{ marginTop: '1%' }}
         iconElementRight={
           <RightElementContainer>
-            <ShoppingCartIcon className="material-icons">add_shopping_cart</ShoppingCartIcon>
-            {
+            <Link
+              to="/cart"
+              href="/cart"
+            >
+              <IconButton
+                iconStyle={{
+                color: '#fff',
+                fontSize: 28,
+              }}
+                iconClassName="material-icons"
+              >add_shopping_cart
+              </IconButton>
+              {
               // Logic should be changed after getting cartItem count
               false ? <CartItemsCount>{2}</CartItemsCount> : null
             }
+            </Link>
             <LogoutButton label="logout" onClick={this.handleLogout} />
           </RightElementContainer>
         }
