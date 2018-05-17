@@ -67,7 +67,7 @@ export const main = (event, context, callback) => {
     })
     .then(() => {
       // Batch updates the sold and unsold quantities after placing an order
-      return batchUpdateAvailableAndSoldQuantities(cartItems);
+      return batchUpdateAvailableAndSoldQuantities(idToGroceryDataMapping);
     })
 		.then(() => {
 			callback(null, getSuccessResponse({
@@ -118,14 +118,17 @@ const getCurrentCart = (userId) => {
 	return documentClient.get(params).promise();
 }
 
-const batchUpdateAvailableAndSoldQuantities = (cartItems, revert = false) => {
+const batchUpdateAvailableAndSoldQuantities = (groceryIdToGroceryItemMap, revert = false) => {
   // Get Current Values of the cart for groceryId present in cartItems
-  return getAvailableAndSoldQuantityForGroceries(cartItems)
+  return getAvailableAndSoldQuantityForGroceries(groceryIdToGroceryItemMap)
     .then(data => Promise.all(
       map(data.Responses.grocery, (eachGrocery) => {
-        // Finds the index in cart and matches since batch get not guarentees the order
-        const cartIndex = findIndex(cartItems, item => item.groceryId === eachGrocery.groceryId);
-        const orderedQty = cartItems[cartIndex].qty;
+        // Based on id, merge groceryId, qty, soldQt, availableQty
+        const getEntireCartDetail = {
+          ...groceryIdToGroceryItemMap[eachGrocery.groceryId],
+          ...eachGrocery,
+        };
+        const orderedQty = getEntireCartDetail.qty;
         // Updates the quantity
         return updateAvailableAndSoldQuantities(eachGrocery, orderedQty, revert);
       })
