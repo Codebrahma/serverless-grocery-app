@@ -22,7 +22,7 @@ export const updateStock = async (event, context, callback) => {
 		const params = {
 			TableName : GROCERIES_TABLE_NAME,
 			Key: {
-				groceryId: parseInt(groceryId),
+				'groceryId': groceryId,
 			},
 			UpdateExpression: `set availableQty=:updatedQty`,
 			ExpressionAttributeValues:{

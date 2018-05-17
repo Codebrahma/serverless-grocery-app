@@ -20,13 +20,13 @@ export const main = (event, context, callback) => {
   var params = {
     TableName: CART_TABLE_NAME,
     Key: {
-      userId: parseInt(userId),
+      userId: userId,
     },
     ExpressionAttributeNames: {
       '#cartData': 'cartData'
     },
     ExpressionAttributeValues: {
-      ':cartData': JSON.stringify(cartData),
+      ':cartData': cartData,
     },
     UpdateExpression: 'SET #cartData = :cartData',
     ReturnValues: 'ALL_NEW',

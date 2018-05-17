@@ -111,7 +111,7 @@ const getCurrentCart = (userId) => {
 	const params = {
     TableName: CART_TABLE_NAME,
     Key: {
-      'userId': parseInt(userId),
+      'userId': userId,
 		},	
 	};
 	

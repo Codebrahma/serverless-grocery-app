@@ -21,7 +21,7 @@ const createGroceryTable = () => {
       { AttributeName: 'groceryId', KeyType: 'HASH' },
     ],
     AttributeDefinitions: [
-      { AttributeName: 'groceryId', AttributeType: 'N' },
+      { AttributeName: 'groceryId', AttributeType: 'S' },
     ],
     ProvisionedThroughput: {
       ReadCapacityUnits: 2,
@@ -56,7 +56,7 @@ const createCartTable = () => {
       { AttributeName: 'userId', KeyType: 'HASH' },
     ],
     AttributeDefinitions: [
-      { AttributeName: 'userId', AttributeType: 'N' },
+      { AttributeName: 'userId', AttributeType: 'S' },
     ],
     ProvisionedThroughput: {
       ReadCapacityUnits: 2,
