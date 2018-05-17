@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import styled from 'styled-components';
 
 import BillReceipt from './BillReceipt';
 import { Wrapper } from '../base_components';
@@ -17,6 +18,13 @@ const CartWrapper = Wrapper.extend`
   align-items: flex-start;
 `;
 
+const CartMain = styled.div`
+  flex: 7;
+  padding: 1em 2em;
+  background: #fff;
+  height: 100%;
+  box-shadow: 0px 0px 10px 1px #eee;  
+`;
 
 class CartHome extends Component {
   componentDidMount() {
@@ -45,17 +53,10 @@ class CartHome extends Component {
   render() {
     return (
       <CartWrapper>
-        <div
-          style={{
-            flex: 7,
-            padding: '1em 2em',
-            background: '#fff',
-            height: '100%',
-          }}
-        >
+        <CartMain>
           <h1>My Cart</h1>
           {this.renderCartItems()}
-        </div>
+        </CartMain>
         <BillReceipt />
       </CartWrapper>
     );
