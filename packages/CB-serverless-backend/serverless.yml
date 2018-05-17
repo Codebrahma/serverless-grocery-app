@@ -56,6 +56,14 @@ functions:
           cors: true
           authorizer:
             arn: arn:aws:cognito-idp:ap-south-1:872196253669:userpool/ap-south-1_50ZoISXiG
+  watchGroceryUpdate:
+    handler: api/groceries/processGroceriesUpdate.main
+    events:
+      - stream: 
+        arn: arn:aws:dynamodb:ap-south-1:872196253669:table/grocery
+        batchSize: 100
+        startingPosition: LATEST
+        enabled: false
   updateStock:
       handler: api/groceries/stock.updateStock
       events:
