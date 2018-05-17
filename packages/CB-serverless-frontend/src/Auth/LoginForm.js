@@ -56,6 +56,7 @@ const MyForm = ({ handleSubmit, type, shouldDisableLogin, requireVerification })
         }
       </div>
       <RaisedButton
+        secondary
         type={type}
         label="Submit"
       />
