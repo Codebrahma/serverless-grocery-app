@@ -6,6 +6,7 @@ import { createLogger } from 'redux-logger';
 import authReducer from './Auth/authReducer';
 import todoReducer from './Todo/todoReducer';
 import rootSaga from './sagas';
+import cartReducer from './reducer/cartReducer';
 
 const logger = createLogger({});
 const sagaMiddleware = createSagaMiddleware();
@@ -13,6 +14,7 @@ const sagaMiddleware = createSagaMiddleware();
 const rootReducer = combineReducers({
   auth: authReducer,
   todos: todoReducer,
+  cart: cartReducer,
   form: formReducer,
 });
 
