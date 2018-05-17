@@ -1,11 +1,13 @@
 /* eslint-disable react/forbid-prop-types */
 import React from 'react';
+import _ from 'lodash';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import _ from 'lodash';
+import { Link } from 'react-router-dom';
+import { pinkA200 } from 'material-ui/styles/colors';
 
 import ProductItem from './ProductItem';
-import { pinkA200 } from 'material-ui/styles/colors';
+import { toProperCase } from '../utils/string';
 
 const RowWrapper = styled.div`
   margin-bottom: 1em;
@@ -46,9 +48,9 @@ const MoreText = styled.span`
 const ProductRow = ({ title, items }) => (
   <RowWrapper>
     <ProductTitle>
-      {title.toProperCase()}
+      {toProperCase(title)}
       <MoreText>
-        <a href="/"> More &#x27F6;</a>
+        <Link to={`/category/${title}`} href={`/category/${title}`}> More &#x27F6;</Link>
       </MoreText>
     </ProductTitle>
     <ItemsWrapper>
