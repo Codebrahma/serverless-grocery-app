@@ -13,6 +13,7 @@ import Header from './components/header';
 import ProductHome from './components/ProductHome';
 import { updateAuth } from './Auth/actionCreators';
 import CategoryItems from './components/categoryItems';
+import Footer from './base_components/Footer';
 
 const DefaultLayout = ({ component: Component, ...rest }) => (
   <Route
@@ -21,6 +22,7 @@ const DefaultLayout = ({ component: Component, ...rest }) => (
       <div>
         <Header />
         <Component {...matchProps} />
+        <Footer />
       </div>
     )}
   />
