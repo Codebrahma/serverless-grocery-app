@@ -59,6 +59,7 @@ class Header extends React.Component {
       isAuthenticating: false,
       isAuthenticated: false,
       identityId: null,
+      userData: null
     });
   }
 
@@ -86,6 +87,7 @@ const mapStateToProps = state => ({
   isAuthenticating: state.auth.isAuthenticating,
   isAuthenticated: state.auth.isAuthenticated,
   identityId: state.auth.identityId,
+  userData: state.auth.userData,
 });
 
 const mapDispatchToProps = dispatch => ({
