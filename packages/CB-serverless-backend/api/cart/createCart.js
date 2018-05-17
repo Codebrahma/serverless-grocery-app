@@ -26,7 +26,7 @@ export const main = (event, context, callback) => {
       '#cartData': 'cartData'
     },
     ExpressionAttributeValues: {
-      ':cartData': JSON.stringify(cartData),
+      ':cartData': cartData,
     },
     UpdateExpression: 'SET #cartData = :cartData',
     ReturnValues: 'ALL_NEW',
