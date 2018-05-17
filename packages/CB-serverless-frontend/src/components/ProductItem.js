@@ -6,7 +6,7 @@ import { pink500, pink800, pinkA200 } from 'material-ui/styles/colors';
 import Quantity from '../base_components/Quantity';
 import ProductImageWrap from '../base_components/ProductImage';
 import { connect } from 'react-redux';
-import { addToCart } from '../reducer/actions/cartActions';
+import { addToCart } from '../actions/cartActions';
 import { bindActionCreators } from 'redux';
 
 const ItemWrap = styled(Card)`
