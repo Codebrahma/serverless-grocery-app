@@ -62,7 +62,11 @@ class CartItem extends Component {
         <ItemTitle>
           {data.name}
         </ItemTitle>
-        <Quantity onChange={() => alert('as')} initialQuantity={this.props.qty} />
+        <Quantity
+          size={40}
+          onChange={() => alert('as')}
+          initialQuantity={this.props.qty}
+        />
       </CartItemWrap>
     );
   }

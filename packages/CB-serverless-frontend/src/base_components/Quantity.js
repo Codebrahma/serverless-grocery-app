@@ -1,29 +1,31 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
+import { pink600 } from 'material-ui/styles/colors';
 
 const CountSpan = styled.button`
   text-align: center;
   font-weight: bold;
-  font-size: 14px;
+  font-size: ${props => Math.max(props.size / 2, 15)}px;
   border-radius: ${props => (props.right ? '0px 4px 4px 0px' : '4px 0 0 4px')};
   background: #f5f5f5;
+  color: ${pink600}
   
   border-style: solid;
   border-color: #ddd;
   border-width: ${props => (props.right ? '1px 1px 1px 0px' : '1px 0 1px 1px')};
   
-  width: 25px;
-  height: 25px;
+  width: ${props => props.size}px;
+  height: ${props => props.size}px;
 `;
 
 const CountInput = styled.input`
-  height: 25px;
-  width: 35px;
+  height: ${props => props.size}px;
+  width: ${props => props.size + 10}px;
   border-color: #ddd;
   border-width: 1px 0 1px;
   border-style: solid;
-  padding-left: 12px;
+  padding-left: ${props => ((props.size + 10) / 2) - 4}px;
 `;
 
 const RowFlex = styled.div`
@@ -65,12 +67,29 @@ class Quantity extends React.PureComponent {
   };
 
   render() {
-    const { disabled } = this.props;
+    const { size, disabled } = this.props;
     return (
       <RowFlex>
-        <CountSpan onClick={this.dec}>-</CountSpan>
-        <CountInput disabled={disabled} type="text" min="1" max="10" step="1" value={this.state.count} />
-        <CountSpan right onClick={this.inc}>+</CountSpan>
+        <CountSpan
+          onClick={this.dec}
+          size={size}
+        >-
+        </CountSpan>
+        <CountInput
+          disabled={disabled}
+          type="text"
+          min="1"
+          max="10"
+          step="1"
+          value={this.state.count}
+          size={size}
+        />
+        <CountSpan
+          size={size}
+          right
+          onClick={this.inc}
+        >+
+        </CountSpan>
       </RowFlex>
     );
   }
@@ -79,10 +98,12 @@ class Quantity extends React.PureComponent {
 Quantity.defaultProps = {
   initialQuantity: 1,
   disabled: false,
+  size: 25,
 };
 
 Quantity.propTypes = {
   onChange: PropTypes.func.isRequired,
+  size: PropTypes.number,
   initialQuantity: PropTypes.number,
   disabled: PropTypes.bool,
 };
