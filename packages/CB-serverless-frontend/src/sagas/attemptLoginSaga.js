@@ -1,4 +1,4 @@
-import { 
+import {
   takeLatest,
   put,
   select,
@@ -14,7 +14,8 @@ function* loginAttempt(action) {
   const signUpPromise = ({ username, password }) => Auth.signUp(username, password);
   const confirmSignUpPromise = ({ username, verification }) => Auth.confirmSignUp(username, verification);
   const loginPromise = ({ username, password }) => Auth.signIn(username, password);
-  const currentCredentialsPromise = () => Auth.currentCredentials();
+  const currentAuthenticatedUserPromise = () => Auth.currentAuthenticatedUser();
+  const userDataPromise = () => Auth.currentUserInfo();
 
   try {
     if (action.payload.authScreen === 'register') {
@@ -22,20 +23,22 @@ function* loginAttempt(action) {
         username,
         password,
       } = yield select(loginFormSelector);
-      yield call(signUpPromise, { username, password });    
+      yield call(signUpPromise, { username, password });
       yield take('CONFIRM_SIGNUP');
 
       const { verification } = yield select(loginFormSelector);
       yield call(confirmSignUpPromise,  { username, verification });
 
-      yield call(loginPromise, { username, password });  
-      
-      const currentCredentials = yield call(currentCredentialsPromise);
+      yield call(loginPromise, { username, password });
+
+      const currentCredentials = yield call(currentAuthenticatedUserPromise);
+      const currentUserData = yield call(userDataPromise);
 
       yield put({
         type: 'ATTEMPT_LOGIN_SUCCESS',
         payload: {
-          identityId: currentCredentials.params.IdentityId,
+          identityId: currentCredentials,
+          userData: currentUserData
         }
       });
     }
@@ -44,18 +47,20 @@ function* loginAttempt(action) {
         username,
         password,
       } = yield select(loginFormSelector);
-      
+
       yield call(loginPromise, { username, password });
-      
-      const currentCredentials = yield call(currentCredentialsPromise);
+
+      const currentCredentials = yield call(currentAuthenticatedUserPromise);
+      const currentUserData = yield call(userDataPromise);
 
       yield put({
         type: 'ATTEMPT_LOGIN_SUCCESS',
         payload: {
-          identityId: currentCredentials.params.IdentityId,
+          identityId: currentCredentials,
+          userData: currentUserData
         }
       });
-    }  
+    }
   } catch (e) {
     console.log(e);
     const errorMessage = typeof e === 'string' && e;
@@ -72,14 +77,16 @@ function* loginAttempt(action) {
 
       yield call(confirmSignUpPromise, { username, verification });
 
-      yield call(loginPromise, { username, password });  
+      yield call(loginPromise, { username, password });
 
-      const currentCredentials = yield call(currentCredentialsPromise);
+      const currentCredentials = yield call(currentAuthenticatedUserPromise);
+      const currentUserData = yield call(userDataPromise);
 
       yield put({
         type: 'ATTEMPT_LOGIN_SUCCESS',
         payload: {
-          identityId: currentCredentials.params.IdentityId,
+          identityId: currentCredentials,
+          userData: currentUserData
         }
       });
 

@@ -1,5 +1,6 @@
 var AWS = require('aws-sdk');
 var indexOf = require('lodash/indexOf');
+const chalk = require('chalk');
 
 // Configure the AWS to lookup the right server and endpoint for DynamoDB
 // In case of local set endpoint to localhost
@@ -21,7 +22,7 @@ const createGroceryTable = () => {
       { AttributeName: 'groceryId', KeyType: 'HASH' },
     ],
     AttributeDefinitions: [
-      { AttributeName: 'groceryId', AttributeType: 'N' },
+      { AttributeName: 'groceryId', AttributeType: 'S' },
     ],
     ProvisionedThroughput: {
       ReadCapacityUnits: 2,
@@ -56,7 +57,7 @@ const createCartTable = () => {
       { AttributeName: 'userId', KeyType: 'HASH' },
     ],
     AttributeDefinitions: [
-      { AttributeName: 'userId', AttributeType: 'N' },
+      { AttributeName: 'userId', AttributeType: 'S' },
     ],
     ProvisionedThroughput: {
       ReadCapacityUnits: 2,
@@ -72,7 +73,6 @@ const listTables = dynamodb.listTables({}).promise();
 
 listTables
   .then((data, err) => {
-    console.log(data);
     let groceryTablePromise, userTablePromise, orderTablePromise;
 
     groceryTablePromise = (indexOf(data.TableNames, 'grocery') === -1) ? createGroceryTable() : Promise.resolve();
@@ -80,4 +80,10 @@ listTables
     orderTablePromise = (indexOf(data.TableNames, 'order') === -1) ? createOrderTable() : Promise.resolve();
       
     return Promise.all([groceryTablePromise, userTablePromise, orderTablePromise]);
-  });
+  })
+  .then(() => {
+    console.log(chalk.green('Created Tables Successfully'));
+  })
+  .catch((e) => {
+    console.log(chalk.red('Could not create tables. Reason: ', e.message))
+  })

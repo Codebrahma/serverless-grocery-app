@@ -25,10 +25,11 @@ export const main = (event, context, callback) => {
       '#category': 'category',
       '#subCategory': 'subCategory',
       '#name': 'name',
-			'#url': 'url',
-			'#soldQty': 'soldQty',
+      '#url': 'url',
+      '#availableQty': 'availableQty',
+      '#soldQty': 'soldQty',
     },
-    ProjectionExpression: "#groceryId, #category, #subCategory, #name, #url, #soldQty",
+    ProjectionExpression: "#groceryId, #category, #subCategory, #name, #url, #availableQty, #soldQty",
   });
 
   // If category exists then return the listings for that category

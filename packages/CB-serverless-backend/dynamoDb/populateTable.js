@@ -1,5 +1,6 @@
 var AWS = require('aws-sdk');
 var fs = require('fs');
+var chalk = require('chalk');
 var { groceryList } = require('./data/groceryList');
 var { cart } = require('./data/sampleCart');
 // Configure the AWS to lookup the right server and endpoint for DynamoDB
@@ -10,6 +11,9 @@ AWS.config.update({
 });
 
 var docClient = new AWS.DynamoDB.DocumentClient();
+
+const groceryPromises = [];
+const cartPromise = [];
 
 groceryList.forEach(function(item) {
   var params = {
@@ -26,31 +30,30 @@ groceryList.forEach(function(item) {
     },
   };
   
-  docClient.put(params, function(err, data) {
-    if (err) {
-      console.log('unable to add ', err);
-    } else {
-      console.log('succeeded ', data);
-    }
-  })
+  groceryPromises.push(docClient.put(params).promise())
 });
 
 cart.forEach(function(item) {
   var params = {
     TableName: 'cart',
     Item: {
-			userId: parseInt(item.userId),
+			userId: item.userId,
 			cartData: item.cartData,
     },
   };
   
-  docClient.put(params, function(err, data) {
-    if (err) {
-      console.log('unable to add ', err);
-    } else {
-      console.log('succeeded ', data);
-    }
-  })
+  cartPromise.push(docClient.put(params).promise());
 });
+Promise
+  .all(groceryPromises)
+  .then(() => {
+    return Promise.all(cartPromise)
+  })
+  .then((data) => {
+    console.log(chalk.green('Populated Tables successfully'));
+  })
+  .catch((e) => {
+    console.log(chalk.red('Could not populate tables. Reason: ', e.message))
+  })
 
 

@@ -8,6 +8,7 @@ import { FlatButton } from 'material-ui';
 import { Auth } from 'aws-amplify';
 import AppBar from 'material-ui/AppBar';
 import { updateAuth } from '../Auth/actionCreators';
+import { fetchCartItems } from '../actions/cart';
 
 const AppHeader = styled(AppBar)`
   position: fixed;
@@ -49,6 +50,10 @@ class Header extends React.Component {
     this.handleLogout = this.handleLogout.bind(this);
   }
 
+  componentWillMount() {
+    this.props.fetchCartItems();
+  }
+
   async handleLogout() {
     await Auth.signOut();
     this.resetInitialState();
@@ -59,10 +64,12 @@ class Header extends React.Component {
       isAuthenticating: false,
       isAuthenticated: false,
       identityId: null,
+      userData: null
     });
   }
 
   render() {
+    const { cartData } = this.props;
     return (
       <AppHeader
         title={<span>Serverless Shopping App</span>}
@@ -71,8 +78,7 @@ class Header extends React.Component {
           <RightElementContainer>
             <ShoppingCartIcon className="material-icons">add_shopping_cart</ShoppingCartIcon>
             {
-              // Logic should be changed after getting cartItem count
-              false? <CartItemsCount>{2}</CartItemsCount> : null
+              (cartData instanceof Array) && cartData.length > 0? <CartItemsCount>{cartData.length}</CartItemsCount> : null
             }
             <LogoutButton label="logout" onClick={this.handleLogout} />
           </RightElementContainer>
@@ -86,10 +92,13 @@ const mapStateToProps = state => ({
   isAuthenticating: state.auth.isAuthenticating,
   isAuthenticated: state.auth.isAuthenticated,
   identityId: state.auth.identityId,
+  userData: state.auth.userData,
+  cartData: state.cart.cartData,
 });
 
 const mapDispatchToProps = dispatch => ({
   updateAuth: bindActionCreators(updateAuth, dispatch),
+  fetchCartItems: bindActionCreators(fetchCartItems, dispatch),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Header);

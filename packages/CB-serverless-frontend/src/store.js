@@ -4,7 +4,7 @@ import createSagaMiddleware from 'redux-saga';
 import { createLogger } from 'redux-logger';
 
 import authReducer from './Auth/authReducer';
-import todoReducer from './Todo/todoReducer';
+import cart from './reducers/cart';
 import rootSaga from './sagas';
 
 const logger = createLogger({});
@@ -12,8 +12,8 @@ const sagaMiddleware = createSagaMiddleware();
 
 const rootReducer = combineReducers({
   auth: authReducer,
-  todos: todoReducer,
   form: formReducer,
+  cart,
 });
 
 const store = createStore(rootReducer, applyMiddleware(sagaMiddleware, logger));

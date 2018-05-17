@@ -8,6 +8,9 @@ import { Auth } from 'aws-amplify';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
+import Header from './components/header';
+import CategoryItems from './components/categoryItems';
+
 import AuthModule from './Auth';
 import Header from './components/header';
 import ProductHome from './components/ProductHome';
@@ -15,17 +18,13 @@ import { updateAuth } from './Auth/actionCreators';
 import CategoryItems from './components/categoryItems';
 import Footer from './base_components/Footer';
 
-const DefaultLayout = ({ component: Component, ...rest }) => (
-  <Route
-    {...rest}
-    render={matchProps => (
-      <div>
-        <Header />
-        <Component {...matchProps} />
-        <Footer />
-      </div>
-    )}
-  />
+const DefaultLayout = ({component: Component, ...rest}) => (
+  <Route {...rest} render={matchProps => (
+    <div>
+      <Header />
+      <Component {...matchProps} />
+    </div>
+  )} />
 );
 
 class Routes extends React.Component {
@@ -43,9 +42,11 @@ class Routes extends React.Component {
       this.resetAndStartAuthentication();
       Auth.currentSession().then(async (response) => {
         const data = await Auth.currentAuthenticatedUser();
+        const userData = await Auth.currentUserInfo();
         this.props.updateAuth({
           isAuthenticating: false,
           isAuthenticated: true,
+          userData,
           identityId: data,
         });
       }).catch((error) => {
@@ -67,6 +68,7 @@ class Routes extends React.Component {
       isAuthenticating: false,
       isAuthenticated: false,
       identityId: null,
+      userData: null
     });
   };
 
@@ -75,6 +77,7 @@ class Routes extends React.Component {
       isAuthenticating: true,
       isAuthenticated: false,
       identityId: null,
+      userData: null
     });
   };
 
