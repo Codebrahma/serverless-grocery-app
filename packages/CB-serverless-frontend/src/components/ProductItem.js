@@ -5,6 +5,9 @@ import { Card, CardActions, CardTitle, FlatButton, FontIcon } from 'material-ui'
 import { pink500, pink800, pinkA200 } from 'material-ui/styles/colors';
 import Quantity from '../base_components/Quantity';
 import ProductImageWrap from '../base_components/ProductImage';
+import { connect } from 'react-redux';
+import { addToCart } from '../reducer/actions/cartActions';
+import { bindActionCreators } from 'redux';
 
 const ItemWrap = styled(Card)`
   box-shadow: none !important;
@@ -90,6 +93,10 @@ class ProductItem extends Component {
     };
   }
 
+  addToCart = () => {
+    this.props.addToCart(this.props.groceryId, this.state.quantity);
+  };
+
   displaySoldOut = () => {
     const { isSoldOut } = this.props;
 
@@ -107,7 +114,7 @@ class ProductItem extends Component {
 
     if (!isSoldOut) {
       return (<Quantity
-        onChange={data => console.log(data)}
+        onChange={data => this.setState({ quantity: data })}
         initialQuantity={this.state.quantity}
         disabled={isSoldOut}
       />);
@@ -158,7 +165,7 @@ class ProductItem extends Component {
           }
 
           <AddCart
-            onClick={() => alert('Add to Cart')}
+            onClick={this.addToCart}
             disabled={isSoldOut}
             rippleColor={pink800}
             labelPosition="before"
@@ -184,6 +191,13 @@ ProductItem.propTypes = {
   price: PropTypes.string.isRequired,
   url: PropTypes.string.isRequired,
   isSoldOut: PropTypes.bool,
+  addToCart: PropTypes.func.isRequired,
 };
 
-export default ProductItem;
+function initMapDispatchToProps(dispatch) {
+  return bindActionCreators({
+    addToCart,
+  }, dispatch);
+}
+
+export default connect(null, initMapDispatchToProps)(ProductItem);
