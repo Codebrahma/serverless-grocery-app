@@ -20,7 +20,7 @@ export const main = (event, context, callback) => {
   var params = {
     TableName: CART_TABLE_NAME,
     Key: {
-      userId: parseInt(userId),
+      userId: userId,
     },
     ExpressionAttributeNames: {
       '#cartData': 'cartData'
