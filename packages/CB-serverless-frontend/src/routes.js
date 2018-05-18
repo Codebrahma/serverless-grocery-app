@@ -8,12 +8,9 @@ import Header from './components/header';
 import CategoryItems from './components/categoryItems';
 
 import AuthModule from './Auth';
-import Header from './components/header';
 import ProductHome from './components/ProductHome';
 import { updateAuth } from './Auth/actionCreators';
 import CartHome from './components/CartHome';
-import CategoryItems from './components/categoryItems';
-import Footer from './base_components/Footer';
 
 const DefaultLayout = ({ component: Component, ...rest }) => (
   <Route
@@ -68,7 +65,7 @@ class Routes extends React.Component {
       isAuthenticating: false,
       isAuthenticated: false,
       identityId: null,
-      userData: null
+      userData: null,
     });
   };
 
@@ -77,7 +74,7 @@ class Routes extends React.Component {
       isAuthenticating: true,
       isAuthenticated: false,
       identityId: null,
-      userData: null
+      userData: null,
     });
   };
 
@@ -85,13 +82,8 @@ class Routes extends React.Component {
     this.props.updateAuth({
       isAuthenticating: false,
     });
-  }
+  };
 
-  componentWillReceiveProps(nextProps) {
-    if (!this.state.loginReady && this.props.isAuthenticating && !nextProps.isAuthenticating) {
-      this.setState({ loginReady: true });
-    }
-  }
 
   // Remove when real signout component is ready
   async handleLogout() {
@@ -107,9 +99,9 @@ class Routes extends React.Component {
           !this.props.isAuthenticated && this.state.loginReady ?
             <Route render={() => <AuthModule />} />
           :
-          (this.state.loginReady?
+          (this.state.loginReady ?
             <React.Fragment>
-              <DefaultLayout exact path='/' component={ProductHome} />
+              <DefaultLayout exact path="/" component={ProductHome} />
               <DefaultLayout exact path="/category/:category" component={CategoryItems} />
               <DefaultLayout exact path="/category/" component={CategoryItems} />
               <DefaultLayout exact path="/cart" component={CartHome} />

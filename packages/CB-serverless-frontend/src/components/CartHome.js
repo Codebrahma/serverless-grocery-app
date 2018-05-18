@@ -2,12 +2,13 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
+import { connect } from 'react-redux';
+
 
 import BillReceipt from './BillReceipt';
 import { Wrapper } from '../base_components';
-import { addToCart } from '../actions/cartActions';
 import CartItem from './CartItem';
-import API from '../service/cart';
+import { fetchCartItems } from '../actions/cart';
 
 const CartWrapper = Wrapper.extend`
   color: #222;
@@ -27,37 +28,26 @@ const CartMain = styled.div`
 `;
 
 class CartHome extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      cartItems: [],
-    };
-  }
-
   componentDidMount() {
     // get data from backend
     // how to get data from backend save it in local and
     // prevent re-renders loop
-    API.getCart(123456).then((res) => {
-      if (res.data) {
-        this.setState({
-          cartItems: res.data.Item.cartData,
-        });
-      }
-    }).catch((err) => {
-      console.log(err);
-    });
+    this.props.fetchCartItems();
   }
 
   renderCartItems = () => {
-    const { cartItems } = this.state;
+    const { cartItems } = this.props;
     if (cartItems && cartItems.length > 0) {
-      return cartItems.map(obj => <CartItem id={obj.groceryId} qty={obj.quantity} />);
+      return cartItems.map((obj, idx, arr) => {
+        console.log(obj, idx, arr);
+        return (<CartItem id={obj.groceryId} qty={obj.quantity} />);
+      });
     }
     return null;
   };
 
   render() {
+    console.log(this.props);
     return (
       <CartWrapper>
         <CartMain>
@@ -72,18 +62,18 @@ class CartHome extends Component {
 
 function initMapStateToProps(state) {
   return {
-    cartItems: state.cart.cartItems,
-    lastCartSync: state.cart.lastCartSync,
+    cartItems: state.cart.cartData,
   };
 }
 
 function initMapDispatchToProps(dispatch) {
   return bindActionCreators({
-    addToCart,
+    fetchCartItems,
   }, dispatch);
 }
 
 CartHome.propTypes = {
+  fetchCartItems: PropTypes.func.isRequired,
   cartItems: PropTypes.shape([
     {
       groceryId: PropTypes.string,
@@ -93,5 +83,5 @@ CartHome.propTypes = {
 };
 
 
-// export default connect(initMapStateToProps, initMapDispatchToProps)(CartHome);
-export default CartHome;
+export default connect(initMapStateToProps, initMapDispatchToProps)(CartHome);
+// export default CartHome;

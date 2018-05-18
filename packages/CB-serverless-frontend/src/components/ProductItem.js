@@ -2,14 +2,16 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import { Card, CardActions, CardTitle, FlatButton, FontIcon } from 'material-ui';
+
+
 import { pink500, pink800, pinkA200 } from 'material-ui/styles/colors';
 import Quantity from '../base_components/Quantity';
 import ProductImageWrap from '../base_components/ProductImage';
-import { connect } from 'react-redux';
-import { addToCart } from '../actions/cartActions';
-import { bindActionCreators } from 'redux';
 import API from '../service/cart';
+import { updateCartItems } from '../actions/cart';
 
 const ItemWrap = styled(Card)`
   box-shadow: none !important;
@@ -95,15 +97,11 @@ class ProductItem extends Component {
     };
   }
 
-  addToCart = () => {
-    this.props.addToCart(this.props.groceryId, this.state.quantity);
-  };
-
   saveToCart = () => {
     const data = {
       [this.props.groceryId]: this.state.quantity,
     };
-    API.updateCart(123456, data);
+    this.props.updateCartItems(data);
   };
 
   displaySoldOut = () => {
@@ -201,12 +199,12 @@ ProductItem.propTypes = {
   price: PropTypes.string.isRequired,
   url: PropTypes.string.isRequired,
   isSoldOut: PropTypes.bool,
-  addToCart: PropTypes.func.isRequired,
+  updateCartItems: PropTypes.func.isRequired,
 };
 
 function initMapDispatchToProps(dispatch) {
   return bindActionCreators({
-    addToCart,
+    updateCartItems,
   }, dispatch);
 }
 
