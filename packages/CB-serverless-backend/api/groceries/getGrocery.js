@@ -14,7 +14,8 @@ export const main = (event, context, callback) => {
   var documentClient = new AWS.DynamoDB.DocumentClient();
   
   if (!event.queryStringParameters || !event.queryStringParameters.id) {
-    callback(null, getErrorResponse(400, 'id should be provided'));
+		callback(null, getErrorResponse(400, 'id should be provided'));
+		return;
   }
 
   var params = {
@@ -34,6 +35,3 @@ export const main = (event, context, callback) => {
       callback(null, getErrorResponse(500, JSON.stringify(err.message)));
     });
 }
-
-
-
