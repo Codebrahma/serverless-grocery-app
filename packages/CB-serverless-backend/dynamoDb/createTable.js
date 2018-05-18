@@ -23,24 +23,28 @@ const createGroceryTable = () => {
     ],
     ProvisionedThroughput: {
       ReadCapacityUnits: 2,
-      WriteCapacityUnits: 2,
-    },
-    GlobalSecondaryIndexes: [
-      {
-        IndexName: 'GroceryCategoryIndex',
-        KeySchema: [
-          { AttributeName: 'category', KeyType: 'HASH' },
-          { AttributeName: 'groceryId', KeyType: 'RANGE' },
-        ],
-        Projection: {
-          ProjectionType: 'ALL',
-        },
-        ProvisionedThroughput: {
-          ReadCapacityUnits: 2,
-          WriteCapacityUnits: 2,
-        },
-      },
-    ],
+      WriteCapacityUnits: 2
+		},
+		GlobalSecondaryIndexes: [
+			{
+				IndexName: 'GroceryCategoryIndex',
+				KeySchema: [
+					{ AttributeName: 'category', KeyType: 'HASH' },
+					{ AttributeName: 'groceryId', KeyType: 'RANGE' },
+				],
+				Projection: {
+					ProjectionType: 'ALL'
+				},
+				ProvisionedThroughput: {
+					ReadCapacityUnits: 2,
+					WriteCapacityUnits: 2
+				},
+			}
+		],
+		StreamSpecification: {
+			StreamEnabled: true,
+			StreamViewType: 'NEW_IMAGE'
+		}
   };
   return dynamodb.createTable(groceryParams).promise();
 };
