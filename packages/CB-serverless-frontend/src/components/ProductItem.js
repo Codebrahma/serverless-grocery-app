@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
@@ -134,7 +135,7 @@ class ProductItem extends Component {
 
   render() {
     const {
-      groceryId, name, price, url, isSoldOut,
+      name, price, url, isSoldOut,
     } = this.props;
     return (
       <ItemWrap
@@ -142,25 +143,23 @@ class ProductItem extends Component {
           margin: '0 auto',
         }}
       >
-        <a href={`/?productId=${groceryId}`}>
-          {this.displaySoldOut()}
-          <ProductImageWrap isSoldOut={isSoldOut}>
-            <img src={url} alt="" />
-          </ProductImageWrap>
-          <CardTitle
-            title={name}
-            titleStyle={{
-              fontSize: 20,
-              whiteSpace: 'nowrap',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-            }}
-            subtitleStyle={{
-              fontSize: 18,
-            }}
-            subtitle={price ? `${price} ₹` : ''}
-          />
-        </a>
+        {this.displaySoldOut()}
+        <ProductImageWrap isSoldOut={isSoldOut}>
+          <img src={url} alt="" />
+        </ProductImageWrap>
+        <CardTitle
+          title={name}
+          titleStyle={{
+            fontSize: 20,
+            whiteSpace: 'nowrap',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+          }}
+          subtitleStyle={{
+            fontSize: 18,
+          }}
+          subtitle={price ? `${price} ₹` : ''}
+        />
 
         <CardActions
           style={{

@@ -3,13 +3,17 @@ import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { Auth } from 'aws-amplify';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+
 import Header from './components/header';
 import CategoryItems from './components/categoryItems';
 
 import AuthModule from './Auth';
+import Header from './components/header';
 import ProductHome from './components/ProductHome';
 import { updateAuth } from './Auth/actionCreators';
 import CartHome from './components/CartHome';
+import CategoryItems from './components/categoryItems';
+import Footer from './base_components/Footer';
 
 const DefaultLayout = ({ component: Component, ...rest }) => (
   <Route
@@ -53,6 +57,12 @@ class Routes extends React.Component {
     }
   }
 
+  componentWillReceiveProps(nextProps) {
+    if (!this.state.loginReady && this.props.isAuthenticating && !nextProps.isAuthenticating) {
+      this.setState({ loginReady: true });
+    }
+  }
+
   resetInitialState = () => {
     this.props.updateAuth({
       isAuthenticating: false,
@@ -60,7 +70,7 @@ class Routes extends React.Component {
       identityId: null,
       userData: null
     });
-  }
+  };
 
   resetAndStartAuthentication = () => {
     this.props.updateAuth({
@@ -69,7 +79,7 @@ class Routes extends React.Component {
       identityId: null,
       userData: null
     });
-  }
+  };
 
   finishAuthentication = () => {
     this.props.updateAuth({
@@ -100,7 +110,8 @@ class Routes extends React.Component {
           (this.state.loginReady?
             <React.Fragment>
               <DefaultLayout exact path='/' component={ProductHome} />
-              <DefaultLayout path='/category' component={CategoryItems} />
+              <DefaultLayout exact path="/category/:category" component={CategoryItems} />
+              <DefaultLayout exact path="/category/" component={CategoryItems} />
               <DefaultLayout exact path="/cart" component={CartHome} />
             </React.Fragment>
             :
