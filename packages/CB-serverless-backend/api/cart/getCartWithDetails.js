@@ -1,40 +1,50 @@
 import AWS from 'aws-sdk';
-
+import size from 'lodash/size';
+import map from 'lodash/map';
+import reduce from 'lodash/reduce';
 import awsConfigUpdate from '../../utils/awsConfigUpdate';
 import getErrorResponse from '../../utils/getErrorResponse';
 import getSuccessResponse from '../../utils/getSuccessResponse';
+import { getCartQueryPromise } from './getCart';
 import { CART_TABLE_NAME, GROCERIES_TABLE_NAME } from '../../dynamoDb/constants';
 
 awsConfigUpdate();
+const documentClient = new AWS.DynamoDB.DocumentClient();
 
 export const main = (event, context, callback) => {
   context.callbackWaitsForEmptyEventLoop = false;
-  
-  const documentClient = new AWS.DynamoDB.DocumentClient();
-  
+    
   if (!event.queryStringParameters) {
-    getErrorResponse(callback, 400, 'userId is not present in params')
-  }
-  
-  var cartQueryParams = {
-    TableName: CART_TABLE_NAME,
-    Key: {
-      userId: parseInt(event.queryStringParameters.userId),
-    },
-  };
-
-	documentClient.get(cartQueryParams).promise()
-		.then((data) => {
+		getErrorResponse(callback, 400, 'userId is not present in params');
+		return;
+	}
+	
+	let groceryIdToGroceryDataMapping;
+	
+	getCartQueryPromise(event.queryStringParameters.userId)
+		.then((cart) => {
 			const cartItems = cart.Item.cartData;
       
 			if (!cartItems || size(cartItems) < 1) {
 				callback(null, getSuccessResponse({success: false, message: 'Cart is empty'}));
 				return;
 			}
+			groceryIdToGroceryDataMapping = reduce(cartItems, (currentReducedValue, productInCart) => {
+				return {
+					...currentReducedValue,
+					[productInCart.groceryId] : productInCart
+				}
+			}, {});
 			return getCartItemDetails(cartItems);
 		})
 		.then(dbResult => dbResult.Responses.grocery)
-		.then(cartItemsWithDetails => callback(null, getSuccessResponse(cartItemsWithDetails)))
+		.then(cartItemsWithDetails => {
+			const fullCartDetails = map(cartItemsWithDetails, eachCartItemData => ({
+				...eachCartItemData,
+				...groceryIdToGroceryDataMapping[eachCartItemData.groceryId]
+			}))
+			callback(null, getSuccessResponse(fullCartDetails))
+		})
 		.catch((error) => {
 			console.log(error.message);
 			callback(null, getErrorResponse(500, JSON.stringify(error.message)))
