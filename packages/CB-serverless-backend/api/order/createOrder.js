@@ -62,12 +62,17 @@ export const main = (event, context, callback) => {
 				'orderTotal': totalAmount,
 				'orderStatus': 'PAYMENT_PENDING',
 				'orderDate': new Date().toISOString()
-			}			
-			return createAndSaveOrder(completeOrder)
-    })
-    .then(() => {
-      // Batch updates the sold and unsold quantities after placing an order
-      return batchUpdateAvailableAndSoldQuantities(idToGroceryDataMapping);
+      }			
+      // First update the stock and try completing an order
+      // If success leave as it is
+      // If error then revert the items
+      return batchUpdateAvailableAndSoldQuantities(idToGroceryDataMapping)
+        .catch((err) => {
+          // Rejecting only with err since err.message has been extracted in the batch update function
+          return Promise.reject(err);
+        })  
+        .then(() => createAndSaveOrder(completeOrder))
+        
     })
 		.then(() => {
 			callback(null, getSuccessResponse({
@@ -165,7 +170,12 @@ const updateAvailableAndSoldQuantities = (currentData, orderedQty, revert = fals
   // Update available and sold qty
   const updatedAvailableQty = currentData.availableQty - (factor * orderedQty);
   const updatedSoldQty = currentData.soldQty + (factor * orderedQty);
-
+  if (updatedAvailableQty < 0) {
+    return Promise.reject({
+      message: `Not sufficient stock available for item id: ${currentData.groceryId}`,
+    });
+    // throw new Error(`Not sufficient stock available for item id: ${currentData.groceryId}`);
+  }
   const params = {
     TableName: GROCERIES_TABLE_NAME,
     Key: {
