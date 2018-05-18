@@ -37,7 +37,8 @@ export const main = (event, context, callback) => {
   if (!email || !stripeId || !orderId) {
     callback(null, getErrorResponse(400, JSON.stringify({
       message: 'Both Email and id is required'
-    })))
+		})))
+		return;
   }
 
   let amount; 
@@ -70,6 +71,3 @@ export const main = (event, context, callback) => {
     callback(null, getErrorResponse(500, JSON.stringify(err.message)))
   });
 }
-
-
-

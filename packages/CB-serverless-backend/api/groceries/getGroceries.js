@@ -91,6 +91,3 @@ export const main = (event, context, callback) => {
       });
   }
 }
-
-
-

@@ -63,5 +63,3 @@ const getCartItemDetails = (cartData) => {
 
 	return documentClient.batchGet(paramsForBatchGet).promise();
 }
-
-

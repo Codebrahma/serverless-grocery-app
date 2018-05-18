@@ -11,7 +11,8 @@ const documentClient = new AWS.DynamoDB.DocumentClient();
 export const main = (event, context, callback) => {
   context.callbackWaitsForEmptyEventLoop = false;  
   if (!event.queryStringParameters) {
-    getErrorResponse(callback, 400, 'userId is not present in params')
+		callback(null, getErrorResponse(400, 'userId is not present in params'))
+		return;
   }
   
 	getCartQueryPromise(event.queryStringParameters.userId)
