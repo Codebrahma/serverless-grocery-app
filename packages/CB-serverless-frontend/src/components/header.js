@@ -1,11 +1,12 @@
+/* eslint-disable react/forbid-prop-types */
 import React from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
+import PropTypes from 'prop-types';
 
-
-import { FlatButton, FontIcon, IconButton } from 'material-ui';
+import { FlatButton, IconButton } from 'material-ui';
 import { Auth } from 'aws-amplify';
 import AppBar from 'material-ui/AppBar';
 import { updateAuth } from '../Auth/actionCreators';
@@ -33,12 +34,12 @@ const CartItemsCount = styled.div`
   background-color: white;
   border-radius: 15px;
   display: flex;
-  font-size: 12px;
+  font-size: 11px;
   height: 20px;
   justify-content: center;
-  position: relative;
-  right: 40%;
-  top: -10px;
+  position: absolute;
+  right:-1em;
+  top: 0px;
   width: 30px;
 `;
 
@@ -62,7 +63,7 @@ class Header extends React.Component {
       isAuthenticating: false,
       isAuthenticated: false,
       identityId: null,
-      userData: null
+      userData: null,
     });
   };
 
@@ -76,18 +77,23 @@ class Header extends React.Component {
             <Link
               to="/cart"
               href="/cart"
+              style={{
+                position: 'relative',
+                margin: '0 2em',
+              }}
             >
               <IconButton
                 iconStyle={{
-                color: '#fff',
-                fontSize: 28,
-              }}
+                  color: '#fff',
+                  fontSize: 28,
+                }}
                 iconClassName="material-icons"
               >add_shopping_cart
               </IconButton>
-            {
-              (cartData instanceof Array) && cartData.length > 0? <CartItemsCount>{cartData.length}</CartItemsCount> : null
-            }
+              {
+                (cartData instanceof Array) &&
+                cartData.length > 0 ? <CartItemsCount>{cartData.length}</CartItemsCount> : null
+              }
             </Link>
             <LogoutButton label="logout" onClick={this.handleLogout} />
           </RightElementContainer>
@@ -96,6 +102,11 @@ class Header extends React.Component {
     );
   }
 }
+
+Header.propTypes = {
+  cartData: PropTypes.array.isRequired,
+};
+
 
 const mapStateToProps = state => ({
   isAuthenticating: state.auth.isAuthenticating,
