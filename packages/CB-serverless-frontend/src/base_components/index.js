@@ -6,7 +6,7 @@ export const Wrapper = styled.section`
   padding: 1em;
   
   @media (min-width: 1024px) {
-    margin: 2em;
+    margin: 0.5em;
     padding: 1em 3em;
   }
 `;
