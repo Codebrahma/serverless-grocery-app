@@ -18,6 +18,7 @@ const ItemWrap = styled(Card)`
   margin: 1em 0.5em;
   overflow: hidden;
   border-radius: 4px;
+  text-align: left;
   position: relative;
   width: 270px;
   border: 1px solid transparent;
@@ -119,6 +120,7 @@ class ProductItem extends Component {
     if (!isSoldOut) {
       return (
         <Quantity
+          size={30}
           onChange={data => this.setState({ quantity: data })}
           initialQuantity={this.state.quantity}
           maxQuantity={max}
