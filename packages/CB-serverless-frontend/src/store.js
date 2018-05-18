@@ -8,6 +8,7 @@ import { applyMiddleware, combineReducers, createStore } from 'redux';
 import rootSaga from './sagas';
 import authReducer from './Auth/authReducer';
 import cart from './reducers/cart';
+import order from './reducers/orders';
 
 const logger = createLogger({});
 const sagaMiddleware = createSagaMiddleware();
@@ -16,9 +17,13 @@ const rootReducer = combineReducers({
   auth: authReducer,
   form: formReducer,
   cart,
+  order,
 });
 
-const store = createStore(rootReducer, composeWithDevTools(applyMiddleware(sagaMiddleware, logger)));
+const store = createStore(
+  rootReducer,
+  composeWithDevTools(applyMiddleware(sagaMiddleware, logger)),
+);
 
 sagaMiddleware.run(rootSaga);
 

@@ -17,7 +17,6 @@ function* cartItemsAdd(action) {
     const { resp } = response.data ? response.data : {};
     yield put({ type: 'FETCH_CART_ITEMS' });
 
-    console.log('saga resp on update', resp, response);
   } catch (e) {
     console.log(e);
   }

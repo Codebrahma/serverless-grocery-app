@@ -1,13 +1,21 @@
-/* eslint-disable react/forbid-prop-types */
+/* eslint-disable react/forbid-prop-types,react/no-unused-prop-types */
 import React, { PureComponent } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { pinkA200 } from 'material-ui/styles/colors';
 import { connect } from 'react-redux';
+import { RaisedButton } from 'material-ui';
+import { bindActionCreators } from 'redux';
+import { isNil } from 'lodash/lang';
+import { withRouter } from 'react-router-dom';
+
+
+import { placeOrderAction } from '../actions/order';
 
 const BillingList = styled.ul`
   position: relative;
   padding: 3em 2em 4em;
+  background: #fff;
   box-shadow: 0px 0px 5px -1px #ddd;
   transition-delay: 3s;
 
@@ -24,7 +32,7 @@ const BillingList = styled.ul`
     width: 100%;
     filter: drop-shadow(#ddd 0px 3px 1px);
     height: 32px;
-    transform: ${props => (props.isEmpty ? 'translateY(2em)' : 'translateY(1em)')};
+    transform: translateY(2em);
   }
 `;
 
@@ -79,14 +87,14 @@ const TotalText = ItemText.extend`
 const TotalAmount = AmountText.extend`
   font-weight: bold;
   font-size: 24px;
-  color: ${pinkA200}
+  color: ${pinkA200};
+  flex: 1 1 40%;
 `;
 
 const BillReceiptWrap = styled.div`
   margin: 0 1em;
-  flex: 2;
+  flex: 2.5;
   color: #333;
-  background: #fff;
 `;
 
 const ReceiptTitle = styled.h2`
@@ -105,17 +113,68 @@ const EmptyCart = styled.div`
   margin: 4em auto 0;
 `;
 
+const OrderButton = styled(RaisedButton)`
+  margin-bottom: 2em;
+  > button {
+    color: #fff;
+  }
+`;
+
 class BillReceipt extends PureComponent {
-  getTotalAmount = () => this.props.cartItems.reduce((acc, cur) => {
-    acc += parseInt(cur.price, 10) * parseInt(cur.boughtQty, 10);
-    return acc;
-  }, 0);
+  constructor(props) {
+    super(props);
+    this.state = {
+      placingOrder: false,
+    };
+  }
+
+
+  getTotalAmount = () => this.props.cartItems
+    .reduce((acc, cur) => acc + (parseInt(cur.price, 10) * parseInt(cur.boughtQty, 10)), 0);
+
+  placeOrder = () => {
+    this.setState((s, p) => ({
+      placingOrder: !s.placingOrder,
+    }), () => this.props.placeOrderAction());
+  };
+
+  displayOrderButton = () => {
+    // if () {
+    if (!isNil(this.props.currentOrder)) {
+      this.props.history.push('/payment');
+      return null;
+    }
+    const isDisabled = this.state.placingOrder || !isNil(this.props.currentOrder);
+    return (
+      <OrderButton
+        backgroundColor="#a4c639"
+        fullWidth
+        disabled={isDisabled}
+        buttonStyle={{
+          padding: '0 1em',
+          height: '100%',
+        }}
+        overlayStyle={{
+          padding: '1em',
+          height: '100%',
+        }}
+        onClick={this.placeOrder}
+      >
+        Place Order
+      </OrderButton>);
+    // }
+    //
+    // return null;
+  };
 
   render() {
     const { cartItems } = this.props;
 
     return (
       <BillReceiptWrap>
+        {
+          this.displayOrderButton()
+        }
         <BillingList isEmpty={(!cartItems || cartItems.length === 0)}>
           <ReceiptTitle>My Bill</ReceiptTitle>
           {
@@ -150,16 +209,26 @@ class BillReceipt extends PureComponent {
 }
 BillReceipt.defaultProps = {
   cartItems: [],
+  currentOrder: null,
 };
 
 BillReceipt.propTypes = {
   cartItems: PropTypes.array,
+  currentOrder: PropTypes.object,
+  placeOrderAction: PropTypes.func.isRequired,
 };
 
 function initMapStateToProps(state) {
   return {
     cartItems: state.cart.cartItemsInfo,
+    currentOrder: state.order.currentOrder,
   };
 }
 
-export default connect(initMapStateToProps)(BillReceipt);
+function initMapDispatchToProps(dispatch) {
+  return bindActionCreators({
+    placeOrderAction,
+  }, dispatch);
+}
+
+export default connect(initMapStateToProps, initMapDispatchToProps)(withRouter(BillReceipt));

@@ -3,14 +3,13 @@ import {
   put,
   select,
   call,
-  take
+  take,
 } from 'redux-saga/effects';
 import { Auth } from 'aws-amplify';
 
 const loginFormSelector = state => state.form.login.values;
 
 function* loginAttempt(action) {
-
   const signUpPromise = ({ username, password }) => Auth.signUp(username, password);
   const confirmSignUpPromise = ({ username, verification }) => Auth.confirmSignUp(username, verification);
   const loginPromise = ({ username, password }) => Auth.signIn(username, password);
@@ -27,7 +26,7 @@ function* loginAttempt(action) {
       yield take('CONFIRM_SIGNUP');
 
       const { verification } = yield select(loginFormSelector);
-      yield call(confirmSignUpPromise,  { username, verification });
+      yield call(confirmSignUpPromise, { username, verification });
 
       yield call(loginPromise, { username, password });
 
@@ -38,11 +37,10 @@ function* loginAttempt(action) {
         type: 'ATTEMPT_LOGIN_SUCCESS',
         payload: {
           identityId: currentCredentials,
-          userData: currentUserData
-        }
+          userData: currentUserData,
+        },
       });
-    }
-    else {
+    } else {
       const {
         username,
         password,
@@ -57,8 +55,8 @@ function* loginAttempt(action) {
         type: 'ATTEMPT_LOGIN_SUCCESS',
         payload: {
           identityId: currentCredentials,
-          userData: currentUserData
-        }
+          userData: currentUserData,
+        },
       });
     }
   } catch (e) {
@@ -68,7 +66,7 @@ function* loginAttempt(action) {
       type: 'ATTEMPT_LOGIN_FAILURE',
       payload: {
         errorMessage: e.message || errorMessage || 'Some error occured',
-      }
+      },
     });
 
     try {
@@ -86,10 +84,9 @@ function* loginAttempt(action) {
         type: 'ATTEMPT_LOGIN_SUCCESS',
         payload: {
           identityId: currentCredentials,
-          userData: currentUserData
-        }
+          userData: currentUserData,
+        },
       });
-
     } catch (e) {
       console.log(e);
     }
