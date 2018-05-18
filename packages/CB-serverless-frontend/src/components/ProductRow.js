@@ -60,8 +60,9 @@ const ProductRow = ({ title, items }) => (
             groceryId={obj.groceryId}
             name={obj.name}
             price={obj.price}
+            quant={obj.availableQty}
             url={obj.url}
-            isSoldOut={Math.random() > 0.5}
+            isSoldOut={!obj.availableQty >= 1}
           />
         ))
       }

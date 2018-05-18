@@ -6,6 +6,10 @@ import { Card, CardActions, CardTitle, FlatButton, FontIcon } from 'material-ui'
 import { pink500, pink800, pinkA200 } from 'material-ui/styles/colors';
 import Quantity from '../base_components/Quantity';
 import ProductImageWrap from '../base_components/ProductImage';
+import { connect } from 'react-redux';
+import { addToCart } from '../actions/cartActions';
+import { bindActionCreators } from 'redux';
+import API from '../service/cart';
 
 const ItemWrap = styled(Card)`
   box-shadow: none !important;
@@ -91,6 +95,17 @@ class ProductItem extends Component {
     };
   }
 
+  addToCart = () => {
+    this.props.addToCart(this.props.groceryId, this.state.quantity);
+  };
+
+  saveToCart = () => {
+    const data = {
+      [this.props.groceryId]: this.state.quantity,
+    };
+    API.updateCart(123456, data);
+  };
+
   displaySoldOut = () => {
     const { isSoldOut } = this.props;
 
@@ -103,15 +118,17 @@ class ProductItem extends Component {
     return null;
   };
 
-  displayQuantityCounter = () => {
+  displayQuantityCounter = (max) => {
     const { isSoldOut } = this.props;
 
     if (!isSoldOut) {
-      return (<Quantity
-        onChange={data => console.log(data)}
-        initialQuantity={this.state.quantity}
-        disabled={isSoldOut}
-      />);
+      return (
+        <Quantity
+          onChange={data => this.setState({ quantity: data })}
+          initialQuantity={this.state.quantity}
+          maxQuantity={max}
+          disabled={isSoldOut}
+        />);
     }
     return null;
   };
@@ -153,11 +170,11 @@ class ProductItem extends Component {
           }}
         >
           {
-            this.displayQuantityCounter()
+            this.displayQuantityCounter(this.props.quant)
           }
 
           <AddCart
-            onClick={() => alert('Add to Cart')}
+            onClick={this.saveToCart}
             disabled={isSoldOut}
             rippleColor={pink800}
             labelPosition="before"
@@ -178,10 +195,19 @@ ProductItem.defaultProps = {
 
 
 ProductItem.propTypes = {
+  groceryId: PropTypes.number.isRequired,
+  quant: PropTypes.number.isRequired,
   name: PropTypes.string.isRequired,
   price: PropTypes.string.isRequired,
   url: PropTypes.string.isRequired,
   isSoldOut: PropTypes.bool,
+  addToCart: PropTypes.func.isRequired,
 };
 
-export default ProductItem;
+function initMapDispatchToProps(dispatch) {
+  return bindActionCreators({
+    addToCart,
+  }, dispatch);
+}
+
+export default connect(null, initMapDispatchToProps)(ProductItem);

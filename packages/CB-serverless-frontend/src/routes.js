@@ -1,9 +1,5 @@
-/* eslint-disable react/prop-types,no-unused-vars,no-unused-vars */
 import React from 'react';
-import {
-  BrowserRouter as Router,
-  Route,
-} from 'react-router-dom';
+import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { Auth } from 'aws-amplify';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -15,16 +11,20 @@ import AuthModule from './Auth';
 import Header from './components/header';
 import ProductHome from './components/ProductHome';
 import { updateAuth } from './Auth/actionCreators';
+import CartHome from './components/CartHome';
 import CategoryItems from './components/categoryItems';
 import Footer from './base_components/Footer';
 
-const DefaultLayout = ({component: Component, ...rest}) => (
-  <Route {...rest} render={matchProps => (
-    <div>
-      <Header />
-      <Component {...matchProps} />
-    </div>
-  )} />
+const DefaultLayout = ({ component: Component, ...rest }) => (
+  <Route
+    {...rest}
+    render={matchProps => (
+      <div>
+        <Header />
+        <Component {...matchProps} />
+      </div>
+    )}
+  />
 );
 
 class Routes extends React.Component {
@@ -85,7 +85,13 @@ class Routes extends React.Component {
     this.props.updateAuth({
       isAuthenticating: false,
     });
-  };
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (!this.state.loginReady && this.props.isAuthenticating && !nextProps.isAuthenticating) {
+      this.setState({ loginReady: true });
+    }
+  }
 
   // Remove when real signout component is ready
   async handleLogout() {
@@ -98,15 +104,20 @@ class Routes extends React.Component {
       <Router>
         <div className="root-container">
           {
-            !this.props.isAuthenticated && this.state.loginReady ?
-              <Route render={() => <AuthModule />} />
-              :
-              <React.Fragment>
-                <DefaultLayout exact path="/" component={ProductHome} />
-                <DefaultLayout exact path="/category/:category" component={CategoryItems} />
-                <DefaultLayout exact path="/category/" component={CategoryItems} />
-              </React.Fragment>
-          }
+          !this.props.isAuthenticated && this.state.loginReady ?
+            <Route render={() => <AuthModule />} />
+          :
+          (this.state.loginReady?
+            <React.Fragment>
+              <DefaultLayout exact path='/' component={ProductHome} />
+              <DefaultLayout exact path="/category/:category" component={CategoryItems} />
+              <DefaultLayout exact path="/category/" component={CategoryItems} />
+              <DefaultLayout exact path="/cart" component={CartHome} />
+            </React.Fragment>
+            :
+            null
+          )
+        }
         </div>
       </Router>
     );
