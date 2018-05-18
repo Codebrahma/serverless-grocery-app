@@ -1,4 +1,4 @@
-import { call, select, takeLatest } from 'redux-saga/effects';
+import { put, call, select, takeLatest } from 'redux-saga/effects';
 import CartService from '../service/cart';
 
 const userIdSelector = state => state.auth.userData && state.auth.userData.username;
@@ -15,6 +15,8 @@ function* cartItemsAdd(action) {
 
     const response = yield call(() => updateCart(userId, newCart));
     const { resp } = response.data ? response.data : {};
+    yield put({ type: 'FETCH_CART_ITEMS' });
+
     console.log('saga resp on update', resp, response);
   } catch (e) {
     console.log(e);

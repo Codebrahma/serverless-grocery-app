@@ -98,10 +98,7 @@ class ProductItem extends Component {
   }
 
   saveToCart = () => {
-    const data = {
-      [this.props.groceryId]: this.state.quantity,
-    };
-    this.props.updateCartItems(data);
+    this.props.updateCartItems(this.props.groceryId, this.state.quantity);
   };
 
   displaySoldOut = () => {

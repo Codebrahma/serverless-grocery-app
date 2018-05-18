@@ -1,5 +1,6 @@
 const initialState = {
   cartData: null,
+  cartItemsInfo: [],
 };
 
 export default (state = initialState, { type, payload = {} }) => {
@@ -8,6 +9,21 @@ export default (state = initialState, { type, payload = {} }) => {
       return {
         ...state,
         cartData: payload.cartData,
+      };
+    case 'SAVE_NEW_CART':
+      return {
+        ...state,
+        cartData: payload,
+      };
+    case 'SAVE_ITEM_INFO':
+      return {
+        ...state,
+        cartItemsInfo: state.cartItemsInfo.concat(payload),
+      };
+    case 'SAVE_NEW_CART_INFO':
+      return {
+        ...state,
+        cartItemsInfo: payload,
       };
     default:
       return state;
