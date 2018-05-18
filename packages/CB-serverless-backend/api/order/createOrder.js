@@ -63,15 +63,18 @@ export const main = (event, context, callback) => {
 				'orderStatus': 'PAYMENT_PENDING',
 				'orderDate': new Date().toISOString()
       }			
-      // First update the stock and try completing an order
-      // If success leave as it is
-      // If error then revert the items
+      // First update the stock
+      // If success then place the order
+      // If error then don't place the order
       return batchUpdateAvailableAndSoldQuantities(idToGroceryDataMapping)
         .catch((err) => {
           // Rejecting only with err since err.message has been extracted in the batch update function
           return Promise.reject(err);
         })  
         .then(() => createAndSaveOrder(completeOrder))
+        .catch((err) => {
+          return Promise.reject(err.message);
+        })
         
     })
 		.then(() => {
