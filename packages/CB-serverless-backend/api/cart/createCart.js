@@ -39,7 +39,7 @@ export const main = (event, context, callback) => {
         callback(null, getSuccessResponse(data))
       })
       .catch((error) => {
-        console.log(error.message);
+        console.log(error);
         callback(null, getErrorResponse(500, JSON.stringify(error.message)))
       });
 }
