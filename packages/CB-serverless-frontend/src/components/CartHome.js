@@ -38,16 +38,15 @@ class CartHome extends Component {
   renderCartItems = () => {
     const { cartItems } = this.props;
     if (cartItems && cartItems.length > 0) {
-      return cartItems.map((obj, idx, arr) => {
-        console.log(obj, idx, arr);
-        return (<CartItem id={obj.groceryId} qty={obj.quantity} />);
+      return cartItems.map((obj) => {
+        const groceryId = Object.keys(obj)[0];
+        return (<CartItem id={groceryId} qty={obj[groceryId]} />);
       });
     }
     return null;
   };
 
   render() {
-    console.log(this.props);
     return (
       <CartWrapper>
         <CartMain>
