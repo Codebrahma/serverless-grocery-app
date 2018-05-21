@@ -1,5 +1,6 @@
 import { put, call, select, takeLatest } from 'redux-saga/effects';
 import CartService from '../service/cart';
+import { deDupeItems } from '../utils/array';
 
 const userIdSelector = state => state.auth.userData && state.auth.userData.username;
 const cartItemsSelector = state => state.cart.cartData || [];
@@ -10,11 +11,10 @@ function* cartItemsAdd(action) {
     const userId = yield select(userIdSelector);
     const currentCart = yield select(cartItemsSelector);
     let newCart = [];
-    newCart = [...currentCart, ...[action.payload]];
+    newCart = deDupeItems([...currentCart, ...[action.payload]]);
     const response = yield call(() => updateCart(userId, newCart));
     const { resp } = response.data ? response.data : {};
     yield put({ type: 'FETCH_CART_ITEMS' });
-
   } catch (e) {
     console.log(e);
   }
