@@ -1,6 +1,8 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
+import { IconButton } from 'material-ui';
+
 
 import { getGroceryInfo } from '../service/grocery';
 import Quantity from '../base_components/Quantity';
@@ -23,14 +25,26 @@ const ItemImage = styled.img`
 `;
 
 const ItemTitle = styled.div`
-  flex: 0 0 60%;
+  flex: 1 1 60%;
   text-align: left;
   font-size: 20px;
   margin: 0 1em;
 `;
 
+const DeleteIconWrap = styled.div`
+  flex: 0 0 180px;
+  text-align: left;
+  font-size: 20px;
+  margin: 0 1em;
+`;
 
-class CartItem extends Component {
+const SoldOutError = styled.p`
+  color: red;
+  font-size: 14px;
+  margin: 1em auto;
+`;
+
+class CartItem extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
@@ -44,7 +58,7 @@ class CartItem extends Component {
       if (res.data && res.data.Item) {
         this.setState((s, p) => ({
           data: res.data.Item,
-        }));
+        }), this.props.onDataReceived(res.data, this.props.qty));
       }
     }).catch((e) => {
       console.log('eee', e);
@@ -61,12 +75,27 @@ class CartItem extends Component {
         />
         <ItemTitle>
           {data.name}
+          {
+            data.availableQty < this.props.qty &&
+            <SoldOutError>Item is Sold Out</SoldOutError>
+          }
         </ItemTitle>
         <Quantity
           size={40}
-          onChange={() => alert('as')}
+          onChange={qty => this.props.onQtyChange(this.props.id, qty)}
           initialQuantity={this.props.qty}
         />
+        <DeleteIconWrap>
+          <IconButton
+            iconStyle={{
+            color: '#aaa',
+            fontSize: 28,
+          }}
+            onClick={() => this.props.onDelete(this.props.id)}
+            iconClassName="material-icons"
+          >delete
+          </IconButton>
+        </DeleteIconWrap>
       </CartItemWrap>
     );
   }
@@ -75,6 +104,9 @@ class CartItem extends Component {
 CartItem.propTypes = {
   qty: PropTypes.number.isRequired,
   id: PropTypes.string.isRequired,
+  onDelete: PropTypes.func.isRequired,
+  onQtyChange: PropTypes.func.isRequired,
+  onDataReceived: PropTypes.func.isRequired,
 };
 
 export default CartItem;
