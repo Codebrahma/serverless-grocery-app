@@ -11,8 +11,10 @@ import AuthModule from './Auth';
 import ProductHome from './components/ProductHome';
 import { updateAuth } from './Auth/actionCreators';
 import CartHome from './components/CartHome';
+import OrderPlaced from './components/order-placed';
+import Footer from './base_components/Footer';
 
-const DefaultLayout = ({ component: Component, ...rest }) => (
+const DefaultLayout = ({component: Component, ...rest}) => (
   <Route
     {...rest}
     render={matchProps => (
@@ -20,8 +22,7 @@ const DefaultLayout = ({ component: Component, ...rest }) => (
         <Header />
         <Component {...matchProps} />
       </div>
-    )}
-  />
+  )} />
 );
 
 class Routes extends React.Component {
@@ -105,6 +106,7 @@ class Routes extends React.Component {
               <DefaultLayout exact path="/category/:category" component={CategoryItems} />
               <DefaultLayout exact path="/category/" component={CategoryItems} />
               <DefaultLayout exact path="/cart" component={CartHome} />
+              <DefaultLayout exact path="/order-placed" component={OrderPlaced} />
             </React.Fragment>
             :
             null

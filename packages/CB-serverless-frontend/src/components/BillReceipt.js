@@ -8,9 +8,8 @@ import { RaisedButton } from 'material-ui';
 import { bindActionCreators } from 'redux';
 import { isNil } from 'lodash/lang';
 import { withRouter } from 'react-router-dom';
-
-
 import { placeOrderAction } from '../actions/order';
+import { submitPaymentTokenId } from '../actions/payment';
 
 const BillingList = styled.ul`
   position: relative;
@@ -56,16 +55,16 @@ const ItemText = styled.span`
 `;
 
 const QuantText = styled.span`
-  font-weight: normal; 
+  font-weight: normal;
   margin: 0 auto;
-  color: #8f8f8f;  
+  color: #8f8f8f;
   order: 2;
   flex: 1 1 10%;
 
 `;
 
 const AmountText = styled.span`
-  font-weight: bold; 
+  font-weight: bold;
   order: 3;
   flex: 1 1 10%;
   text-align: right;
@@ -74,10 +73,10 @@ const AmountText = styled.span`
 const TotalWrap = styled.div`
     background: #ddd;
     padding: 3em 2em 2em;
-    margin-top: -1em; 
+    margin-top: -1em;
     > li {
       justify-content: flex-end;
-    }       
+    }
 `;
 
 const TotalText = ItemText.extend`
@@ -125,7 +124,47 @@ class BillReceipt extends PureComponent {
     super(props);
     this.state = {
       placingOrder: false,
+      requestOpenPaymentModal: false,
+      paymentModalOpened: false
     };
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.paymentInProgress) {
+      return;
+    }
+    else if (nextProps.paymentComplete) {
+      this.props.history.push('/order-placed');
+      return;
+    } else if (nextProps.currentOrder &&
+      nextProps.currentOrder.orderId &&
+      this.state.placingOrder && this.state.requestOpenPaymentModal) {
+      this.displayPaymentModal(nextProps);
+    }
+  }
+
+  displayPaymentModal = (props) => {
+    const checkoutHandler = window.StripeCheckout.configure({
+      key: "pk_test_rM2enW1rNROwx4ukBXGaIzhr",
+      locale: "auto"
+      });
+    checkoutHandler.open({
+      name: `Pay Rs.${props.currentOrder.orderTotal}`,
+      description: `Order: ${props.currentOrder.orderId}`,
+      closed: () => {
+        this.setState({paymentModalOpened: false})
+      },
+      opened: () => {
+        this.setState({paymentModalOpened: true, requestOpenPaymentModal: false});
+      },
+      token: (token) => {
+        if (token && token.id) {
+          props.submitPaymentTokenId(token.id, props.currentOrder.orderId);
+        } else {
+          // to do
+        }
+      }
+    });
   }
 
 
@@ -133,18 +172,25 @@ class BillReceipt extends PureComponent {
     .reduce((acc, cur) => acc + (parseInt(cur.price, 10) * parseInt(cur.boughtQty, 10)), 0);
 
   placeOrder = () => {
+    if (this.state.placingOrder || !isNil(this.props.currentOrder)) {
+      this.setState({
+        requestOpenPaymentModal: true
+      }, () => this.displayPaymentModal(this.props));
+      return;
+    }
     this.setState((s, p) => ({
       placingOrder: !s.placingOrder,
+      requestOpenPaymentModal: true
     }), () => this.props.placeOrderAction());
   };
 
   displayOrderButton = () => {
-    // if () {
-    if (!isNil(this.props.currentOrder)) {
-      this.props.history.push('/payment');
-      return null;
-    }
-    const isDisabled = this.state.placingOrder || !isNil(this.props.currentOrder);
+    const isDisabled = this.state.requestOpenPaymentModal ||
+      this.state.paymentModalOpened ||
+      this.props.paymentInProgress;
+    const buttonText = this.props.paymentInProgress || (
+      this.state.requestOpenPaymentModal && !this.state.paymentModalOpened) ?
+      "Please wait..." : "Place Order";
     return (
       <OrderButton
         backgroundColor="#a4c639"
@@ -160,11 +206,8 @@ class BillReceipt extends PureComponent {
         }}
         onClick={this.placeOrder}
       >
-        Place Order
+        {buttonText}
       </OrderButton>);
-    // }
-    //
-    // return null;
   };
 
   render() {
@@ -222,12 +265,15 @@ function initMapStateToProps(state) {
   return {
     cartItems: state.cart.cartItemsInfo,
     currentOrder: state.order.currentOrder,
+    paymentComplete: state.payment.paymentComplete,
+    paymentInProgress: state.payment.paymentInProgress,
   };
 }
 
 function initMapDispatchToProps(dispatch) {
   return bindActionCreators({
     placeOrderAction,
+    submitPaymentTokenId
   }, dispatch);
 }
 

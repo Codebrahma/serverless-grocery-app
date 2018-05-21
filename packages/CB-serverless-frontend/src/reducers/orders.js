@@ -10,6 +10,12 @@ export default (state = initialState, { type, payload = {} }) => {
         ...state,
         currentOrder: payload,
       };
+    case 'CLEAR_ORDER':
+      return {
+        ...state,
+        currentOrder: initialState.currentOrder,
+        orderList: initialState.orderList
+      };
     default:
       return state;
   }
