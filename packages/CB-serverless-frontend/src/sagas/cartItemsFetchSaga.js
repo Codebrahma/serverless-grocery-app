@@ -1,4 +1,4 @@
-import { call, put, select, takeLatest, } from 'redux-saga/effects';
+import { call, put, select, takeLatest } from 'redux-saga/effects';
 import CartService from '../service/cart';
 
 const userIdSelector = state => state.auth.userData && state.auth.userData.username;
@@ -8,7 +8,7 @@ function* cartItemsFetch(action) {
   try {
     const userId = yield select(userIdSelector);
     const response = yield call(() => getCart(userId));
-    const { cartData } = response.data.Item ? response.data.Item : {};
+    const { cartData } = response.data.Item ? response.data.Item : [];
     yield put({
       type: 'USER_CART_ITEMS',
       payload: {

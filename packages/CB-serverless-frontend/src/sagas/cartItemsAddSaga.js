@@ -2,7 +2,7 @@ import { put, call, select, takeLatest } from 'redux-saga/effects';
 import CartService from '../service/cart';
 
 const userIdSelector = state => state.auth.userData && state.auth.userData.username;
-const cartItemsSelector = state => state.cart.cartData;
+const cartItemsSelector = state => state.cart.cartData || [];
 const { updateCart } = CartService;
 
 function* cartItemsAdd(action) {
@@ -11,8 +11,6 @@ function* cartItemsAdd(action) {
     const currentCart = yield select(cartItemsSelector);
     let newCart = [];
     newCart = [...currentCart, ...[action.payload]];
-    console.log(typeof currentCart, currentCart, newCart);
-
     const response = yield call(() => updateCart(userId, newCart));
     const { resp } = response.data ? response.data : {};
     yield put({ type: 'FETCH_CART_ITEMS' });
