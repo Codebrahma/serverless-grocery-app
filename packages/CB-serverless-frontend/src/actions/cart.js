@@ -1,4 +1,4 @@
-export const fetchCartItems = (authScreen, requireVerification) => ({
+export const fetchCartItems = () => ({
   type: 'FETCH_CART_ITEMS',
 });
 
@@ -36,3 +36,9 @@ export const saveItemInfoToCart = (data, boughtQty) => {
     payload: { ...data, boughtQty },
   };
 };
+
+export const cleanCart = () => {
+  return {
+    type: 'CLEAN_CART_ITEMS',
+  };
+}
