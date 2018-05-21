@@ -63,7 +63,7 @@ functions:
   watchGroceryUpdate:
     handler: api/groceries/processGroceriesUpdate.main
     events: 
-      - stream: arn:aws:dynamodb:ddblocal:000000000000:table/grocery/stream/2018-05-17T15:10:04.946
+      - stream: arn:aws:dynamodb:ddblocal:000000000000:table/grocery/stream/2018-05-25T07:14:11.077
   updateStock:
       handler: api/groceries/stock.updateStock
       events:
