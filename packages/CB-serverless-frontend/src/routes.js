@@ -12,8 +12,10 @@ import ProductHome from './components/Product/ProductHome';
 import { updateAuth } from './Auth/actionCreators';
 import CartHome from './components/Cart/CartHome';
 import OrderPlaced from './components/order-placed';
+import { isNil } from 'lodash';
+import { saveTokenInStorage } from './utils/storage';
 
-const DefaultLayout = ({component: Component, ...rest}) => (
+const DefaultLayout = ({ component: Component, ...rest }) => (
   <Route
     {...rest}
     render={matchProps => (
@@ -21,7 +23,8 @@ const DefaultLayout = ({component: Component, ...rest}) => (
         <Header />
         <Component {...matchProps} />
       </div>
-  )} />
+  )}
+  />
 );
 
 class Routes extends React.Component {
@@ -40,6 +43,8 @@ class Routes extends React.Component {
       Auth.currentSession().then(async (response) => {
         const data = await Auth.currentAuthenticatedUser();
         const userData = await Auth.currentUserInfo();
+        saveTokenInStorage(data);
+
         this.props.updateAuth({
           isAuthenticating: false,
           isAuthenticated: true,
