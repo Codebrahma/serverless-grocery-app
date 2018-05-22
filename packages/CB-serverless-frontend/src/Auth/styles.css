@@ -9,6 +9,14 @@
 }
 
 .login-input {
-  margin-top: 10px;
-  margin-bottom: 15px;
+  margin: '5% 0 7%';
+}
+
+.success-note {
+  border: 1px solid green;
+  color: green;
+  font-size: 12px;
+  margin: 5% auto 0;
+  padding: 2%;
+  width: 80%;
 }
