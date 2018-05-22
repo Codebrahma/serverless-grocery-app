@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom';
 import { pinkA200 } from 'material-ui/styles/colors';
 
 import ProductItem from './ProductItem';
-import { toProperCase } from '../utils/string';
+import { toProperCase } from '../../utils/string';
 
 const RowWrapper = styled.div`
   margin-bottom: 1em;

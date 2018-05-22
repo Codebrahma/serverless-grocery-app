@@ -6,9 +6,9 @@ import { connect } from 'react-redux';
 import _ from 'lodash';
 
 import BillReceipt from './BillReceipt';
-import { Wrapper } from '../base_components';
+import { Wrapper } from '../../base_components/index';
 import CartItem from './CartItem';
-import { deleteCartItem, fetchCartItems, saveItemInfoToCart, updateCartItemQty } from '../actions/cart';
+import { deleteCartItem, fetchCartItems, saveItemInfoToCart, updateCartItemQty } from '../../actions/cart';
 
 const CartWrapper = Wrapper.extend`
   color: #222;

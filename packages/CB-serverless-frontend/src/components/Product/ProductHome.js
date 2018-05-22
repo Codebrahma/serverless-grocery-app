@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import axios from 'axios';
 import _ from 'lodash';
 
-import { Wrapper } from '../base_components';
+import { Wrapper } from '../../base_components/index';
 import ProductRow from './ProductRow';
+import * as API from '../../service/grocery';
 
 class ProductHome extends Component {
   constructor(props) {
@@ -16,7 +16,7 @@ class ProductHome extends Component {
 
 
   componentDidMount() {
-    axios.get('http://localhost:3000/groceries')
+    API.getTop3Groceries()
       .then((res) => {
         this.setState((state, props) => ({
           catData: res.data,
