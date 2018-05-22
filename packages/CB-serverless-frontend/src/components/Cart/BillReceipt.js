@@ -160,7 +160,8 @@ class BillReceipt extends PureComponent {
           props.submitPaymentTokenId({
             tokenId: token.id,
             orderId: props.currentOrder.orderId,
-            email: token.email
+            email: token.email,
+            userId: props.userData.username
           });
         } else {
           // to do
@@ -269,6 +270,7 @@ function initMapStateToProps(state) {
     currentOrder: state.order.currentOrder,
     paymentComplete: state.payment.paymentComplete,
     paymentInProgress: state.payment.paymentInProgress,
+    userData: state.auth.userData,
   };
 }
 
