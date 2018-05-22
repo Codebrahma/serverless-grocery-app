@@ -8,9 +8,9 @@ import Header from './components/header';
 import CategoryItems from './components/Category/CategoryItems';
 
 import AuthModule from './Auth';
-import ProductHome from './components/ProductHome';
+import ProductHome from './components/Product/ProductHome';
 import { updateAuth } from './Auth/actionCreators';
-import CartHome from './components/CartHome';
+import CartHome from './components/Cart/CartHome';
 import OrderPlaced from './components/order-placed';
 
 const DefaultLayout = ({component: Component, ...rest}) => (

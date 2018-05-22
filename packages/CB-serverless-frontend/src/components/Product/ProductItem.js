@@ -8,10 +8,10 @@ import { Card, CardActions, CardTitle, FlatButton, FontIcon } from 'material-ui'
 
 
 import { pink500, pink800, pinkA200 } from 'material-ui/styles/colors';
-import Quantity from '../base_components/Quantity';
-import ProductImageWrap from '../base_components/ProductImage';
-import API from '../service/cart';
-import { updateCartItems } from '../actions/cart';
+import Quantity from '../../base_components/Quantity';
+import ProductImageWrap from '../../base_components/ProductImage';
+import API from '../../service/cart';
+import { updateCartItems } from '../../actions/cart';
 
 const ItemWrap = styled(Card)`
   box-shadow: none !important;

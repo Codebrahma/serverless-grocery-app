@@ -7,7 +7,7 @@ import { withRouter } from 'react-router-dom';
 import CircularProgress from 'material-ui/CircularProgress';
 
 
-import ProductItem from '../ProductItem';
+import ProductItem from '../Product/ProductItem';
 import SubCategories from './sub-categories';
 import * as API from '../../service/grocery';
 

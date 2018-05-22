@@ -4,8 +4,8 @@ import styled from 'styled-components';
 import { IconButton } from 'material-ui';
 
 
-import { getGroceryInfo } from '../service/grocery';
-import Quantity from '../base_components/Quantity';
+import { getGroceryInfo } from '../../service/grocery';
+import Quantity from '../../base_components/Quantity';
 
 const CartItemWrap = styled.div`
   display: flex;

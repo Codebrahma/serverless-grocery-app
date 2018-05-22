@@ -8,8 +8,8 @@ import { RaisedButton } from 'material-ui';
 import { bindActionCreators } from 'redux';
 import { isNil } from 'lodash/lang';
 import { withRouter } from 'react-router-dom';
-import { placeOrderAction } from '../actions/order';
-import { submitPaymentTokenId } from '../actions/payment';
+import { placeOrderAction } from '../../actions/order';
+import { submitPaymentTokenId } from '../../actions/payment';
 
 const BillingList = styled.ul`
   position: relative;

@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import _ from 'lodash';
 
-import { Wrapper } from '../base_components';
+import { Wrapper } from '../../base_components/index';
 import ProductRow from './ProductRow';
-import * as API from '../service/grocery';
+import * as API from '../../service/grocery';
 
 class ProductHome extends Component {
   constructor(props) {
