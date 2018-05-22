@@ -66,7 +66,7 @@ const QuantText = styled.span`
 const AmountText = styled.span`
   font-weight: bold;
   order: 3;
-  flex: 1 1 10%;
+  flex: 1 1 50px;
   text-align: right;
 `;
 
@@ -199,7 +199,7 @@ class BillReceipt extends PureComponent {
         fullWidth
         disabled={isDisabled}
         buttonStyle={{
-          padding: '0 1em',
+          padding: '0 0em',
           height: '100%',
         }}
         overlayStyle={{
