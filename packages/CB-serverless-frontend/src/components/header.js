@@ -11,6 +11,7 @@ import { Auth } from 'aws-amplify';
 import AppBar from 'material-ui/AppBar';
 import { updateAuth } from '../Auth/actionCreators';
 import { fetchCartItems } from '../actions/cart';
+import { removeTokenFromStorage } from '../utils/storage';
 
 const AppHeader = styled(AppBar)`
   position: fixed;
@@ -56,6 +57,7 @@ class Header extends React.Component {
   async handleLogout() {
     await Auth.signOut();
     this.resetInitialState();
+    removeTokenFromStorage();
   }
 
   resetInitialState = () => {
