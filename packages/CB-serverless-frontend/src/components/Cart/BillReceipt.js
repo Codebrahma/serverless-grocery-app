@@ -215,11 +215,12 @@ class BillReceipt extends PureComponent {
   };
 
   render() {
-    const { cartItems } = this.props;
+    const { cartData, cartItems } = this.props;
 
     return (
       <BillReceiptWrap>
         {
+          cartData && cartData.length > 0 &&
           this.displayOrderButton()
         }
         <BillingList isEmpty={(!cartItems || cartItems.length === 0)}>
@@ -257,17 +258,20 @@ class BillReceipt extends PureComponent {
 
 BillReceipt.defaultProps = {
   cartItems: [],
+  cartData: [],
   currentOrder: null,
 };
 
 BillReceipt.propTypes = {
   cartItems: PropTypes.array,
+  cartData: PropTypes.array,
   currentOrder: PropTypes.object,
   placeOrderAction: PropTypes.func.isRequired,
 };
 
 function initMapStateToProps(state) {
   return {
+    cartData: state.cart.cartData,
     cartItems: state.cart.cartItemsInfo,
     currentOrder: state.order.currentOrder,
     paymentComplete: state.payment.paymentComplete,
