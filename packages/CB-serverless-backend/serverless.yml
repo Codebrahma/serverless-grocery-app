@@ -101,6 +101,15 @@ functions:
           cors: true
           authorizer:
             arn: arn:aws:cognito-idp:ap-south-1:872196253669:userpool/ap-south-1_50ZoISXiG
+  getUserOrders:
+    handler: api/order/getOrders.main
+    events:
+      - http:
+          path: getOrders
+          method: get
+          cors: true
+          authorizer:
+            arn: arn:aws:cognito-idp:ap-south-1:872196253669:userpool/ap-south-1_50ZoISXiG
   makePayment:
     handler: api/pay/makePayment.main
     events:

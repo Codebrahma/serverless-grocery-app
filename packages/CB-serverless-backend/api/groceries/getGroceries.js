@@ -1,4 +1,3 @@
-import mongoose from 'mongoose';
 import AWS from 'aws-sdk';
 import _ from 'lodash';
 import filter from 'lodash/filter';
