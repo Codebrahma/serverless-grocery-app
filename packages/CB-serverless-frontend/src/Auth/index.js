@@ -3,8 +3,10 @@ import {Tabs, Tab} from 'material-ui/Tabs';
 import styled from 'styled-components';
 
 import LoginForm from './LoginForm';
+import RegisterForm from './RegisterForm';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import {CODE_VERIFICATION} from '../constants/app';
 
 import { attemptLogin } from './actionCreators';
 
@@ -13,39 +15,37 @@ import styles from './styles.css';
 const LoginContainer = styled.div`
     background: #fff;
     margin: 2em auto;
-    padding: 0px 0px 50px;
     box-shadow: 0px 0px 25px 4px #ddd;
-    height: auto;
-    min-height: 400px;
-    vertical-align: middle;
+    borderRadius: '5%';
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    transform: translate(0%, 50%);
-    
+    justify-content: flex-start;
+    border-radius: 5%;
+    overflow-x: auto;
+
     @media (min-width: 1280px) {
-        width: 40%;
+        width: 30%;
     }
-    
-    @media (max-width: 1279px){    
+
+    @media (max-width: 1279px){
         width: 60%;
     }
-    
-    @media (min-width: 601px) and (max-width: 800px){    
+
+    @media (min-width: 601px) and (max-width: 800px){
         width: 100%;
     }
-    
-    @media (max-width: 600px){    
+
+    @media (max-width: 600px){
         width: 80%;
         transform: translateY(0);
     }
-    
-    @media (max-width: 480px){    
+
+    @media (max-width: 480px){
         width: 100%;
         margin: 0;
         transform: translateY(0);
     }
-    
+
 `;
 
 class Login extends React.Component {
@@ -63,10 +63,11 @@ class Login extends React.Component {
   }
 
   render() {
+    const {authScreen} = this.state;
     let shouldDisableLogin = false;
     let requireVerification = false;
     switch(this.props.errorMessage) {
-      case 'User is not confirmed.':
+      case CODE_VERIFICATION:
         shouldDisableLogin = true;
         requireVerification = true;
       case 'Incorrect username or password': {
@@ -78,22 +79,32 @@ class Login extends React.Component {
       <React.Fragment>
         <LoginContainer>
           <Tabs
-            value={this.state.authScreen}
+            value={authScreen}
             onChange={this.handleChange}
           >
-            <Tab label="Register" value="register" />
-            <Tab label="Login" value="login" />
+            <Tab
+              label="Register" value="register" />
+            <Tab
+              label="Login" value="login" />
           </Tabs>
           {
-            this.props.errorMessage &&
+            this.props.errorMessage && this.props.errorMessage !== CODE_VERIFICATION &&
             <div className={"error-message"}>{this.props.errorMessage}</div>
           }
-          <LoginForm
-            type={this.state.authScreen}
-            shouldDisableLogin={shouldDisableLogin}
-            requireVerification={requireVerification}
-            onSubmit={() => { this.props.attemptLogin(this.state.authScreen, requireVerification) }}
-          />
+          {
+            authScreen === 'login' ?
+            <LoginForm
+              type={authScreen}
+              shouldDisableLogin={shouldDisableLogin}
+              onSubmit={() => { this.props.attemptLogin(authScreen, requireVerification) }}
+            /> :
+            <RegisterForm
+              type={authScreen}
+              shouldDisableLogin={shouldDisableLogin}
+              requireVerification={requireVerification}
+              onSubmit={() => { this.props.attemptLogin(authScreen, requireVerification) }}
+            />
+          }
         </LoginContainer>
       </React.Fragment>
     );
