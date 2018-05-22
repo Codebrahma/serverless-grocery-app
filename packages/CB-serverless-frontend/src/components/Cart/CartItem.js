@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { IconButton } from 'material-ui';
 import Quantity from '../../base_components/Quantity';
+import { isEmpty } from 'lodash';
 
 const CartItemWrap = styled.div`
   display: flex;

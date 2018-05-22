@@ -23,6 +23,7 @@ class ProductHome extends Component {
         }));
       })
       .catch((err) => {
+        console.log(err);
         this.setState((state, props) => ({
           error: err,
         }));
