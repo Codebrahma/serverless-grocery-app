@@ -125,17 +125,15 @@ class BillReceipt extends PureComponent {
     this.state = {
       placingOrder: false,
       requestOpenPaymentModal: false,
-      paymentModalOpened: false
+      paymentModalOpened: false,
     };
   }
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.paymentInProgress) {
-      return;
-    }
-    else if (nextProps.paymentComplete) {
+
+    } else if (nextProps.paymentComplete) {
       this.props.history.push('/order-placed');
-      return;
     } else if (nextProps.currentOrder &&
       nextProps.currentOrder.orderId &&
       this.state.placingOrder && this.state.requestOpenPaymentModal) {
@@ -145,17 +143,17 @@ class BillReceipt extends PureComponent {
 
   displayPaymentModal = (props) => {
     const checkoutHandler = window.StripeCheckout.configure({
-      key: "pk_test_rM2enW1rNROwx4ukBXGaIzhr",
-      locale: "auto"
-      });
+      key: 'pk_test_rM2enW1rNROwx4ukBXGaIzhr',
+      locale: 'auto',
+    });
     checkoutHandler.open({
       name: `Pay Rs.${props.currentOrder.orderTotal}`,
       description: `Order: ${props.currentOrder.orderId}`,
       closed: () => {
-        this.setState({paymentModalOpened: false})
+        this.setState({ paymentModalOpened: false });
       },
       opened: () => {
-        this.setState({paymentModalOpened: true, requestOpenPaymentModal: false});
+        this.setState({ paymentModalOpened: true, requestOpenPaymentModal: false });
       },
       token: (token) => {
         if (token && token.id) {
@@ -163,9 +161,9 @@ class BillReceipt extends PureComponent {
         } else {
           // to do
         }
-      }
+      },
     });
-  }
+  };
 
 
   getTotalAmount = () => this.props.cartItems
@@ -174,13 +172,13 @@ class BillReceipt extends PureComponent {
   placeOrder = () => {
     if (this.state.placingOrder || !isNil(this.props.currentOrder)) {
       this.setState({
-        requestOpenPaymentModal: true
+        requestOpenPaymentModal: true,
       }, () => this.displayPaymentModal(this.props));
       return;
     }
     this.setState((s, p) => ({
       placingOrder: !s.placingOrder,
-      requestOpenPaymentModal: true
+      requestOpenPaymentModal: true,
     }), () => this.props.placeOrderAction());
   };
 
@@ -190,7 +188,7 @@ class BillReceipt extends PureComponent {
       this.props.paymentInProgress;
     const buttonText = this.props.paymentInProgress || (
       this.state.requestOpenPaymentModal && !this.state.paymentModalOpened) ?
-      "Please wait..." : "Place Order";
+      'Please wait...' : 'Place Order';
     return (
       <OrderButton
         backgroundColor="#a4c639"
@@ -273,7 +271,7 @@ function initMapStateToProps(state) {
 function initMapDispatchToProps(dispatch) {
   return bindActionCreators({
     placeOrderAction,
-    submitPaymentTokenId
+    submitPaymentTokenId,
   }, dispatch);
 }
 
