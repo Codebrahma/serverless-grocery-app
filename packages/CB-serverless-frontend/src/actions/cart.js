@@ -29,16 +29,13 @@ export const saveNewCart = data => ({
 });
 
 
-export const saveItemInfoToCart = (data, boughtQty) => {
-  console.log({ ...data, boughtQty });
-  return {
-    type: 'SAVE_ITEM_INFO',
-    payload: { ...data, boughtQty },
-  };
-};
+export const saveItemInfoToCart = data => ({
+  type: 'SAVE_ITEM_INFO',
+  payload: data,
+});
 
 export const cleanCart = () => {
   return {
     type: 'CLEAN_CART_ITEMS',
   };
-}
+};

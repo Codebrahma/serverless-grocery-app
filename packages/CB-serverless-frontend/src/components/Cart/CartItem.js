@@ -1,10 +1,8 @@
+/* eslint-disable react/forbid-prop-types */
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { IconButton } from 'material-ui';
-
-
-import { getGroceryInfo } from '../../service/grocery';
 import Quantity from '../../base_components/Quantity';
 
 const CartItemWrap = styled.div`
@@ -53,20 +51,28 @@ class CartItem extends PureComponent {
   }
 
   componentDidMount() {
-    const gorceryId = this.props.id;
-    getGroceryInfo(gorceryId).then((res) => {
-      if (res.data && res.data.Item) {
-        this.setState((s, p) => ({
-          data: res.data.Item,
-        }), this.props.onDataReceived(res.data, this.props.qty));
-      }
-    }).catch((e) => {
-      console.log('eee', e);
-    });
+    // const gorceryId = this.props.id;
+    const { info } = this.props;
+    console.log(info);
+    this.setState((s, p) => ({
+      data: info,
+    }));
+    // getGroceryInfo(gorceryId).then((res) => {
+    //   if (res.data && res.data.Item) {
+    //     this.setState((s, p) => ({
+    //       data: res.data.Item,
+    //     }), this.props.onDataReceived(res.data, this.props.qty));
+    //   }
+    // }).catch((e) => {
+    //   console.log('eee', e);
+    // });
   }
 
   render() {
     const { data } = this.state;
+    if (!data) {
+      return null;
+    }
     return (
       <CartItemWrap>
         <ItemImage
@@ -88,9 +94,9 @@ class CartItem extends PureComponent {
         <DeleteIconWrap>
           <IconButton
             iconStyle={{
-            color: '#aaa',
-            fontSize: 28,
-          }}
+              color: '#aaa',
+              fontSize: 28,
+            }}
             onClick={() => this.props.onDelete(this.props.id)}
             iconClassName="material-icons"
           >delete
@@ -101,12 +107,16 @@ class CartItem extends PureComponent {
   }
 }
 
+CartItem.defaultProps = {
+  info: null,
+};
+
 CartItem.propTypes = {
   qty: PropTypes.number.isRequired,
   id: PropTypes.string.isRequired,
+  info: PropTypes.object,
   onDelete: PropTypes.func.isRequired,
   onQtyChange: PropTypes.func.isRequired,
-  onDataReceived: PropTypes.func.isRequired,
 };
 
 export default CartItem;

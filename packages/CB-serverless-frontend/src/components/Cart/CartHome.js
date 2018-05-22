@@ -3,12 +3,12 @@ import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
-import _ from 'lodash';
+import _, { isNil } from 'lodash';
 
 import BillReceipt from './BillReceipt';
 import { Wrapper } from '../../base_components/index';
 import CartItem from './CartItem';
-import { deleteCartItem, fetchCartItems, saveItemInfoToCart, updateCartItemQty } from '../../actions/cart';
+import { deleteCartItem, fetchCartItems, updateCartItemQty } from '../../actions/cart';
 
 const CartWrapper = Wrapper.extend`
   color: #222;
@@ -43,13 +43,9 @@ const CartHead = styled.h1`
 class CartHome extends Component {
   constructor(props) {
     super(props);
-    this.cartItemsInfo = [];
   }
 
   componentDidMount() {
-    // get data from backend
-    // how to get data from backend save it in local and
-    // prevent re-renders loop
     this.props.fetchCartItems();
   }
 
@@ -61,24 +57,29 @@ class CartHome extends Component {
     this.props.deleteCartItem(id);
   };
 
-  onItemDataReceived = (data, boughtQty) => {
-    this.props.saveItemInfoToCart(data.Item, boughtQty);
+  getItemInfo = (groceryId) => {
+    const { cartItemsInfo } = this.props;
+    console.log(cartItemsInfo);
+    if (!isNil(cartItemsInfo)) {
+      return cartItemsInfo.findIndex(obj => obj.groceryId === groceryId);
+    }
+    return {};
   };
 
-
   renderCartItems = () => {
-    const { cartItems } = this.props;
-    if (cartItems && cartItems.length > 0) {
+    const { cartItems, cartItemsInfo } = this.props;
+    if (cartItems && cartItems.length > 0 && cartItemsInfo && cartItemsInfo.length > 0) {
       return cartItems.map((obj) => {
         const { groceryId, qty } = obj;
+        const info = cartItemsInfo[this.getItemInfo(groceryId)];
         return (
           <CartItem
             key={groceryId}
             id={groceryId}
             qty={qty}
+            info={info}
             onQtyChange={_.debounce(this.onCartItemQtyChange, 500)}
             onDelete={this.onCartItemDelete}
-            onDataReceived={this.onItemDataReceived}
           />);
       });
     }
@@ -94,7 +95,7 @@ class CartHome extends Component {
           <CartHead>My Cart</CartHead>
           {this.renderCartItems()}
         </CartMain>
-        <BillReceipt cartItems={this.cartItemsInfo} />
+        <BillReceipt cartItems={this.props.cartItemsInfo} />
       </CartWrapper>
     );
   }
@@ -103,6 +104,7 @@ class CartHome extends Component {
 function initMapStateToProps(state) {
   return {
     cartItems: state.cart.cartData,
+    cartItemsInfo: state.cart.cartItemsInfo,
   };
 }
 
@@ -111,7 +113,6 @@ function initMapDispatchToProps(dispatch) {
     fetchCartItems,
     deleteCartItem,
     updateCartItemQty,
-    saveItemInfoToCart,
   }, dispatch);
 }
 
@@ -119,13 +120,13 @@ CartHome.propTypes = {
   fetchCartItems: PropTypes.func.isRequired,
   deleteCartItem: PropTypes.func.isRequired,
   updateCartItemQty: PropTypes.func.isRequired,
-  saveItemInfoToCart: PropTypes.func.isRequired,
   cartItems: PropTypes.shape([
     {
       groceryId: PropTypes.string,
       quantity: PropTypes.number,
     },
   ]).isRequired,
+  cartItemsInfo: PropTypes.array.isRequired,
 };
 
 
