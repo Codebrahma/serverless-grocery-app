@@ -1,6 +1,7 @@
 import axios from 'axios';
-import { CART_URL } from './api_constants';
+import { authHeaders, CART_URL, getIdToken } from './api_constants';
 
+axios.defaults.headers.common.Authorization = getIdToken();
 /**
  * Get current Cart for a user
  * @param userId {string} pass the userId for whom data is to be fetched
@@ -22,6 +23,7 @@ function updateCart(userId, data) {
     userId,
     cartData: data,
   };
+  console.log(axios.defaults.headers);
   return axios.post(CART_URL, postData);
 }
 

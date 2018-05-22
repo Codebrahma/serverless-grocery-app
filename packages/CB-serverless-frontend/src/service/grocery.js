@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { CATEGORY_URL, GROCERIES_URL, GROCERY_INFO_URL } from './api_constants';
+import { authHeaders, CATEGORY_URL, GROCERIES_URL, GROCERY_INFO_URL } from './api_constants';
 
 export function getTop3Groceries() {
   return axios.get(`${GROCERIES_URL}`);
