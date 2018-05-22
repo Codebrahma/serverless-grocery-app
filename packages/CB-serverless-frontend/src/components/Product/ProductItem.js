@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
+import _ from 'lodash';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { Card, CardActions, CardTitle, FlatButton } from 'material-ui';
@@ -170,7 +171,7 @@ class ProductItem extends Component {
           }
 
           <AddCart
-            onClick={this.saveToCart}
+            onClick={_.debounce(this.saveToCart, 500)}
             disabled={isSoldOut}
             rippleColor={pink800}
             labelPosition="before"
