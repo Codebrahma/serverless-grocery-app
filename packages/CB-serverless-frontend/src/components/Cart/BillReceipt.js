@@ -157,7 +157,11 @@ class BillReceipt extends PureComponent {
       },
       token: (token) => {
         if (token && token.id) {
-          props.submitPaymentTokenId(token.id, props.currentOrder.orderId);
+          props.submitPaymentTokenId({
+            tokenId: token.id,
+            orderId: props.currentOrder.orderId,
+            email: token.email
+          });
         } else {
           // to do
         }

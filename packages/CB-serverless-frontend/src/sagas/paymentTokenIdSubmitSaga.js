@@ -11,11 +11,12 @@ import PaymentRequests from '../service/payment';
 const {submitPaymentRequest} = PaymentRequests;
 
 function* submitPayment(action) {
-  if (!action.payload.tokenId) return ;
+  const { tokenId, orderId, email } = action.payload;
+  if (!tokenId || !orderId) return ;
   const payload = {
-    email: "prasanna.krystal@gmail.com",
-	  stripeId: action.payload.tokenId,
-	  orderId: 'F13VP19MM-20180521'
+    email,
+	  stripeId: tokenId,
+	  orderId
   };
   yield put({
     type: 'PAYMENT_IN_PROGRESS'
