@@ -1,5 +1,5 @@
 # NOTE: update this with your service name
-service: online-grocery-api
+service: grocery-app-api
 
 # Use the serverless-webpack plugin to transpile ES6
 plugins:
