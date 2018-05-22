@@ -58,11 +58,11 @@ export const main = (event, context, callback) => {
 			completeOrder = {
 				'orderId': generateId(),
 				'userId': userId,
-				'orderItems': JSON.stringify(cartItems),
+				'orderItems': idToGroceryDataMapping,
 				'orderTotal': totalAmount,
 				'orderStatus': 'PAYMENT_PENDING',
 				'orderDate': new Date().toISOString()
-      }			
+      }
       // First update the stock
       // If success then place the order
       // If error then don't place the order
@@ -126,7 +126,7 @@ const getCurrentCart = (userId) => {
 	return documentClient.get(params).promise();
 }
 
-const batchUpdateAvailableAndSoldQuantities = (groceryIdToGroceryItemMap, revert = false) => {
+export const batchUpdateAvailableAndSoldQuantities = (groceryIdToGroceryItemMap, revert = false) => {
   // Get Current Values of the cart for groceryId present in cartItems
   return getAvailableAndSoldQuantityForGroceries(groceryIdToGroceryItemMap)
     .then(data => Promise.all(
