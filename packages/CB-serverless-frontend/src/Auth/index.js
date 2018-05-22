@@ -86,7 +86,7 @@ class Login extends React.Component {
           </Tabs>
           {
             this.props.errorMessage &&
-            <div>{this.props.errorMessage}</div>
+            <div className={"error-message"}>{this.props.errorMessage}</div>
           }
           <LoginForm
             type={this.state.authScreen}

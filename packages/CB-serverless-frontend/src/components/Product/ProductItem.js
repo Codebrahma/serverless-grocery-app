@@ -177,7 +177,6 @@ class ProductItem extends Component {
             labelPosition="before"
             secondary
             label="Add to Cart"
-            icon={<FontIcon style={{ fontSize: 16 }} className="material-icons">add_shopping_cart</FontIcon>}
           />
 
         </CardActions>

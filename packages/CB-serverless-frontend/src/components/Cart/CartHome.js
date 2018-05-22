@@ -16,14 +16,13 @@ const CartWrapper = Wrapper.extend`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  align-items: flex-start;
+  align-items: stretch;
 `;
 
 const CartMain = styled.div`
   flex: 7;
   padding: 3em 2em;
   background: #fff;
-  height: 100%;
   box-shadow: 0px 0px 10px 1px #eee;  
 `;
 
