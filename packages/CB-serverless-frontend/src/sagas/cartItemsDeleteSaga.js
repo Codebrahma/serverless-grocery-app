@@ -24,8 +24,6 @@ function* cartItemDelete(action) {
 
     yield put({ type: 'SAVE_NEW_CART_INFO', payload: newCartItemsInfo });
 
-    // Again place a new order and get it's updated id and total amount
-    yield put({ type: 'PLACE_ORDER' });
   } catch (e) {
     console.log(e);
   }

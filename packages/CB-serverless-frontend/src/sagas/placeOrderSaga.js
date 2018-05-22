@@ -7,7 +7,6 @@ const { placeOrderAPI } = OrderService;
 function* placeOrder(action) {
   try {
     const userId = yield select(userIdSelector);
-
     const response = yield call(() => placeOrderAPI(userId));
 
     const { resp } = response.data ? response.data : {};
