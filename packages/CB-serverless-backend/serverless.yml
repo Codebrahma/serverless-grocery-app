@@ -110,6 +110,15 @@ functions:
           cors: true
           authorizer:
             arn: arn:aws:cognito-idp:ap-south-1:872196253669:userpool/ap-south-1_50ZoISXiG
+  cancelOrder:
+    handler: api/order/cancelOrder.main
+    events:
+      - http:
+          path: cancelOrder
+          method: post
+          cors: true
+          authorizer:
+            arn: arn:aws:cognito-idp:ap-south-1:872196253669:userpool/ap-south-1_50ZoISXiG
   makePayment:
     handler: api/pay/makePayment.main
     events:
