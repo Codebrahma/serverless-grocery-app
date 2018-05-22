@@ -7,9 +7,9 @@ const Container = styled.div`
   margin-top: 5%;
 `;
 
-export default ({subCategories, checked, onCheck}) => (
+export default ({ subCategories, checked, onCheck }) => (
   <Container>
-  {
+    {
     subCategories.map((value, index) => {
       const label = value.charAt(0).toUpperCase() + value.slice(1);
       return (
@@ -18,12 +18,12 @@ export default ({subCategories, checked, onCheck}) => (
             label={label}
             checked={checked[value]}
             onCheck={() => (onCheck(value))}
-            style={{marginBottom: 16}}
-            labelStyle={{textAlign: 'left', marginLeft: '5%'}}
+            style={{ marginBottom: 16 }}
+            labelStyle={{ textAlign: 'left', marginLeft: '5%' }}
           />
         </div>
       );
     })
   }
   </Container>
-)
+);
