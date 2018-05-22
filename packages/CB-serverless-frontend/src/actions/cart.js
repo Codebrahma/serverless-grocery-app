@@ -30,7 +30,6 @@ export const saveNewCart = data => ({
 
 
 export const saveItemInfoToCart = (data, boughtQty) => {
-  console.log({ ...data, boughtQty });
   return {
     type: 'SAVE_ITEM_INFO',
     payload: { ...data, boughtQty },

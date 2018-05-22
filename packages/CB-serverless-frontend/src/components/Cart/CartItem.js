@@ -1,11 +1,12 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { IconButton } from 'material-ui';
+import { CircularProgress, IconButton } from 'material-ui';
 
 
 import { getGroceryInfo } from '../../service/grocery';
 import Quantity from '../../base_components/Quantity';
+import { isEmpty } from 'lodash';
 
 const CartItemWrap = styled.div`
   display: flex;
@@ -67,6 +68,10 @@ class CartItem extends PureComponent {
 
   render() {
     const { data } = this.state;
+
+    if (isEmpty(data)) {
+      return (<CartItemWrap><CircularProgress /></CartItemWrap>);
+    }
     return (
       <CartItemWrap>
         <ItemImage
