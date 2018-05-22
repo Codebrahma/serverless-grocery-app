@@ -18,7 +18,7 @@ export default (state = initialState, { type, payload = {} }) => {
     case 'SAVE_ITEM_INFO':
       return {
         ...state,
-        cartItemsInfo: state.cartItemsInfo.concat(payload),
+        cartItemsInfo: payload,
       };
     case 'SAVE_NEW_CART_INFO':
       return {

@@ -141,6 +141,10 @@ class BillReceipt extends PureComponent {
     }
   }
 
+  getTotalAmount = () => this.props.cartItems
+    .reduce((acc, cur) => acc + (parseInt(cur.price, 10) * parseInt(cur.qty, 10)), 0);
+
+
   displayPaymentModal = (props) => {
     const checkoutHandler = window.StripeCheckout.configure({
       key: 'pk_test_rM2enW1rNROwx4ukBXGaIzhr',
@@ -161,7 +165,7 @@ class BillReceipt extends PureComponent {
             tokenId: token.id,
             orderId: props.currentOrder.orderId,
             email: token.email,
-            userId: props.userData.username
+            userId: props.userData.username,
           });
         } else {
           // to do
@@ -170,9 +174,6 @@ class BillReceipt extends PureComponent {
     });
   };
 
-
-  getTotalAmount = () => this.props.cartItems
-    .reduce((acc, cur) => acc + (parseInt(cur.price, 10) * parseInt(cur.boughtQty, 10)), 0);
 
   placeOrder = () => {
     if (this.state.placingOrder || !isNil(this.props.currentOrder)) {
@@ -226,9 +227,9 @@ class BillReceipt extends PureComponent {
           {
             cartItems &&
             cartItems.map(obj => (
-              <BillingItem>
+              <BillingItem key={obj.groceryId}>
                 <ItemText>{obj.name}</ItemText>
-                <QuantText>&#215; {obj.boughtQty}</QuantText>
+                <QuantText>&#215; {obj.qty}</QuantText>
                 <AmountText> {obj.price} &#8377;</AmountText>
               </BillingItem>))
           }
@@ -253,6 +254,7 @@ class BillReceipt extends PureComponent {
     );
   }
 }
+
 BillReceipt.defaultProps = {
   cartItems: [],
   currentOrder: null,

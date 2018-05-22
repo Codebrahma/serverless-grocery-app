@@ -4,13 +4,12 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { Card, CardActions, CardTitle, FlatButton, FontIcon } from 'material-ui';
+import { Card, CardActions, CardTitle, FlatButton } from 'material-ui';
 
 
 import { pink500, pink800, pinkA200 } from 'material-ui/styles/colors';
 import Quantity from '../../base_components/Quantity';
 import ProductImageWrap from '../../base_components/ProductImage';
-import API from '../../service/cart';
 import { updateCartItems } from '../../actions/cart';
 
 const ItemWrap = styled(Card)`
