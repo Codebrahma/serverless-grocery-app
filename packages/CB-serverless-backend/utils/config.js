@@ -1,4 +1,4 @@
 export const config = {
-  dbLocalUrl: 'http://localhost:8000',
+  dbLocalUrl: 'https://dynamodb.ap-south-1.amazonaws.com',
   dbRegion: 'ap-south-1',
 };

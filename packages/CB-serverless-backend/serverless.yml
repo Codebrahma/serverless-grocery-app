@@ -1,5 +1,5 @@
 # NOTE: update this with your service name
-service: online-grocery-api
+service: grocery-app-api
 
 # Use the serverless-webpack plugin to transpile ES6
 plugins:
@@ -31,6 +31,7 @@ provider:
         - dynamodb:PutItem
         - dynamodb:UpdateItem
         - dynamodb:DeleteItem
+        - dynamodb:BatchGetItem
       Resource: "*"
   # To load environment variables externally
   # rename env.example to env.yml and uncomment
