@@ -15,6 +15,7 @@ import { fetchCartItems } from '../actions/cart';
 const AppHeader = styled(AppBar)`
   position: fixed;
   top: 0;
+  align-items: flex-start;
 `;
 
 const RightElementContainer = styled.div`
@@ -72,28 +73,41 @@ class Header extends React.Component {
     return (
       <AppHeader
         title={<span>Serverless Shopping App</span>}
+        iconElementLeft={
+          <Link
+            to="/"
+            href="/"
+          >
+            <IconButton
+              iconStyle={{
+                color: '#fff',
+              }}
+              iconClassName="material-icons"
+            >home
+            </IconButton>
+          </Link>}
         iconElementRight={
           <RightElementContainer>
             <Link
               to="/cart"
               href="/cart"
               style={{
-                position: 'relative',
-                margin: '0 2em',
-              }}
+            position: 'relative',
+            margin: '0 2em',
+          }}
             >
               <IconButton
                 iconStyle={{
-                  color: '#fff',
-                  fontSize: 28,
-                }}
+            color: '#fff',
+            fontSize: 28,
+          }}
                 iconClassName="material-icons"
               >add_shopping_cart
               </IconButton>
               {
-                (cartData instanceof Array) &&
-                cartData.length > 0 ? <CartItemsCount>{cartData.length}</CartItemsCount> : null
-              }
+            (cartData instanceof Array) &&
+            cartData.length > 0 ? <CartItemsCount>{cartData.length}</CartItemsCount> : null
+          }
             </Link>
             <LogoutButton label="logout" onClick={this.handleLogout} />
           </RightElementContainer>
