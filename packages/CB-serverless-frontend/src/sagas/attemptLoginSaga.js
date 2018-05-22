@@ -1,11 +1,7 @@
-import {
-  takeLatest,
-  put,
-  select,
-  call,
-  take,
-} from 'redux-saga/effects';
+import { call, put, select, take, takeLatest } from 'redux-saga/effects';
 import { Auth } from 'aws-amplify';
+import { isNil } from 'lodash';
+import { saveTokenInStorage } from '../utils/storage';
 
 const loginFormSelector = state => state.form.login.values;
 
@@ -33,6 +29,7 @@ function* loginAttempt(action) {
       const currentCredentials = yield call(currentAuthenticatedUserPromise);
       const currentUserData = yield call(userDataPromise);
 
+      saveTokenInStorage(currentCredentials);
       yield put({
         type: 'ATTEMPT_LOGIN_SUCCESS',
         payload: {
@@ -50,7 +47,7 @@ function* loginAttempt(action) {
 
       const currentCredentials = yield call(currentAuthenticatedUserPromise);
       const currentUserData = yield call(userDataPromise);
-
+      saveTokenInStorage(currentCredentials);
       yield put({
         type: 'ATTEMPT_LOGIN_SUCCESS',
         payload: {
@@ -79,7 +76,7 @@ function* loginAttempt(action) {
 
       const currentCredentials = yield call(currentAuthenticatedUserPromise);
       const currentUserData = yield call(userDataPromise);
-
+      saveTokenInStorage(currentCredentials);
       yield put({
         type: 'ATTEMPT_LOGIN_SUCCESS',
         payload: {
