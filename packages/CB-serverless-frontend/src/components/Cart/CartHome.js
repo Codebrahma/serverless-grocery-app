@@ -59,7 +59,6 @@ class CartHome extends Component {
 
   getItemInfo = (groceryId) => {
     const { cartItemsInfo } = this.props;
-    console.log(cartItemsInfo);
     if (!isNil(cartItemsInfo)) {
       return cartItemsInfo.findIndex(obj => obj.groceryId === groceryId);
     }

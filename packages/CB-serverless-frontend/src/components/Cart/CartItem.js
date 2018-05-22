@@ -53,7 +53,6 @@ class CartItem extends PureComponent {
   componentDidMount() {
     // const gorceryId = this.props.id;
     const { info } = this.props;
-    console.log(info);
     this.setState((s, p) => ({
       data: info,
     }));
