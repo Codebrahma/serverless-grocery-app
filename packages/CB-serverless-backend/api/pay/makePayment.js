@@ -12,10 +12,11 @@ awsConfigUpdate();
 
 const documentClient = new AWS.DynamoDB.DocumentClient();
 
-const getAmountFromOrderId = (orderId) => {
+const getAmountFromOrderId = (orderId, userId) => {
   const params = {
     TableName: ORDERS_TABLE_NAME,
     Key: {
+			'userId': userId,
       'orderId': orderId,
     },
 
@@ -31,7 +32,8 @@ export const main = (event, context, callback) => {
   const {
     email,
     stripeId,
-    orderId,
+		orderId,
+		userId
   } = JSON.parse(event.body);
 
   if (!email || !stripeId || !orderId) {
@@ -43,7 +45,7 @@ export const main = (event, context, callback) => {
 
   let amount; 
   
-  getAmountFromOrderId(orderId)
+  getAmountFromOrderId(orderId, userId)
     .then((response) => {
       amount = response.Item.orderTotal;
     })
