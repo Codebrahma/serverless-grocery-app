@@ -36,10 +36,12 @@ const createOrderTable = () => {
   var orderParams = {
     TableName: 'orders',
     KeySchema: [
-      { AttributeName: 'orderId', KeyType: 'HASH' },
+			{ AttributeName: 'userId', KeyType: 'HASH'},			
+			{ AttributeName: 'orderId', KeyType: 'RANGE' },
     ],
     AttributeDefinitions: [
-      { AttributeName: 'orderId', AttributeType: 'S' },
+			{ AttributeName: 'orderId', AttributeType: 'S' },
+			{ AttributeName: 'userId', AttributeType: 'S' },
     ],
     ProvisionedThroughput: {
       ReadCapacityUnits: 2,
