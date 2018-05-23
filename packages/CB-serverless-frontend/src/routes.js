@@ -13,6 +13,7 @@ import { updateAuth } from './Auth/actionCreators';
 import CartHome from './components/Cart/CartHome';
 import OrderPlaced from './components/order-placed';
 import ProfileHome from './components/ProfileHome';
+import BillReceipt from './components/Cart/BillReceipt';
 
 const DefaultLayout = ({component: Component, ...rest}) => (
   <Route
@@ -107,6 +108,7 @@ class Routes extends React.Component {
               <DefaultLayout exact path="/category/" component={CategoryItems} />
               <DefaultLayout exact path="/profile" component={ProfileHome} />
               <DefaultLayout exact path="/cart" component={CartHome} />
+              <DefaultLayout exact path="/checkout" component={BillReceipt} />
               <DefaultLayout exact path="/order-placed" component={OrderPlaced} />
             </React.Fragment>
             :
