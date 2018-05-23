@@ -216,6 +216,9 @@ class BillReceipt extends PureComponent {
 
   render() {
     const { cartItems } = this.props;
+    if (!cartItems || cartItems.success === false || cartItems.length === 0) {
+      return null;
+    }
 
     return (
       <BillReceiptWrap>

@@ -1,29 +1,26 @@
-import { put, call, select, takeLatest } from 'redux-saga/effects';
+import { call, put, select, takeLatest } from 'redux-saga/effects';
 import CartService from '../service/cart';
 
 const userIdSelector = state => state.auth.userData && state.auth.userData.username;
 const cartItemsSelector = state => state.cart.cartData || [];
-const cartItemsInfoSelector = state => state.cart.cartItemsInfo || [];
-const { updateCart } = CartService;
+const { updateCart, getCartDetails } = CartService;
 
 function* cartItemDelete(action) {
   try {
     const userId = yield select(userIdSelector);
     const currentCart = yield select(cartItemsSelector);
-    const currentCartInfo = yield select(cartItemsInfoSelector);
 
     const newCart = currentCart.filter(obj => obj.groceryId !== action.payload);
-
-    const newCartItemsInfo = currentCartInfo.filter(obj => obj.groceryId !== action.payload);
 
     const response = yield call(() => updateCart(userId, newCart));
     const { resp } = response.data ? response.data : {};
 
+    const cartDetails = yield call(() => getCartDetails(userId));
+
 
     yield put({ type: 'SAVE_NEW_CART', payload: response.data.Attributes.cartData });
 
-    yield put({ type: 'SAVE_NEW_CART_INFO', payload: newCartItemsInfo });
-
+    yield put({ type: 'SAVE_NEW_CART_INFO', payload: cartDetails.data || [] });
   } catch (e) {
     console.log(e);
   }
