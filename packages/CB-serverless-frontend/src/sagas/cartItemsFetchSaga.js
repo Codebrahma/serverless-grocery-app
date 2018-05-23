@@ -23,6 +23,17 @@ function* cartItemsFetch(action) {
     });
   } catch (e) {
     console.log(e);
+    yield put({
+      type: 'USER_CART_ITEMS',
+      payload: {
+        cartData: [],
+      },
+    });
+
+    yield put({
+      type: 'SAVE_ITEM_INFO',
+      payload: [],
+    });
   }
 }
 
