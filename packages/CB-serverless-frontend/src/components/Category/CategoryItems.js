@@ -10,6 +10,7 @@ import CircularProgress from 'material-ui/CircularProgress';
 import ProductItem from '../Product/ProductItem';
 import SubCategories from './sub-categories';
 import * as API from '../../service/grocery';
+import ProductSkeleton from '../../base_components/ProductSkeleton';
 
 const ItemsWrapper = styled.div`
   display: flex;
@@ -126,6 +127,8 @@ class CategoryItems extends Component {
     return null;
   };
 
+  skeletons = () => [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(i => <ProductSkeleton key={i} />);
+
   render() {
     const { subCategories, checked } = this.state;
     const { categoryItems, noItemAvailable } = this.getItemsToShow();
@@ -142,6 +145,10 @@ class CategoryItems extends Component {
           <ItemsWrapper>
             {
               this.renderNoItems()
+            }
+            {
+              this.state.items.length === 0
+              && this.skeletons()
             }
             {
               !noItemAvailable &&

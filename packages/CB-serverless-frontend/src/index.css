@@ -3,9 +3,11 @@
     margin: 0;
     padding: 0;
 }
-a{
+
+a {
     text-decoration: none;
 }
+
 body {
     margin: 0;
     padding: 0;
@@ -14,11 +16,26 @@ body {
     box-sizing: border-box;
 }
 
-.error-message{
+.error-message {
     color: #721c24;
     background-color: #f8d7da;
     padding: 1em 5em;
     border: 1px solid #f5c6cb;
     margin: 1em auto;
     border-radius: 3em;
+}
+
+@keyframes loading {
+    to {
+        background-position: 350% 0, 50% 20px,
+        50% 270px, 1em 310px, 90% 345px,
+        0% 0%;
+    }
+}
+
+@keyframes loadingCart {
+    to {
+        background-position: 300% 0, 64px 32px, 30% 60px, 76% 50px, 85% 50px,
+        0% 0%;
+    }
 }
