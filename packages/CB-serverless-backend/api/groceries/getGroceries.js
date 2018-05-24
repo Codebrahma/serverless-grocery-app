@@ -7,7 +7,7 @@ import map from 'lodash/map';
 import awsConfigUpdate from '../../utils/awsConfigUpdate';
 import getErrorResponse from '../../utils/getErrorResponse';
 import getSuccessResponse from '../../utils/getSuccessResponse';
-import { GROCERIES_TABLE_NAME } from '../../dynamoDb/constants';
+import { GROCERIES_TABLE_NAME, GROCERIES_TABLE_GLOBAL_INDEX_NAME } from '../../dynamoDb/constants';
 
 awsConfigUpdate();
 
@@ -36,14 +36,15 @@ export const main = (event, context, callback) => {
   if (event.queryStringParameters && event.queryStringParameters.category) {
     const category = event.queryStringParameters.category
     var params = {
-      ...getBaseGroceriesParams(),
-      FilterExpression: `#category = :categoryToFilter`,
+			...getBaseGroceriesParams(),
+			IndexName: GROCERIES_TABLE_GLOBAL_INDEX_NAME,
+      KeyConditionExpression: `#category = :categoryToFilter`,
 			ExpressionAttributeValues: {
         ':categoryToFilter': category
       },
     };
 
-    const queryPromise = documentClient.scan(params).promise();
+    const queryPromise = documentClient.query(params).promise();
 
     queryPromise
       .then((data) => {
