@@ -20,7 +20,6 @@ export const main = (event, context, callback) => {
 	}
 	
 	let groceryIdToGroceryDataMapping;
-	console.log('event.queryStringParameters ', event.queryStringParameters.userId);
 	getCartQueryPromise(event.queryStringParameters.userId)
 		.then((cart) => {
       

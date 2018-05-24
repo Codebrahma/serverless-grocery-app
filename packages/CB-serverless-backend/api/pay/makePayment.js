@@ -65,7 +65,7 @@ export const main = (event, context, callback) => {
       currency: "usd",
       customer: customer.id
     }))
-  .then((charge) => {
+  .then(() => {
     UpdateOrderStatus(userId, orderId, 'COMPLETED')
   })
   .then(() => {
