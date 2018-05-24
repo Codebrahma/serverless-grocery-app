@@ -1,3 +1,5 @@
+import {CODE_VERIFICATION} from '../constants/app';
+
 const initialState = {
   isAuthenticating: false,
   isAuthenticated: false,
@@ -12,7 +14,7 @@ export default (state = initialState, { type, payload = {}}) => {
         ...state,
         isAuthenticating: payload.authScreen !== 'register',
         isAuthenticated: false,
-        errorMessage: payload.authScreen === 'register' ? 'User is not confirmed.' : null,
+        errorMessage: payload.authScreen === 'register' ? CODE_VERIFICATION : null,
         identityId: null,
         userData: null
       }

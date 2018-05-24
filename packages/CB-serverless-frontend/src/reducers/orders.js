@@ -3,18 +3,24 @@ const initialState = {
   orderList: [],
 };
 
-export default (state = initialState, { type, payload = {} }) => {
+export default (state = initialState, { type, payload = {}, ...rest }) => {
   switch (type) {
     case 'SAVE_ORDER_ID':
       return {
         ...state,
         currentOrder: payload,
       };
+    case 'SAVE_ALL_ORDERS':
+      return {
+        ...state,
+        orderList: payload,
+        currentOrder: rest.pendingOrder,
+      };
     case 'CLEAR_ORDER':
       return {
         ...state,
-        currentOrder: initialState.currentOrder,
-        orderList: initialState.orderList
+        currentOrder: [],
+        orderList: [],
       };
     default:
       return state;

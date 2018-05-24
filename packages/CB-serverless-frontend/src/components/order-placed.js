@@ -60,21 +60,21 @@ class OrderPlaced extends React.Component {
     super(props);
     this.state = {
       cartItems: [],
-      orderId: null
+      orderId: null,
     };
   }
 
   componentWillMount() {
-    const {cartItems, currentOrder} = this.props;
+    const { cartItems, currentOrder } = this.props;
     if (isEmpty(cartItems) || isEmpty(currentOrder)) {
-      this.props.cleanCart();
+      // this.props.cleanCart();
       this.props.cleanOrder();
-      this.props.history.push('/')
-      return ;
+      this.props.history.push('/');
+      return;
     }
     this.setState({
       cartItems: this.props.cartItems,
-      orderId: this.props.currentOrder.orderId
+      orderId: this.props.currentOrder.orderId,
     }, () => {
       this.props.cleanCart();
       this.props.cleanOrder();
@@ -82,7 +82,7 @@ class OrderPlaced extends React.Component {
   }
 
   render() {
-    const {cartItems, orderId} = this.state;
+    const { cartItems, orderId } = this.state;
     let totalAmount = 0;
     return (
       <Container>
@@ -93,22 +93,23 @@ class OrderPlaced extends React.Component {
           {`Order-Id ${orderId}`}
         </OrderId>
         <ListContainer>
-        {
-          cartItems.map(({ name, boughtQty, price }, index) => {
-            totalAmount += price;
-            return (
-              <List key={index}>
-                <Section>
-                  <Item>{name}</Item>
-                  <Item>&nbsp;{`x ${boughtQty}`}&nbsp;</Item>
-                </Section>
-                <div>
-                  <p>&#8377;{` ${price}`}&nbsp;</p>
-                </div>
-              </List>
-            );
-          })
-        }
+          {
+            cartItems.length > 0 &&
+            cartItems.map(({ name, boughtQty, price }, index) => {
+              totalAmount += price;
+              return (
+                <List key={index}>
+                  <Section>
+                    <Item>{name}</Item>
+                    <Item>&nbsp;{`x ${boughtQty}`}&nbsp;</Item>
+                  </Section>
+                  <div>
+                    <p>&#8377;{` ${price}`}&nbsp;</p>
+                  </div>
+                </List>
+              );
+            })
+          }
           <hr />
           <List>
             <Section>
@@ -120,11 +121,11 @@ class OrderPlaced extends React.Component {
           </List>
         </ListContainer>
         <RaisedButton
-          label={'Continue Shopping'}
-          primary={true}
-          buttonStyle={{backgroundColor: '#008040', width: '100%'}}
+          label="Continue Shopping"
+          primary
+          buttonStyle={{ backgroundColor: '#008040', width: '100%' }}
           onClick={() => this.props.history.push('/')}
-          />
+        />
       </Container>
     );
   }
@@ -132,7 +133,7 @@ class OrderPlaced extends React.Component {
 
 const mapStateToProps = state => ({
   cartItems: state.cart.cartItemsInfo,
-  currentOrder: state.order.currentOrder
+  currentOrder: state.order.currentOrder,
 });
 
 const mapDispatchToProps = dispatch => ({

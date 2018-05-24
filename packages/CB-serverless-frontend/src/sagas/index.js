@@ -8,6 +8,8 @@ import cartItemsCleanSaga from './cartItemsCleanSaga';
 import placeOrderSaga from './placeOrderSaga';
 import cleanOrderSaga from './cleanOrderSaga';
 import paymentTokenIdSubmitSaga from './paymentTokenIdSubmitSaga';
+import fetchOrderSaga from './fetchAllOrdersSaga';
+import cancelOrderSaga from './cancelOrderSaga';
 
 function* rootSaga() {
   yield fork(attemptLoginSaga);
@@ -19,6 +21,8 @@ function* rootSaga() {
   yield fork(placeOrderSaga);
   yield fork(cleanOrderSaga);
   yield fork(paymentTokenIdSubmitSaga);
+  yield fork(fetchOrderSaga);
+  yield fork(cancelOrderSaga);
 }
 
 export default rootSaga;

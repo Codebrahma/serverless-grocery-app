@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { IconButton } from 'material-ui';
 import Quantity from '../../base_components/Quantity';
+import CartItemSkeleton from '../../base_components/CartItemSkeleton';
 
 const CartItemWrap = styled.div`
   display: flex;
@@ -53,7 +54,6 @@ class CartItem extends PureComponent {
   componentDidMount() {
     // const gorceryId = this.props.id;
     const { info } = this.props;
-    console.log(info);
     this.setState((s, p) => ({
       data: info,
     }));
@@ -70,8 +70,8 @@ class CartItem extends PureComponent {
 
   render() {
     const { data } = this.state;
-    if (!data) {
-      return null;
+    if (!data || !data.name) {
+      return (<CartItemSkeleton />);
     }
     return (
       <CartItemWrap>

@@ -20,7 +20,7 @@ const validate = (values) => {
   return errors;
 }
 
-const MyForm = ({ handleSubmit, type, shouldDisableLogin, requireVerification }) => {
+const MyForm = ({ handleSubmit, type, shouldDisableLogin }) => {
   return (
     <form onSubmit={handleSubmit}>
       <div className="login-input">
@@ -32,33 +32,19 @@ const MyForm = ({ handleSubmit, type, shouldDisableLogin, requireVerification })
         />
       </div>
       <div className="login-input">
-        {
-          !requireVerification && (
-            <Field
-              name="password" 
-              component={TextField}
-              type="password"
-              floatingLabelText="Password"
-              disabled={shouldDisableLogin}
-            />
-          )
-        }
-      </div>
-      <div className="login-input">
-        {
-          requireVerification && (
-            <Field
-              name="verification" 
-              component={TextField}
-              floatingLabelText="Verification Code"
-            />
-          )
-        }
+        <Field
+          name="password"
+          component={TextField}
+          type="password"
+          floatingLabelText="Password"
+          disabled={shouldDisableLogin}
+        />
       </div>
       <RaisedButton
         secondary
         type={type}
-        label="Submit"
+        style={{margin: '6% 0'}}
+        label="Login"
       />
     </form>
   )

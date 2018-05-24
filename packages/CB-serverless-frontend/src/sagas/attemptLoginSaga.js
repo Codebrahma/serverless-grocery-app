@@ -8,9 +8,21 @@ import {
 import { Auth } from 'aws-amplify';
 
 const loginFormSelector = state => state.form.login.values;
+const registerFormSelector = state => state.form.register.values;
 
 function* loginAttempt(action) {
-  const signUpPromise = ({ username, password }) => Auth.signUp(username, password);
+  const signUpPromise = ({
+    name,
+    username,
+    password,
+    phone }) => Auth.signUp({
+      username,
+      password,
+      attributes: {
+        name,
+        'phone_number': phone,
+      },
+    });
   const confirmSignUpPromise = ({ username, verification }) => Auth.confirmSignUp(username, verification);
   const loginPromise = ({ username, password }) => Auth.signIn(username, password);
   const currentAuthenticatedUserPromise = () => Auth.currentAuthenticatedUser();
@@ -19,13 +31,20 @@ function* loginAttempt(action) {
   try {
     if (action.payload.authScreen === 'register') {
       const {
+        name,
         username,
         password,
-      } = yield select(loginFormSelector);
-      yield call(signUpPromise, { username, password });
+        phone
+      } = yield select(registerFormSelector);
+      yield call(signUpPromise, {
+        name,
+        username,
+        password,
+        phone
+      });
       yield take('CONFIRM_SIGNUP');
 
-      const { verification } = yield select(loginFormSelector);
+      const { verification } = yield select(registerFormSelector);
       yield call(confirmSignUpPromise, { username, verification });
 
       yield call(loginPromise, { username, password });
@@ -62,6 +81,7 @@ function* loginAttempt(action) {
   } catch (e) {
     console.log(e);
     const errorMessage = typeof e === 'string' && e;
+    console.log("=>>>>", errorMessage);
     yield put({
       type: 'ATTEMPT_LOGIN_FAILURE',
       payload: {
@@ -71,7 +91,7 @@ function* loginAttempt(action) {
 
     try {
       yield take('CONFIRM_SIGNUP');
-      const { username, password, verification } = yield select(loginFormSelector);
+      const { username, password, verification } = yield select(registerFormSelector);
 
       yield call(confirmSignUpPromise, { username, verification });
 
