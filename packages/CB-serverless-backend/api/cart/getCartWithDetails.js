@@ -20,12 +20,12 @@ export const main = (event, context, callback) => {
 	}
 	
 	let groceryIdToGroceryDataMapping;
-	
 	getCartQueryPromise(event.queryStringParameters.userId)
 		.then((cart) => {
-			const cartItems = cart.Item.cartData;
       
-			if (!cartItems || size(cartItems) < 1) {
+			const cartItems = cart.Item ? cart.Item.cartData : [];
+      
+			if (!cart || size(cartItems) < 1) {
 				callback(null, getSuccessResponse({success: false, message: 'Cart is empty'}));
 				return;
 			}

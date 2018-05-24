@@ -51,7 +51,7 @@ export const main = (event, context, callback) => {
 		});
 }
 
-const UpdateOrderStatus = (userId, orderId, orderStatus) =>  {
+export const UpdateOrderStatus = (userId, orderId, orderStatus) =>  {
 	var updateParams = {
 		TableName: ORDERS_TABLE_NAME,
 		Key:{
