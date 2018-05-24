@@ -201,29 +201,26 @@ class CartHome extends Component {
   };
 
   render() {
-    const { currentOrder } = this.props;
+    const { currentOrder, cartItems } = this.props;
     const isAnyOrderPending = !_.isNil(currentOrder) && currentOrder.orderStatus === 'PAYMENT_PENDING';
-    // let pendingOrderIndex = -1;
-    // if (orderList.length > 0) {
-    //   pendingOrderIndex = orderList.findIndex(order => order.orderStatus === 'PAYMENT_PENDING');
-    //   isAnyOrderPending = pendingOrderIndex >= 0;
-    // } else {
-    //   isAnyOrderPending = false;
-    // }
 
     return (
       <CartWrapper>
         <CartMain>
           <CartHead>My Cart</CartHead>
           {this.renderCartItems()}
-          <OrderButton
-            overlayStyle={{
-              width: '200px',
-            }}
-            title="Checkout &#10230;"
-            disabled={isAnyOrderPending}
-            onClick={this.doCheckout}
-          />
+          {
+            (isAnyOrderPending || (cartItems && cartItems.length > 0))
+            &&
+            <OrderButton
+              overlayStyle={{
+                width: '200px',
+              }}
+              title="Checkout &#10230;"
+              disabled={isAnyOrderPending}
+              onClick={this.doCheckout}
+            />
+          }
         </CartMain>
         {
           this.renderPendingOrderSection(isAnyOrderPending)

@@ -12,8 +12,8 @@ const CheckoutButton = styled(RaisedButton)`
 `;
 
 const OrderButton = ({
-                       backgroundColor, fullWidth, disabled, buttonStyle, overlayStyle, onClick, title,
-                     }) => (
+  backgroundColor, fullWidth, disabled, buttonStyle, overlayStyle, onClick, title,
+}) => (
   <CheckoutButton
     backgroundColor={backgroundColor || '#6ca749'}
     fullWidth={fullWidth}
@@ -22,7 +22,7 @@ const OrderButton = ({
       ...{
         padding: '0 0em',
         height: '100%',
-        fontSize: 20,
+        fontSize: '1em',
       },
       ...buttonStyle,
     }}
