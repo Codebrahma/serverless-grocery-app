@@ -201,29 +201,26 @@ class CartHome extends Component {
   };
 
   render() {
-    const { currentOrder } = this.props;
+    const { currentOrder, cartItems } = this.props;
     const isAnyOrderPending = !_.isNil(currentOrder) && currentOrder.orderStatus === 'PAYMENT_PENDING';
-    // let pendingOrderIndex = -1;
-    // if (orderList.length > 0) {
-    //   pendingOrderIndex = orderList.findIndex(order => order.orderStatus === 'PAYMENT_PENDING');
-    //   isAnyOrderPending = pendingOrderIndex >= 0;
-    // } else {
-    //   isAnyOrderPending = false;
-    // }
 
     return (
       <CartWrapper>
         <CartMain>
           <CartHead>My Cart</CartHead>
           {this.renderCartItems()}
-          <OrderButton
-            overlayStyle={{
-              width: '200px',
-            }}
-            title="Checkout &#10230;"
-            disabled={isAnyOrderPending}
-            onClick={this.doCheckout}
-          />
+          {
+            (isAnyOrderPending || (cartItems && cartItems.length > 0))
+            &&
+            <OrderButton
+              overlayStyle={{
+                width: '200px',
+              }}
+              title="Checkout &#10230;"
+              disabled={isAnyOrderPending}
+              onClick={this.doCheckout}
+            />
+          }
         </CartMain>
         {
           this.renderPendingOrderSection(isAnyOrderPending)
@@ -239,12 +236,10 @@ CartHome.propTypes = {
   deleteCartItem: PropTypes.func.isRequired,
   cancelOrder: PropTypes.func.isRequired,
   updateCartItemQty: PropTypes.func.isRequired,
-  cartItems: PropTypes.shape([
-    {
-      groceryId: PropTypes.string,
-      quantity: PropTypes.number,
-    },
-  ]).isRequired,
+  cartItems: PropTypes.arrayOf(PropTypes.shape({
+    groceryId: PropTypes.string,
+    quantity: PropTypes.number,
+  })).isRequired,
   // orderList: PropTypes.array.isRequired,
   cartItemsInfo: PropTypes.array.isRequired,
   history: PropTypes.object.isRequired,
@@ -255,13 +250,13 @@ CartHome.propTypes = {
 
 function initMapStateToProps(state) {
   return {
-    cartItems: state.cart.cartData,
-    cartItemsInfo: state.cart.cartItemsInfo,
+    cartItems: state.cart.cartData || [],
+    cartItemsInfo: state.cart.cartItemsInfo || [],
     // orderList: state.order.orderList,
-    currentOrder: state.order.currentOrder,
+    currentOrder: state.order.currentOrder || {},
     userData: state.auth.userData,
     paymentComplete: state.payment.paymentComplete,
-    paymentInProgress: state.payment.paymentInProgress,
+    paymentInProgress: state.payment.paymentInProgress || false,
   };
 }
 

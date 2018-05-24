@@ -7,7 +7,7 @@ const ProductImageWrap = styled(CardMedia)`
   width: ${props => (props.width ? `${props.width}px` : '250px')};
   height: ${props => (props.height ? `${props.height}px` : '250px')};
   margin: 0 auto;
-  opacity: ${props => (props.isSoldOut ? '0.4' : '1')};
+  opacity: ${props => (props.issoldout === 'true' ? '0.4' : '1')};
 `;
 
 export default ProductImageWrap;

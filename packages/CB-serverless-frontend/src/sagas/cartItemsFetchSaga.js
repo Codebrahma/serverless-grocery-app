@@ -8,7 +8,9 @@ function* cartItemsFetch(action) {
   try {
     const userId = yield select(userIdSelector);
     const response = yield call(() => getCart(userId));
-    const cartDetails = yield call(() => getCartDetails(userId));
+    let cartDetails = yield call(() => getCartDetails(userId));
+    cartDetails = cartDetails.data.length > 0 ? cartDetails.data : [];
+
     const { cartData } = response.data.Item ? response.data.Item : [];
     yield put({
       type: 'USER_CART_ITEMS',
@@ -19,7 +21,7 @@ function* cartItemsFetch(action) {
 
     yield put({
       type: 'SAVE_ITEM_INFO',
-      payload: cartDetails.data || [],
+      payload: cartDetails || [],
     });
   } catch (e) {
     console.log(e);
