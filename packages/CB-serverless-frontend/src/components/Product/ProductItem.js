@@ -103,9 +103,9 @@ class ProductItem extends Component {
   };
 
   displaySoldOut = () => {
-    const { isSoldOut } = this.props;
+    const { issoldout } = this.props;
 
-    if (isSoldOut) {
+    if (issoldout) {
       return (
         <CrossSoldOut>
           Sold out
@@ -115,16 +115,16 @@ class ProductItem extends Component {
   };
 
   displayQuantityCounter = (max) => {
-    const { isSoldOut } = this.props;
+    const { issoldout } = this.props;
 
-    if (!isSoldOut) {
+    if (!issoldout) {
       return (
         <Quantity
           size={30}
           onChange={data => this.setState({ quantity: data })}
           initialQuantity={this.state.quantity}
           maxQuantity={max}
-          disabled={isSoldOut}
+          disabled={issoldout}
         />);
     }
     return null;
@@ -132,7 +132,7 @@ class ProductItem extends Component {
 
   render() {
     const {
-      name, price, url, isSoldOut,
+      name, price, url, issoldout,
     } = this.props;
     return (
       <ItemWrap
@@ -141,7 +141,7 @@ class ProductItem extends Component {
         }}
       >
         {this.displaySoldOut()}
-        <ProductImageWrap isSoldOut={isSoldOut}>
+        <ProductImageWrap issoldout={`${issoldout}`}>
           <img src={url} alt="" />
         </ProductImageWrap>
         <CardTitle
@@ -172,7 +172,7 @@ class ProductItem extends Component {
 
           <AddCart
             onClick={_.debounce(this.saveToCart, 500)}
-            disabled={isSoldOut}
+            disabled={issoldout}
             rippleColor={pink800}
             labelPosition="before"
             secondary
@@ -186,17 +186,17 @@ class ProductItem extends Component {
 }
 
 ProductItem.defaultProps = {
-  isSoldOut: false,
+  issoldout: false,
 };
 
 
 ProductItem.propTypes = {
-  groceryId: PropTypes.number.isRequired,
+  groceryId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
   quant: PropTypes.number.isRequired,
   name: PropTypes.string.isRequired,
-  price: PropTypes.string.isRequired,
+  price: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
   url: PropTypes.string.isRequired,
-  isSoldOut: PropTypes.bool,
+  issoldout: PropTypes.bool,
   updateCartItems: PropTypes.func.isRequired,
 };
 

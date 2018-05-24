@@ -30,9 +30,9 @@ const BillingList = styled.ul`
     bottom: 0;
     left: 0;
     width: 100%;
-    filter: drop-shadow(#ddd 0px 3px 1px);
+    filter: drop-shadow(#bbb 0px 3px 1px);
     height: 32px;
-    transform: translateY(2em);
+    transform: translateY(1.8em);
   }
 `;
 

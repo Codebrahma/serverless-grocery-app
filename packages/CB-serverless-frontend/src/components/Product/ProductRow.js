@@ -57,12 +57,13 @@ const ProductRow = ({ title, items }) => (
       {
         _.map(items, obj => (
           <ProductItem
+            key={obj.groceryId}
             groceryId={obj.groceryId}
             name={obj.name}
             price={obj.price}
             quant={obj.availableQty}
             url={obj.url}
-            isSoldOut={!obj.availableQty >= 1}
+            issoldout={!obj.availableQty >= 1}
           />
         ))
       }

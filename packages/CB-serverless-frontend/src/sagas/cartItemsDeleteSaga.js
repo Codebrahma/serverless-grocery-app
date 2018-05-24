@@ -15,12 +15,15 @@ function* cartItemDelete(action) {
     const response = yield call(() => updateCart(userId, newCart));
     const { resp } = response.data ? response.data : {};
 
-    const cartDetails = yield call(() => getCartDetails(userId));
+    let cartDetails = yield call(() => getCartDetails(userId));
+
+
+    cartDetails = cartDetails.data.length > 0 ? cartDetails.data : [];
 
 
     yield put({ type: 'SAVE_NEW_CART', payload: response.data.Attributes.cartData });
 
-    yield put({ type: 'SAVE_NEW_CART_INFO', payload: cartDetails.data || [] });
+    yield put({ type: 'SAVE_NEW_CART_INFO', payload: cartDetails || [] });
   } catch (e) {
     console.log(e);
   }

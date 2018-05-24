@@ -82,6 +82,7 @@ class Quantity extends React.PureComponent {
           max="10"
           step="1"
           value={this.state.count}
+          readOnly
           size={size}
         />
         <CountSpan

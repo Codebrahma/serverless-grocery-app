@@ -94,12 +94,13 @@ class CategoryItems extends Component {
         noItemAvailable = false;
         return (
           <ProductItem
+            key={item.groceryId}
             groceryId={item.groceryId}
             name={item.name}
             price={item.price}
             quant={item.availableQty}
             url={item.url}
-            isSoldOut={!item.availableQty >= 1}
+            issoldout={!item.availableQty >= 1}
           />
         );
       }
