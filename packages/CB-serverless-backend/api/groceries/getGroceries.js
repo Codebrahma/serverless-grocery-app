@@ -59,7 +59,6 @@ export const main = (event, context, callback) => {
     var params = getBaseGroceriesParams();
 
     const queryPromise = documentClient.scan(params).promise();
-    
     // Does a pre processing to show response
     queryPromise
       .then((data) => {

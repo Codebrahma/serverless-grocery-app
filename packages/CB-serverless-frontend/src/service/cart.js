@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { CART_DETAILS_URL, CART_URL } from './api_constants';
+import { getIdToken, CART_DETAILS_URL, CART_URL } from './api_constants';
 
 axios.defaults.headers.common.Authorization = getIdToken();
 /**
