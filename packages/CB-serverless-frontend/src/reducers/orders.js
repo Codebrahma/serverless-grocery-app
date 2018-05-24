@@ -1,6 +1,7 @@
 const initialState = {
   currentOrder: null,
   orderList: [],
+  orderListFetched: false,
 };
 
 export default (state = initialState, { type, payload = {}, ...rest }) => {
@@ -15,6 +16,7 @@ export default (state = initialState, { type, payload = {}, ...rest }) => {
         ...state,
         orderList: payload,
         currentOrder: rest.pendingOrder,
+        orderListFetched: true
       };
     case 'CLEAR_ORDER':
       return {

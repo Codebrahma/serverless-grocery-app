@@ -11,6 +11,7 @@ import { Auth } from 'aws-amplify';
 import AppBar from 'material-ui/AppBar';
 import { updateAuth } from '../Auth/actionCreators';
 import { fetchCartItems } from '../actions/cart';
+import { fetchAllOrders } from '../actions/order';
 
 const AppHeader = styled(AppBar)`
   position: fixed;
@@ -50,8 +51,12 @@ class Header extends React.Component {
     this.handleLogout = this.handleLogout.bind(this);
   }
 
-  componentWillMount() {
-    this.props.fetchCartItems();
+  componentDidMount() {
+    const {orderListFetched, fetchAllOrders, fetchCartItems} = this.props;
+    if (!orderListFetched) {
+      fetchAllOrders();
+    }
+    fetchCartItems();
   }
 
   async handleLogout() {
@@ -128,11 +133,13 @@ const mapStateToProps = state => ({
   identityId: state.auth.identityId,
   userData: state.auth.userData,
   cartData: state.cart.cartData,
+  orderListFetched: state.order.orderListFetched,
 });
 
 const mapDispatchToProps = dispatch => ({
   updateAuth: bindActionCreators(updateAuth, dispatch),
   fetchCartItems: bindActionCreators(fetchCartItems, dispatch),
+  fetchAllOrders: bindActionCreators(fetchAllOrders, dispatch),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Header);
