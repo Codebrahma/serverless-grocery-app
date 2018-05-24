@@ -21,7 +21,7 @@ function* fetchOrder(action) {
     yield put({
       type: 'SAVE_ALL_ORDERS',
       payload: response.data,
-      pendingOrder: pendingOrder || {},
+      pendingOrder: pendingOrder || null,
     });
   } catch (e) {
     console.log(e);

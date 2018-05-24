@@ -205,7 +205,7 @@ class BillReceipt extends PureComponent {
       <OrderButton
         backgroundColor="#a4c639"
         fullWidth
-        disabled={isDisabled}
+        disabled={Boolean(isDisabled)}
         buttonStyle={{
           padding: '0 0em',
           height: '100%',
