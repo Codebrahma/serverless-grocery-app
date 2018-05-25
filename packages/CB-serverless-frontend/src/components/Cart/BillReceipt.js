@@ -81,12 +81,12 @@ const TotalWrap = styled.div`
 `;
 
 const TotalText = ItemText.extend`
-  font-size: 24px;
+  font-size: 1.2em;
 `;
 
 const TotalAmount = AmountText.extend`
   font-weight: bold;
-  font-size: 24px;
+  font-size: 1.2em;
   color: ${pinkA200};
   flex: 1 1 40%;
 `;
@@ -106,7 +106,7 @@ const ReceiptTitle = styled.h2`
 
 const EmptyCart = styled.div`
   padding: 2em;
-  font-size: 20px;
+  font-size: 1.2em;
   text-align: center;
   color: #888;
   background: #eee;
