@@ -117,6 +117,7 @@ const OrderButton = styled(RaisedButton)`
   margin-bottom: 2em;
   > button {
     color: #fff;
+    font-size: 1.2em !important;
   }
 `;
 
@@ -211,7 +212,7 @@ class BillReceipt extends PureComponent {
           height: '100%',
         }}
         overlayStyle={{
-          padding: '1em',
+          padding: '0.4em',
           height: '100%',
         }}
         onClick={this.placeOrder}
