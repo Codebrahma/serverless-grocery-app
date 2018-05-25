@@ -42,7 +42,7 @@ const AddCart = styled(FlatButton)`
       }
     }
   }
-  font-size: 12px;
+  font-size: 0.9em;
 `;
 
 const soldOutColor = pink500;
@@ -147,13 +147,13 @@ class ProductItem extends Component {
         <CardTitle
           title={name}
           titleStyle={{
-            fontSize: 20,
+            fontSize: '1.1em',
             whiteSpace: 'nowrap',
             overflow: 'hidden',
             textOverflow: 'ellipsis',
           }}
           subtitleStyle={{
-            fontSize: 18,
+            fontSize: '1em',
           }}
           subtitle={price ? `${price} ₹` : ''}
         />
@@ -175,6 +175,9 @@ class ProductItem extends Component {
             disabled={issoldout}
             rippleColor={pink800}
             labelPosition="before"
+            labelStyle={{
+              fontSize: '0.8em',
+            }}
             secondary
             label="Add to Cart"
           />

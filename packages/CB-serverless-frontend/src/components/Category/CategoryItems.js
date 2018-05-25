@@ -148,7 +148,7 @@ class CategoryItems extends Component {
               this.renderNoItems()
             }
             {
-              this.state.items.length === 0
+              this.state.items.length === 0 && !noItemAvailable
               && this.skeletons()
             }
             {
