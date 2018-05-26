@@ -66,6 +66,17 @@ const OrderPending = styled.section`
   }
 `;
 
+const TotalSection = styled.div`
+  margin: 2em auto;
+  font-size: 1.5em;
+  padding: 0 3em;
+  text-align: right;
+  > span:first-child{
+    margin: 0 2em;
+  }
+
+`;
+
 
 class CartHome extends Component {
   constructor(props) {
@@ -201,7 +212,7 @@ class CartHome extends Component {
   };
 
   render() {
-    const { currentOrder, cartItems } = this.props;
+    const { currentOrder, cartItems, cartItemsInfo } = this.props;
     const isAnyOrderPending = !_.isNil(currentOrder) && currentOrder.orderStatus === 'PAYMENT_PENDING';
 
     return (
@@ -209,6 +220,15 @@ class CartHome extends Component {
         <CartMain>
           <CartHead>My Cart</CartHead>
           {this.renderCartItems()}
+
+          {
+            (cartItems && cartItems.length > 0 && cartItemsInfo && cartItemsInfo.length > 0)
+            &&
+            <TotalSection>
+              <span>Total:</span>
+              {cartItemsInfo.reduce((total, cur) => total += cur.price * cur.qty, 0)} &#8377;
+            </TotalSection>
+          }
           {
             (isAnyOrderPending || (cartItems && cartItems.length > 0))
             &&
