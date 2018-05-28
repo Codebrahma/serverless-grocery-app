@@ -3,11 +3,12 @@ import _ from 'lodash';
 import filter from 'lodash/filter';
 import uniqBy from 'lodash/uniqBy';
 import map from 'lodash/map';
+import reduce from 'lodash/reduce';
 
 import awsConfigUpdate from '../../utils/awsConfigUpdate';
 import getErrorResponse from '../../utils/getErrorResponse';
 import getSuccessResponse from '../../utils/getSuccessResponse';
-import { ORDERS_TABLE_NAME } from '../../dynamoDb/constants';
+import { ORDERS_TABLE_NAME, GROCERIES_TABLE_NAME } from '../../dynamoDb/constants';
 
 awsConfigUpdate();
 
@@ -31,9 +32,45 @@ export const main = (event, context, callback) => {
 		}
 	}
 
+  var getGroceryParams = (id) => ({
+    TableName : GROCERIES_TABLE_NAME,
+    Key: {
+      groceryId: id,
+    }
+  });
+
+  const groceryPromise = id => documentClient.get(getGroceryParams(id)).promise();
+
 	documentClient.query(queryOrdersParams).promise()
 		.then(dbResultSet => {
-			callback(null, getSuccessResponse(dbResultSet.Items))
+      const result = map(dbResultSet.Items, async (item) => {
+        const groceryListPromise = map(item.orderItems, (value, groceryId) => {
+          return groceryPromise(groceryId);
+        });
+        var itemList = await Promise.all(groceryListPromise);
+        const updatedItemList = itemList.map(({ Item }) => {
+          return Item;
+        });
+        ;
+        const currentOrderList = map(updatedItemList, (eachItem) => { 
+          return {
+            ...eachItem,
+            ...item.orderItems[eachItem.groceryId],
+          };
+        });
+        
+        const eachOrder = {
+          ...item,
+          orderItems: currentOrderList,
+        }
+        
+        return Promise.resolve(eachOrder);
+        });
+        Promise
+          .all(result)
+          .then((data) => {
+            callback(null, getSuccessResponse(data));
+          })
 		})
 		.catch(error => callback(null, getErrorResponse(500, JSON.stringify(error.message))))
 }
