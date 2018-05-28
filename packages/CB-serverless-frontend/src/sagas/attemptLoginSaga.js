@@ -3,31 +3,26 @@ import {
   put,
   select,
   call,
-  take,
 } from 'redux-saga/effects';
 import { Auth } from 'aws-amplify';
+import loginFailureSaga from './loginFailureSaga';
 
 const loginFormSelector = state => state.form.login.values;
 const registerFormSelector = state => state.form.register.values;
+const currentAuthenticatedUserPromise = () => Auth.currentAuthenticatedUser();
+const userDataPromise = () => Auth.currentUserInfo();
+const signUpPromise = ({name, username, password,phone }) => Auth.signUp({
+  username,
+  password,
+  attributes: {
+    name,
+    'phone_number': phone,
+  },
+});
+const loginPromise = ({ username, password }) => Auth.signIn(username, password);
 
 function* loginAttempt(action) {
-  const signUpPromise = ({
-    name,
-    username,
-    password,
-    phone }) => Auth.signUp({
-      username,
-      password,
-      attributes: {
-        name,
-        'phone_number': phone,
-      },
-    });
-  const confirmSignUpPromise = ({ username, verification }) => Auth.confirmSignUp(username, verification);
-  const loginPromise = ({ username, password }) => Auth.signIn(username, password);
-  const currentAuthenticatedUserPromise = () => Auth.currentAuthenticatedUser();
-  const userDataPromise = () => Auth.currentUserInfo();
-
+  yield put({type: 'IN_PROGRESS'});
   try {
     if (action.payload.authScreen === 'register') {
       const {
@@ -42,23 +37,7 @@ function* loginAttempt(action) {
         password,
         phone
       });
-      yield take('CONFIRM_SIGNUP');
-
-      const { verification } = yield select(registerFormSelector);
-      yield call(confirmSignUpPromise, { username, verification });
-
-      yield call(loginPromise, { username, password });
-
-      const currentCredentials = yield call(currentAuthenticatedUserPromise);
-      const currentUserData = yield call(userDataPromise);
-
-      yield put({
-        type: 'ATTEMPT_LOGIN_SUCCESS',
-        payload: {
-          identityId: currentCredentials,
-          userData: currentUserData,
-        },
-      });
+      yield put({type: 'VERIFICATION_CODE'});
     } else {
       const {
         username,
@@ -69,7 +48,6 @@ function* loginAttempt(action) {
 
       const currentCredentials = yield call(currentAuthenticatedUserPromise);
       const currentUserData = yield call(userDataPromise);
-
       yield put({
         type: 'ATTEMPT_LOGIN_SUCCESS',
         payload: {
@@ -80,36 +58,8 @@ function* loginAttempt(action) {
     }
   } catch (e) {
     console.log(e);
-    const errorMessage = typeof e === 'string' && e;
-    console.log("=>>>>", errorMessage);
-    yield put({
-      type: 'ATTEMPT_LOGIN_FAILURE',
-      payload: {
-        errorMessage: e.message || errorMessage || 'Some error occured',
-      },
-    });
-
-    try {
-      yield take('CONFIRM_SIGNUP');
-      const { username, password, verification } = yield select(registerFormSelector);
-
-      yield call(confirmSignUpPromise, { username, verification });
-
-      yield call(loginPromise, { username, password });
-
-      const currentCredentials = yield call(currentAuthenticatedUserPromise);
-      const currentUserData = yield call(userDataPromise);
-
-      yield put({
-        type: 'ATTEMPT_LOGIN_SUCCESS',
-        payload: {
-          identityId: currentCredentials,
-          userData: currentUserData,
-        },
-      });
-    } catch (e) {
-      console.log(e);
-    }
+    const loginFail = (() => (loginFailureSaga({e, authScreen: action.payload.authScreen })));
+    yield call(loginFail);
   }
 }
 

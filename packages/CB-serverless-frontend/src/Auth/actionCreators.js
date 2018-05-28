@@ -1,20 +1,17 @@
 export const attemptLogin = (authScreen, requireVerification) => {
-  if (!requireVerification) {
-    return {
-      type: 'ATTEMPT_LOGIN',
-      payload: {
-        authScreen,
-      }
-    };
-  } else {
-    return {
-      type: 'CONFIRM_SIGNUP',
-      payload: {
-        authScreen,
-      }
-    }
-  }
+  return (requireVerification? {
+    type: 'CONFIRM_VERIFICATION_CODE',
+    payload: {authScreen}
+  } : {
+    type: 'ATTEMPT_LOGIN',
+    payload: {authScreen}
+  });
 }
+
+export const requestCodeVerification = (authScreen) => ({
+    type: 'REQUEST_VERIFICATION_CODE',
+    payload: authScreen
+  })
 
 
 export const updateAuth = (data) => ({
@@ -23,3 +20,15 @@ export const updateAuth = (data) => ({
     ...data,
   },
 });
+
+export const forgotPasswordRequest = (requested) => {
+  return (requested? {type: 'FORGOT_PASSWORD'} : {type: 'FORGOT_PASSWORD_REQUEST'});
+};
+
+export const clearCodeVerification = () => ({
+  type: 'CLEAR_CODE_VERIFICATION'
+});
+
+export const clearForgotPasswordRequest = () => ({
+  type: 'CLEAR_FORGOT_PASSWORD'
+})

@@ -3,6 +3,14 @@ import PropTypes from 'prop-types';
 import { reduxForm, Field } from 'redux-form';
 import { TextField } from 'redux-form-material-ui';
 import { RaisedButton } from 'material-ui';
+import styled from 'styled-components';
+
+const ForgotPassword = styled.div`
+  color: #0db9f2;
+  font-size: 12px;
+  padding: 2%;
+  cursor: pointer;
+`;
 
 const validate = (values) => {
   const errors = {};
@@ -20,7 +28,7 @@ const validate = (values) => {
   return errors;
 }
 
-const MyForm = ({ handleSubmit, type, shouldDisableLogin }) => {
+const MyForm = ({ handleSubmit, inProgress, forgotPassword }) => {
   return (
     <form onSubmit={handleSubmit}>
       <div className="login-input">
@@ -28,7 +36,6 @@ const MyForm = ({ handleSubmit, type, shouldDisableLogin }) => {
           name="username"
           component={TextField}
           floatingLabelText="Email"
-          disabled={shouldDisableLogin}
         />
       </div>
       <div className="login-input">
@@ -37,14 +44,17 @@ const MyForm = ({ handleSubmit, type, shouldDisableLogin }) => {
           component={TextField}
           type="password"
           floatingLabelText="Password"
-          disabled={shouldDisableLogin}
         />
       </div>
+      <ForgotPassword onClick={() => forgotPassword(true)}>
+        Forgot Password?
+      </ForgotPassword>
       <RaisedButton
+        type={'submit'}
         secondary
-        type={type}
         style={{margin: '6% 0'}}
-        label="Login"
+        buttonStyle={{backgroundColor: '#26acd9'}}
+        label={inProgress? 'Please wait...': "Login"}
       />
     </form>
   )

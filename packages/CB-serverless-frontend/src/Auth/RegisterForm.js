@@ -26,65 +26,44 @@ const validate = (values) => {
   return errors;
 }
 
-const MyForm = ({ handleSubmit, type, shouldDisableLogin, requireVerification }) => {
+const MyForm = ({ handleSubmit, inProgress }) => {
   return (
     <form onSubmit={handleSubmit}>
-      {
-        requireVerification ?
-        <React.Fragment>
-          <div className="success-note">
-            Enter the verification code.
-          </div>
-          <div className="login-input">
-            <Field
-              name="verification"
-              component={TextField}
-              floatingLabelText="Verification Code"
-            />
-          </div>
-        </React.Fragment>
-        :
-        <React.Fragment>
-          <div className="login-input">
-            <Field
-              name="name"
-              component={TextField}
-              floatingLabelText="Name"
-              disabled={shouldDisableLogin}
-            />
-          </div>
-          <div className="login-input">
-            <Field
-              name="username"
-              component={TextField}
-              floatingLabelText="Email"
-              disabled={shouldDisableLogin}
-            />
-          </div>
-          <div className="login-input">
-            <Field
-              name="password"
-              component={TextField}
-              type="password"
-              floatingLabelText="Password"
-              disabled={shouldDisableLogin}
-            />
-          </div>
-          <div className="login-input">
-            <Field
-              name="phone"
-              component={TextField}
-              floatingLabelText="Phone Number"
-              disabled={shouldDisableLogin}
-            />
-          </div>
-        </React.Fragment>
-      }
+      <div className="login-input">
+        <Field
+          name="name"
+          component={TextField}
+          floatingLabelText="Name"
+        />
+      </div>
+      <div className="login-input">
+        <Field
+          name="username"
+          component={TextField}
+          floatingLabelText="Email"
+        />
+      </div>
+      <div className="login-input">
+        <Field
+          name="password"
+          component={TextField}
+          type="password"
+          floatingLabelText="Password"
+        />
+      </div>
+      <div className="login-input">
+        <Field
+          name="phone"
+          component={TextField}
+          floatingLabelText="Phone Number"
+        />
+      </div>
       <RaisedButton
+        type={'submit'}
         secondary
-        type={type}
+        buttonStyle={{backgroundColor: '#26acd9'}}
         style={{margin: '6% 0'}}
-        label={requireVerification? "Submit" : "Register"}
+        label={inProgress? 'Please wait...': "Register"}
       />
     </form>
   )
