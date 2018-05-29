@@ -1,31 +1,47 @@
-import {CODE_VERIFICATION} from '../constants/app';
-
 const initialState = {
   isAuthenticating: false,
   isAuthenticated: false,
   userData: null,
   identityId: null,
+  inProgress: false,
+  authError: {
+    type: null,
+    message: null
+  },
+  passwordRequested: false,
+  verifyUser: false
 }
 
 export default (state = initialState, { type, payload = {}}) => {
   switch(type) {
-    case 'ATTEMPT_LOGIN':
-      return {
-        ...state,
-        isAuthenticating: payload.authScreen !== 'register',
-        isAuthenticated: false,
-        errorMessage: payload.authScreen === 'register' ? CODE_VERIFICATION : null,
-        identityId: null,
-        userData: null
-      }
     case 'ATTEMPT_LOGIN_SUCCESS':
       return {
         ...state,
         isAuthenticating: false,
         isAuthenticated: true,
-        errorMessage: null,
+        authError: {
+          type: null,
+          message: null,
+        },
         identityId: payload.identityId,
-        userData: payload.userData
+        userData: payload.userData,
+        inProgress: false,
+        passwordRequested: false,
+        verifyUser: false
+      }
+    case 'CLEAN_AUTH':
+      return {
+        isAuthenticating: false,
+        isAuthenticated: false,
+        authError: {
+          type: null,
+          message: null,
+        },
+        identityId: null,
+        userData: null,
+        inProgress: false,
+        passwordRequested: false,
+        verifyUser: false
       }
     case 'ATTEMPT_LOGIN_FAILURE':
       return {
@@ -35,12 +51,46 @@ export default (state = initialState, { type, payload = {}}) => {
         isError: true,
         identityId: payload.identityId,
         userData: null,
-        errorMessage: payload.errorMessage,
+        authError: {
+          type: payload.type,
+          message: payload.errorMessage,
+        },
+        inProgress: false,
       }
+    case 'VERIFICATION_CODE':
+        return {
+          ...state,
+          inProgress: false,
+          passwordRequested: false,
+          verifyUser: true,
+        }
     case 'UPDATE_AUTH':
       return {
         ...state,
         ...payload,
+        inProgress: false,
+        passwordRequested: false,
+        verifyUser: false
+      }
+    case 'IN_PROGRESS':
+      return {
+        ...state,
+        inProgress: true
+      }
+    case 'FORGOT_PASSWORD_REQUESTED':
+      return {
+        ...state,
+        passwordRequested: true
+      }
+    case 'CLEAR_FORGOT_PASSWORD':
+      return {
+        ...state,
+        passwordRequested: false
+      }
+    case 'CLEAR_CODE_VERIFICATION':
+      return {
+        ...state,
+        verifyUser: false,
       }
     default:
       return state;

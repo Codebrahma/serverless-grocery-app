@@ -6,11 +6,24 @@ import LoginForm from './LoginForm';
 import RegisterForm from './RegisterForm';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import {CODE_VERIFICATION} from '../constants/app';
+import {USER_NOT_VERIFIED, USER_ALREADY_EXIST} from '../constants/app';
+import { RaisedButton } from 'material-ui';
+import VerificationForm from './VerificationForm';
+import ForgotPassword from './ForgotPasswordForm';
 
-import { attemptLogin } from './actionCreators';
+import {
+  attemptLogin,
+  requestCodeVerification,
+  forgotPasswordRequest,
+  clearCodeVerification,
+  clearForgotPasswordRequest
+ } from './actionCreators';
 
 import styles from './styles.css';
+
+const ButtonContainer = styled.div`
+  padding: 5%;
+`;
 
 const LoginContainer = styled.div`
     background: #fff;
@@ -53,6 +66,8 @@ class Login extends React.Component {
     super(props);
     this.state = {
       authScreen: 'login',
+      forgotPassword: false,
+      verification: false,
     }
   }
 
@@ -62,49 +77,112 @@ class Login extends React.Component {
     });
   }
 
+  setForgotPassword = (value) => {
+    this.props.clearForgotPasswordRequest();
+    this.setState({
+      forgotPassword: value
+    });
+  }
+
+  setVerification = (value) => {
+    this.setState({
+      verification: value
+    });
+  }
+
+  displayErrorMessage = ({message}) => {
+    const {authScreen} = this.state;
+    return (
+      <div className={"error-message"}>
+        {message}
+        {
+          ( message === USER_NOT_VERIFIED || message === USER_ALREADY_EXIST ) &&
+          <ButtonContainer>
+            <RaisedButton
+              primary
+              style={{margin: '6% 0'}}
+              label={
+                this.props.inProgress? 'Please wait...' :
+                (message === USER_NOT_VERIFIED ? 'Send Code' : 'Login')
+              }
+              onClick={() => {
+                  message === USER_NOT_VERIFIED ?
+                  this.props.requestCodeVerification(authScreen) :
+                  this.setState({authScreen: 'login'});
+                }
+              }
+            />
+          </ButtonContainer>
+        }
+      </div>
+    );
+  }
+
+  renderForgotPassword = ({inProgress}) => (
+    <ForgotPassword
+      onSubmit={() => (this.props.forgotPasswordRequest(this.props.passwordRequested))}
+      cancelAction={() => this.setForgotPassword(false)}
+      inProgress={inProgress}
+      passwordRequested={this.props.passwordRequested}
+      />
+  );
+
+  renderVerificationForm = () => (
+    <VerificationForm
+      onSubmit={() => { this.props.attemptLogin(this.state.authScreen, true) }}
+      cancelAction={this.props.clearCodeVerification}
+    />
+  );
+
+  renderLoginForm = ({inProgress}) => (
+    <LoginForm
+      inProgress={inProgress}
+      forgotPassword={this.setForgotPassword}
+      onSubmit={() => { this.props.attemptLogin(this.state.authScreen, false) }}
+    />
+  )
+
+  renderRegistrationForm = ({inProgress}) => (
+    <RegisterForm
+      inProgress={inProgress}
+      onSubmit={() => {
+        this.props.attemptLogin(this.state.authScreen, false)
+      }}
+    />
+  )
+
+  renderForm = ({inProgress}) => {
+    const {forgotPassword, authScreen} = this.state;
+    return (
+      forgotPassword?
+      this.renderForgotPassword({inProgress}) :
+      (
+        this.props.verifyUser ?
+        this.renderVerificationForm() :
+        (authScreen === 'login' ?
+         this.renderLoginForm({inProgress}) :
+         this.renderRegistrationForm({inProgress}))
+      )
+    );
+  }
+
   render() {
     const {authScreen} = this.state;
-    let shouldDisableLogin = false;
-    let requireVerification = false;
-    switch(this.props.errorMessage) {
-      case CODE_VERIFICATION:
-        shouldDisableLogin = true;
-        requireVerification = true;
-      case 'Incorrect username or password': {
-        shouldDisableLogin = false;
-        requireVerification = true;
-      }
-    }
+    const {message, type} = this.props.authError;
+    const inProgress = (message === USER_NOT_VERIFIED ||
+      message === USER_ALREADY_EXIST)? false : this.props.inProgress;
     return (
       <React.Fragment>
         <LoginContainer>
-          <Tabs
-            value={authScreen}
-            onChange={this.handleChange}
-          >
-            <Tab
-              label="Register" value="register" />
-            <Tab
-              label="Login" value="login" />
+          <Tabs value={authScreen} onChange={this.handleChange}>
+            <Tab label="Register" value="register" />
+            <Tab label="Login" value="login" />
           </Tabs>
           {
-            this.props.errorMessage && this.props.errorMessage !== CODE_VERIFICATION &&
-            <div className={"error-message"}>{this.props.errorMessage}</div>
+            type === authScreen && !(this.props.verifyUser && message === USER_NOT_VERIFIED) &&
+            this.displayErrorMessage({message})
           }
-          {
-            authScreen === 'login' ?
-            <LoginForm
-              type={authScreen}
-              shouldDisableLogin={shouldDisableLogin}
-              onSubmit={() => { this.props.attemptLogin(authScreen, requireVerification) }}
-            /> :
-            <RegisterForm
-              type={authScreen}
-              shouldDisableLogin={shouldDisableLogin}
-              requireVerification={requireVerification}
-              onSubmit={() => { this.props.attemptLogin(authScreen, requireVerification) }}
-            />
-          }
+          { this.renderForm({inProgress})}
         </LoginContainer>
       </React.Fragment>
     );
@@ -113,11 +191,18 @@ class Login extends React.Component {
 
 
 const mapStateToProps = (state) => ({
-  errorMessage: state.auth.errorMessage,
+  authError: state.auth.authError,
+  inProgress: state.auth.inProgress,
+  passwordRequested: state.auth.passwordRequested,
+  verifyUser: state.auth.verifyUser
 });
 
 const mapDispatchToProps = (dispatch) => ({
   attemptLogin: bindActionCreators(attemptLogin, dispatch),
+  requestCodeVerification: bindActionCreators(requestCodeVerification, dispatch),
+  forgotPasswordRequest: bindActionCreators(forgotPasswordRequest, dispatch),
+  clearCodeVerification: bindActionCreators(clearCodeVerification, dispatch),
+  clearForgotPasswordRequest: bindActionCreators(clearForgotPasswordRequest, dispatch),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Login);
