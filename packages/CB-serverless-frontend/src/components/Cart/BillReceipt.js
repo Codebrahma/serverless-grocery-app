@@ -11,6 +11,7 @@ import { withRouter } from 'react-router-dom';
 import { placeOrderAction } from '../../actions/order';
 import { submitPaymentTokenId } from '../../actions/payment';
 import { cleanCart } from '../../actions/cart';
+import {displayPaymentModal} from '../../utils/stripe-payment-modal';
 
 const BillingList = styled.ul`
   position: relative;
@@ -94,7 +95,7 @@ const TotalAmount = AmountText.extend`
 const BillReceiptWrap = styled.div`
   margin: 1em auto;
   color: #333;
-  max-width: 800px; 
+  max-width: 800px;
 `;
 
 const ReceiptTitle = styled.h2`
@@ -136,53 +137,41 @@ class BillReceipt extends PureComponent {
     if (nextProps.paymentInProgress) {
 
     } else if (nextProps.paymentComplete) {
-      this.props.history.push('/order-placed');
+      this.props.history.push('/order-list');
     } else if (nextProps.currentOrder &&
       nextProps.currentOrder.orderId &&
       this.state.placingOrder && this.state.requestOpenPaymentModal) {
-      this.displayPaymentModal(nextProps);
+      displayPaymentModal(
+        nextProps,
+        this.onOpenPaymentModal,
+        this.onClosePaymentModal,
+        nextProps.submitPaymentTokenId
+      );
     }
   }
 
   getTotalAmount = () => this.state.cartItems
     .reduce((acc, cur) => acc + (parseInt(cur.price, 10) * parseInt(cur.qty, 10)), 0);
 
-
-  displayPaymentModal = (props) => {
-    const checkoutHandler = window.StripeCheckout.configure({
-      key: 'pk_test_rM2enW1rNROwx4ukBXGaIzhr',
-      locale: 'auto',
-    });
-    checkoutHandler.open({
-      name: `Pay Rs.${props.currentOrder.orderTotal}`,
-      description: `Order: ${props.currentOrder.orderId}`,
-      closed: () => {
-        this.setState({ paymentModalOpened: false }, () => this.props.history.push('/orders'));
-      },
-      opened: () => {
-        this.setState({ paymentModalOpened: true, requestOpenPaymentModal: false });
-      },
-      token: (token) => {
-        if (token && token.id) {
-          props.submitPaymentTokenId({
-            tokenId: token.id,
-            orderId: props.currentOrder.orderId,
-            email: token.email,
-            userId: props.userData.username,
-          });
-        } else {
-          // to do
-        }
-      },
-    });
+  onOpenPaymentModal = () => {
+    this.setState({ paymentModalOpened: true, requestOpenPaymentModal: false });
   };
+
+  onClosePaymentModal = () => {
+    this.setState({ paymentModalOpened: false }, () => this.props.history.push('/order-list'));
+  }
 
 
   placeOrder = () => {
     if (this.state.placingOrder || !isNil(this.props.currentOrder)) {
       this.setState({
         requestOpenPaymentModal: true,
-      }, () => this.displayPaymentModal(this.props));
+      }, () => displayPaymentModal(
+        this.props,
+        this.onOpenPaymentModal,
+        this.onClosePaymentModal,
+        this.props.submitPaymentTokenId
+      ));
       return;
     }
     this.setState((s, p) => ({

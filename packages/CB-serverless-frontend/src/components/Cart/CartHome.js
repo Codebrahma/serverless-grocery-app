@@ -11,7 +11,7 @@ import { Wrapper } from '../../base_components/index';
 import CartItem from './CartItem';
 import { deleteCartItem, fetchCartItems, updateCartItemQty } from '../../actions/cart';
 import OrderButton from '../../base_components/OrderButton';
-import { cancelOrder, fetchAllOrders } from '../../actions/order';
+import { cancelOrder } from '../../actions/order';
 import { submitPaymentTokenId } from '../../actions/payment';
 
 const CartWrapper = Wrapper.extend`
@@ -27,7 +27,7 @@ const CartMain = styled.div`
   flex: 7;
   padding: 3em 2em;
   background: #fff;
-  box-shadow: 0 0 10px 1px #eee;  
+  box-shadow: 0 0 10px 1px #eee;
 `;
 
 const EmptyCart = styled.div`
@@ -53,11 +53,11 @@ const RightSideContent = styled.div`
 const OrderPending = styled.section`
   background: #fff;
   padding: 1em 2em;
-  
+
   > h3 {
     margin: 1em 0 2em;
   }
-  
+
   > p {
     margin: 1em 0 3em;
     font-weight: bold;
@@ -79,7 +79,6 @@ class CartHome extends Component {
 
   componentDidMount() {
     this.props.fetchCartItems();
-    this.props.fetchAllOrders();
   }
 
 
@@ -232,7 +231,6 @@ class CartHome extends Component {
 
 CartHome.propTypes = {
   fetchCartItems: PropTypes.func.isRequired,
-  fetchAllOrders: PropTypes.func.isRequired,
   deleteCartItem: PropTypes.func.isRequired,
   cancelOrder: PropTypes.func.isRequired,
   updateCartItemQty: PropTypes.func.isRequired,
@@ -263,7 +261,6 @@ function initMapStateToProps(state) {
 function initMapDispatchToProps(dispatch) {
   return bindActionCreators({
     fetchCartItems,
-    fetchAllOrders,
     cancelOrder,
     deleteCartItem,
     updateCartItemQty,

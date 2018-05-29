@@ -1,0 +1,75 @@
+.box {
+  position: relative;
+  max-width: 700px;
+  width: 90%;
+  height: 100px;
+  background: #fff;
+  box-shadow: 0 0 15px rgba(0,0,0,.1);
+  margin: 2% auto;
+  padding: 1% 2%;
+  border: 1px solid #E3DFDE;
+  color: '#393736';
+}
+
+.ribbon {
+  width: 73px;
+  height: 73px;
+  overflow: hidden;
+  position: absolute;
+}
+
+.ribbon::before,
+.ribbon::after {
+  position: absolute;
+  z-index: -1;
+  content: '';
+  display: block;
+}
+
+.order-pending::before,
+.order-pending::after {
+  border: 5px solid #cca633;
+}
+
+.order-complete::before,
+.order-complete::after {
+  border: 5px solid #709f60;
+}
+
+.order-canceled::before,
+.order-canceled::after {
+  border: 5px solid #cc5933;
+}
+
+.ribbon span {
+  position: absolute;
+  width: 100px;
+  padding: 10px 0;
+  background-color: #3498db;
+  color: #fff;
+  text-align: center;
+  font-size: 8px;
+}
+
+.ribbon-top-right {
+  top: -10px;
+  right: -10px;
+}
+.ribbon-top-right::before,
+.ribbon-top-right::after {
+  border-top-color: transparent;
+  border-right-color: transparent;
+}
+.ribbon-top-right::before {
+  top: 0;
+  left: 8px;
+}
+.ribbon-top-right::after {
+  bottom: 8px;
+  right: 0;
+}
+.ribbon-top-right span {
+  left: 0px;
+  top: 7px;
+  transform: rotate(45deg);
+}
