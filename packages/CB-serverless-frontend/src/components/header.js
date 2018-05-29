@@ -42,6 +42,7 @@ const CartItemsCount = styled.div`
   position: absolute;
   right:-1em;
   top: 0px;
+  color: #000;
   width: 30px;
 `;
 
@@ -132,7 +133,7 @@ const mapStateToProps = state => ({
   isAuthenticated: state.auth.isAuthenticated,
   identityId: state.auth.identityId,
   userData: state.auth.userData,
-  cartData: state.cart.cartData,
+  cartData: state.cart.cartData || [],
   orderListFetched: state.order.orderListFetched,
 });
 

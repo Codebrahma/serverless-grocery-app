@@ -26,7 +26,7 @@ const ItemImage = styled.img`
 const ItemTitle = styled.div`
   flex: 1 1 60%;
   text-align: left;
-  font-size: 20px;
+  font-size: 1.1em;
   margin: 0 1em;
 `;
 

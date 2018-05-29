@@ -23,7 +23,7 @@ const ItemsWrapper = styled.div`
   margin: 1em auto;
   box-shadow: 0 0 26px 0 #eee;
   background: #eee;
-  width: 85%;
+  width: 75%;
 `;
 
 const Container = styled.div`
@@ -148,7 +148,7 @@ class CategoryItems extends Component {
               this.renderNoItems()
             }
             {
-              this.state.items.length === 0
+              this.state.items.length === 0 && !noItemAvailable
               && this.skeletons()
             }
             {
