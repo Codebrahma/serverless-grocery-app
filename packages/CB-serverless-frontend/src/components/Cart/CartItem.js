@@ -31,7 +31,7 @@ const ItemTitle = styled.div`
 `;
 
 const DeleteIconWrap = styled.div`
-  flex: 0 0 180px;
+  flex: 0 0 50px;
   text-align: left;
   font-size: 20px;
   margin: 0 1em;
@@ -43,7 +43,17 @@ const SoldOutError = styled.p`
   margin: 1em auto;
 `;
 
-class CartItem extends PureComponent {
+const PriceofItem = styled.div`
+  flex: 1 0 200px;
+  > span{
+    margin: 0 1em;
+  }
+  > span:first-child{
+    color: #aaa;
+  }
+`;
+
+class CartItem extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -73,6 +83,8 @@ class CartItem extends PureComponent {
     if (!data || !data.name) {
       return (<CartItemSkeleton />);
     }
+    console.log(data, 'ddata');
+    const totalPrice = this.props.qty * data.price;
     return (
       <CartItemWrap>
         <ItemImage
@@ -86,6 +98,10 @@ class CartItem extends PureComponent {
             <SoldOutError>Item is Sold Out</SoldOutError>
           }
         </ItemTitle>
+        <PriceofItem>
+          <span>&times;{this.props.qty}</span>
+          <span>{totalPrice} &#8377;</span>
+        </PriceofItem>
         <Quantity
           size={40}
           onChange={qty => this.props.onQtyChange(this.props.id, qty)}
