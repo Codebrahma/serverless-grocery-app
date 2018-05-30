@@ -11,6 +11,10 @@ import { GROCERIES_TABLE_NAME, GROCERIES_TABLE_GLOBAL_INDEX_NAME, PAGINATION_DEF
 
 awsConfigUpdate();
 
+/* 
+ * Gets all grocery items with pagination
+ * Read more about dynamodb Pagination https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Query.html
+ * */
 export const main = (event, context, callback) => {
   context.callbackWaitsForEmptyEventLoop = false;
 
@@ -45,6 +49,7 @@ export const main = (event, context, callback) => {
       },
     };
 
+    // If nextPageIndex is present, fetch the list as required
     if (event.queryStringParameters.nextPageIndex) {
       params = {
         ...params,
@@ -56,7 +61,8 @@ export const main = (event, context, callback) => {
     }
 
     const queryPromise = documentClient.query(params).promise();
-
+    
+    // Provide next Page index to frontend if more items are available
     queryPromise
       .then((data) => {
         const responseData = {
@@ -70,8 +76,6 @@ export const main = (event, context, callback) => {
       });
   } else {
     // If not scan and filter categories and bring the top 3 items,
-    // Todo achieve the same with GSI Global Secondary index.
-    // This is a very rough version
     var params = getBaseGroceriesParams();
 
     const queryPromise = documentClient.scan(params).promise();

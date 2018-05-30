@@ -8,6 +8,9 @@ import { GROCERIES_TABLE_NAME } from '../../dynamoDb/constants';
 
 awsConfigUpdate();
 
+/*
+ * Gets a grocery based on groceryId
+ * */
 export const main = (event, context, callback) => {
   context.callbackWaitsForEmptyEventLoop = false;
 

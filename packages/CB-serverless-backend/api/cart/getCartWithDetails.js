@@ -5,12 +5,15 @@ import reduce from 'lodash/reduce';
 import awsConfigUpdate from '../../utils/awsConfigUpdate';
 import getErrorResponse from '../../utils/getErrorResponse';
 import getSuccessResponse from '../../utils/getSuccessResponse';
-import { getCartQueryPromise } from './getCart';
+import { getCartQueryPromise } from '../utils';
 import { CART_TABLE_NAME, GROCERIES_TABLE_NAME } from '../../dynamoDb/constants';
 
 awsConfigUpdate();
 const documentClient = new AWS.DynamoDB.DocumentClient();
 
+/* 
+ * Gets cart items with each grocery details
+ * */
 export const main = (event, context, callback) => {
   context.callbackWaitsForEmptyEventLoop = false;
     

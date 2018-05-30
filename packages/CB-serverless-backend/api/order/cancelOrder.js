@@ -8,11 +8,16 @@ import getErrorResponse from '../../utils/getErrorResponse';
 import getSuccessResponse from '../../utils/getSuccessResponse';
 import generateId from '../../utils/orderIdGenerator';
 import { ORDERS_TABLE_NAME, GROCERIES_TABLE_NAME, CART_TABLE_NAME } from '../../dynamoDb/constants';
-import { batchUpdateAvailableAndSoldQuantities } from './createOrder';
+import { batchUpdateAvailableAndSoldQuantities } from '../utils';
 
 awsConfigUpdate();
 const documentClient = new AWS.DynamoDB.DocumentClient();
 
+/*
+ * Cancels an order
+ * Returns the stock to the stock
+ * Sets the status of order to "Cancelled"
+ * */
 export const main = (event, context, callback) => {
   const {
 		userId,
@@ -35,6 +40,8 @@ export const main = (event, context, callback) => {
       }
 
       orderToUpdate = orderData;
+      
+      // Updates order status
       return UpdateOrderStatus(userId, orderId, 'CANCELLED')
         .catch(err => {
           return Promise.reject(err);
@@ -51,6 +58,7 @@ export const main = (event, context, callback) => {
     });
 }
 
+// changes order status
 export const UpdateOrderStatus = (userId, orderId, orderStatus) => {
   var updateParams = {
     TableName: ORDERS_TABLE_NAME,
@@ -67,6 +75,7 @@ export const UpdateOrderStatus = (userId, orderId, orderStatus) => {
   return documentClient.update(updateParams).promise();
 }
 
+// Gets the order details first to update
 const getOrderDetails = (userId, orderId) => {
   const queryOrderParams = {
     TableName: ORDERS_TABLE_NAME,

@@ -7,6 +7,9 @@ import { GROCERIES_TABLE_NAME } from '../../dynamoDb/constants';
 
 awsConfigUpdate();
 
+/*
+ * Used to update stock when the order is made
+ * */
 export const updateStock = async (event, context, callback) => {
   context.callbackWaitsForEmptyEventLoop = false;
   const dataToUpdate = JSON.parse(event.body);

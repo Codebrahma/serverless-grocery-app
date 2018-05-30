@@ -27,6 +27,9 @@ const getAmountFromOrderId = (orderId, userId) => {
   return documentClient.get(params).promise();
 }
 
+/*
+ * API which makes payment to stripe
+ * */
 export const main = (event, context, callback) => {
   context.callbackWaitsForEmptyEventLoop = false;
 

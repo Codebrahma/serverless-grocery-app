@@ -5,9 +5,14 @@ import getErrorResponse from '../../utils/getErrorResponse';
 import getSuccessResponse from '../../utils/getSuccessResponse';
 import { CART_TABLE_NAME } from '../../dynamoDb/constants';
 
+import { getCartQueryPromise } from '../utils';
+
 awsConfigUpdate();
 const documentClient = new AWS.DynamoDB.DocumentClient();
 
+/* 
+ * Gets the cart details of an user
+ * */
 export const main = (event, context, callback) => {
   context.callbackWaitsForEmptyEventLoop = false;
   if (!event.queryStringParameters) {
@@ -23,15 +28,4 @@ export const main = (event, context, callback) => {
       console.log(error.message);
       callback(null, getErrorResponse(500, JSON.stringify(error.message)))
     });
-}
-
-export const getCartQueryPromise = (userId) => {
-  var params = {
-    TableName: CART_TABLE_NAME,
-    Key: {
-      'userId': userId,
-    },
-  };
-
-  return documentClient.get(params).promise();
 }
