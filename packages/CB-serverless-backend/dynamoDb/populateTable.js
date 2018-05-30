@@ -15,7 +15,7 @@ var docClient = new AWS.DynamoDB.DocumentClient();
 const groceryPromises = [];
 const cartPromise = [];
 
-groceryList.forEach(function(item) {
+groceryList.forEach(function (item) {
   var params = {
     TableName: 'grocery',
     Item: {
@@ -24,24 +24,24 @@ groceryList.forEach(function(item) {
       url: item.url,
       category: item.category,
       subCategory: item.subCategory,
-			price: item.price,
-			availableQty: item.availableQty,
-			soldQty: item.soldQty
+      price: item.price,
+      availableQty: item.availableQty,
+      soldQty: item.soldQty
     },
   };
-  
+
   groceryPromises.push(docClient.put(params).promise())
 });
 
-cart.forEach(function(item) {
+cart.forEach(function (item) {
   var params = {
     TableName: 'cart',
     Item: {
-			userId: item.userId,
-			cartData: item.cartData,
+      userId: item.userId,
+      cartData: item.cartData,
     },
   };
-  
+
   cartPromise.push(docClient.put(params).promise());
 });
 Promise

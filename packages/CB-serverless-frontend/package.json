@@ -10,6 +10,7 @@
     "eslint-plugin-import": "^2.11.0",
     "eslint-plugin-jsx-a11y": "^6.0.3",
     "eslint-plugin-react": "^7.8.2",
+    "js-beautify": "^1.7.5",
     "lodash": "^4.17.10",
     "material-ui": "^0.20.1",
     "moment": "^2.22.1",
@@ -20,11 +21,11 @@
     "react-router-dom": "^4.2.2",
     "react-scripts": "1.1.4",
     "redux": "^4.0.0",
+    "redux-devtools-extension": "^2.13.2",
     "redux-form": "^7.3.0",
     "redux-form-material-ui": "^4.3.4",
     "redux-logger": "^3.0.6",
     "redux-saga": "^0.16.0",
-    "redux-devtools-extension": "^2.13.2",
     "styled-components": "^3.2.6"
   },
   "scripts": {
@@ -33,6 +34,5 @@
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
   },
-  "devDependencies": {
-  }
+  "devDependencies": {}
 }

@@ -75,7 +75,7 @@ const createCartTable = () => {
     KeySchema: [
       { AttributeName: 'userId', KeyType: 'HASH' },
     ],
-    AttributeDefinitions: [
+    AttributeDefinitions: [Î
       { AttributeName: 'userId', AttributeType: 'S' },
     ],
     ProvisionedThroughput: {

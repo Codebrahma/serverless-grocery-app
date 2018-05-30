@@ -17,7 +17,7 @@ const getAmountFromOrderId = (orderId, userId) => {
   const params = {
     TableName: ORDERS_TABLE_NAME,
     Key: {
-			'userId': userId,
+      'userId': userId,
       'orderId': orderId,
     },
 
@@ -29,23 +29,23 @@ const getAmountFromOrderId = (orderId, userId) => {
 
 export const main = (event, context, callback) => {
   context.callbackWaitsForEmptyEventLoop = false;
-  
+
   const {
     email,
     stripeId,
-		orderId,
-		userId
+    orderId,
+    userId
   } = JSON.parse(event.body);
 
   if (!email || !stripeId || !orderId) {
     callback(null, getErrorResponse(400, JSON.stringify({
       message: 'Both Email and id is required'
-		})))
-		return;
+    })))
+    return;
   }
 
-  let amount; 
-  
+  let amount;
+
   getAmountFromOrderId(orderId, userId)
     .then((response) => {
       amount = response.Item.orderTotal;
@@ -58,22 +58,22 @@ export const main = (event, context, callback) => {
     email,
     card: stripeId,
   })
-  .then(customer =>
-    stripe.charges.create({
-      amount,
-      description: "Sample Charge",
-      currency: "usd",
-      customer: customer.id
-    }))
-  .then(() => {
-    UpdateOrderStatus(userId, orderId, 'COMPLETED')
-  })
-  .then(() => {
-    callback(null, getSuccessResponse({
-      success: true,
-    }))
-  })
-  .catch((err) => {
-    callback(null, getErrorResponse(500, JSON.stringify(err.message)))
-  });
+    .then(customer =>
+      stripe.charges.create({
+        amount,
+        description: "Sample Charge",
+        currency: "usd",
+        customer: customer.id
+      }))
+    .then(() => {
+      UpdateOrderStatus(userId, orderId, 'COMPLETED')
+    })
+    .then(() => {
+      callback(null, getSuccessResponse({
+        success: true,
+      }))
+    })
+    .catch((err) => {
+      callback(null, getErrorResponse(500, JSON.stringify(err.message)))
+    });
 }

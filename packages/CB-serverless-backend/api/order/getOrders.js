@@ -14,26 +14,26 @@ awsConfigUpdate();
 
 export const main = (event, context, callback) => {
   context.callbackWaitsForEmptyEventLoop = false;
-	if (!event.queryStringParameters || !event.queryStringParameters.userId) {
-		callback(null, getErrorResponse(400, 'userId is not present in params'))
-		return;
-	}
-	
-	const documentClient = new AWS.DynamoDB.DocumentClient();
-	const userId = event.queryStringParameters.userId;
-	const queryOrdersParams = {
-		TableName : ORDERS_TABLE_NAME,
-		KeyConditionExpression: "#userId = :userId",
-		ExpressionAttributeNames: {
-			"#userId": "userId",
-		},
-		ExpressionAttributeValues: {
-			":userId": userId
-		}
-	}
+  if (!event.queryStringParameters || !event.queryStringParameters.userId) {
+    callback(null, getErrorResponse(400, 'userId is not present in params'))
+    return;
+  }
+
+  const documentClient = new AWS.DynamoDB.DocumentClient();
+  const userId = event.queryStringParameters.userId;
+  const queryOrdersParams = {
+    TableName: ORDERS_TABLE_NAME,
+    KeyConditionExpression: "#userId = :userId",
+    ExpressionAttributeNames: {
+      "#userId": "userId",
+    },
+    ExpressionAttributeValues: {
+      ":userId": userId
+    }
+  }
 
   var getGroceryParams = (id) => ({
-    TableName : GROCERIES_TABLE_NAME,
+    TableName: GROCERIES_TABLE_NAME,
     Key: {
       groceryId: id,
     }
@@ -41,8 +41,8 @@ export const main = (event, context, callback) => {
 
   const groceryPromise = id => documentClient.get(getGroceryParams(id)).promise();
 
-	documentClient.query(queryOrdersParams).promise()
-		.then(dbResultSet => {
+  documentClient.query(queryOrdersParams).promise()
+    .then(dbResultSet => {
       const result = map(dbResultSet.Items, async (item) => {
         const groceryListPromise = map(item.orderItems, (value, groceryId) => {
           return groceryPromise(groceryId);
@@ -52,25 +52,25 @@ export const main = (event, context, callback) => {
           return Item;
         });
         ;
-        const currentOrderList = map(updatedItemList, (eachItem) => { 
+        const currentOrderList = map(updatedItemList, (eachItem) => {
           return {
             ...eachItem,
             ...item.orderItems[eachItem.groceryId],
           };
         });
-        
+
         const eachOrder = {
           ...item,
           orderItems: currentOrderList,
         }
-        
+
         return Promise.resolve(eachOrder);
-        });
-        Promise
-          .all(result)
-          .then((data) => {
-            callback(null, getSuccessResponse(data));
-          })
-		})
-		.catch(error => callback(null, getErrorResponse(500, JSON.stringify(error.message))))
+      });
+      Promise
+        .all(result)
+        .then((data) => {
+          callback(null, getSuccessResponse(data));
+        })
+    })
+    .catch(error => callback(null, getErrorResponse(500, JSON.stringify(error.message))))
 }

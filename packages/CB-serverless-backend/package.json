@@ -31,6 +31,7 @@
   "dependencies": {
     "aws-sdk": "^2.238.1",
     "babel-runtime": "^6.26.0",
+    "bluebird": "^3.5.1",
     "chalk": "^2.4.1",
     "mongoose": "^5.0.16",
     "source-map-support": "^0.4.18",

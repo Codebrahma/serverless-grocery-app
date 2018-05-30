@@ -10,23 +10,23 @@ awsConfigUpdate();
 
 export const main = (event, context, callback) => {
   context.callbackWaitsForEmptyEventLoop = false;
-  
+
   var documentClient = new AWS.DynamoDB.DocumentClient();
-  
+
   if (!event.queryStringParameters || !event.queryStringParameters.id) {
-		callback(null, getErrorResponse(400, 'id should be provided'));
-		return;
+    callback(null, getErrorResponse(400, 'id should be provided'));
+    return;
   }
 
   var params = {
-    TableName : GROCERIES_TABLE_NAME,
+    TableName: GROCERIES_TABLE_NAME,
     Key: {
       groceryId: event.queryStringParameters.id,
     }
   };
 
   const responsePromise = documentClient.get(params).promise();
-  
+
   responsePromise
     .then((data) => {
       callback(null, getSuccessResponse(data));
