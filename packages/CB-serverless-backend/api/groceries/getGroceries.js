@@ -13,12 +13,12 @@ awsConfigUpdate();
 
 export const main = (event, context, callback) => {
   context.callbackWaitsForEmptyEventLoop = false;
-  
+
   const documentClient = new AWS.DynamoDB.DocumentClient();
 
   // Base params for scanning
   const getBaseGroceriesParams = () => ({
-    TableName : GROCERIES_TABLE_NAME,
+    TableName: GROCERIES_TABLE_NAME,
     ExpressionAttributeNames: {
       '#groceryId': 'groceryId',
       '#category': 'category',
@@ -36,33 +36,33 @@ export const main = (event, context, callback) => {
   if (event.queryStringParameters && event.queryStringParameters.category) {
     const { category, limit } = event.queryStringParameters
     let params = {
-			...getBaseGroceriesParams(),
-			Limit: limit || PAGINATION_DEFAULT_OFFSET,
-			IndexName: GROCERIES_TABLE_GLOBAL_INDEX_NAME,
+      ...getBaseGroceriesParams(),
+      Limit: limit || PAGINATION_DEFAULT_OFFSET,
+      IndexName: GROCERIES_TABLE_GLOBAL_INDEX_NAME,
       KeyConditionExpression: `#category = :categoryToFilter`,
-			ExpressionAttributeValues: {
+      ExpressionAttributeValues: {
         ':categoryToFilter': category
       },
-		};
-		
-		if (event.queryStringParameters.nextPageIndex) {
-			params = {
-				...params,
-				ExclusiveStartKey: { 
-					'category': category,
-					'groceryId': event.queryStringParameters.nextPageIndex,
-				} 
-			}
-		}
+    };
+
+    if (event.queryStringParameters.nextPageIndex) {
+      params = {
+        ...params,
+        ExclusiveStartKey: {
+          'category': category,
+          'groceryId': event.queryStringParameters.nextPageIndex,
+        }
+      }
+    }
 
     const queryPromise = documentClient.query(params).promise();
 
     queryPromise
       .then((data) => {
-				const responseData = {
-					Items: data.Items,
-					nextPageParams: data.LastEvaluatedKey ? `nextPageIndex=${data.LastEvaluatedKey.groceryId}` : '',
-				}
+        const responseData = {
+          Items: data.Items,
+          nextPageParams: data.LastEvaluatedKey ? `nextPageIndex=${data.LastEvaluatedKey.groceryId}` : '',
+        }
         callback(null, getSuccessResponse(responseData))
       })
       .catch((error) => {
@@ -75,7 +75,7 @@ export const main = (event, context, callback) => {
     var params = getBaseGroceriesParams();
 
     const queryPromise = documentClient.scan(params).promise();
-    
+
     // Does a pre processing to show response
     queryPromise
       .then((data) => {
@@ -84,12 +84,12 @@ export const main = (event, context, callback) => {
           .uniqBy('category')
           .map(data => data.category)
           .map((category) => {
-						const filteredResult = _
-							.chain(data.Items)
-							.filter(grocery => (grocery.category === category))
-							.orderBy(['soldQty'], ['desc'])
-							.take(3)
-							.value();
+            const filteredResult = _
+              .chain(data.Items)
+              .filter(grocery => (grocery.category === category))
+              .orderBy(['soldQty'], ['desc'])
+              .take(3)
+              .value();
 
             return {
               category,
@@ -97,7 +97,7 @@ export const main = (event, context, callback) => {
             }
           })
           .value();
-        
+
         // Sends the response
         callback(null, getSuccessResponse(uniqueCategories))
       })

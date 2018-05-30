@@ -9,9 +9,9 @@ awsConfigUpdate();
 
 export const main = (event, context, callback) => {
   context.callbackWaitsForEmptyEventLoop = false;
-  
+
   const documentClient = new AWS.DynamoDB.DocumentClient();
-  
+
   const {
     userId,
     cartData,
@@ -32,14 +32,14 @@ export const main = (event, context, callback) => {
     ReturnValues: 'ALL_NEW',
   };
 
-    const queryPromise = documentClient.update(params).promise();
+  const queryPromise = documentClient.update(params).promise();
 
-    queryPromise
-      .then((data) => {
-        callback(null, getSuccessResponse(data))
-      })
-      .catch((error) => {
-        console.log(error);
-        callback(null, getErrorResponse(500, JSON.stringify(error.message)))
-      });
+  queryPromise
+    .then((data) => {
+      callback(null, getSuccessResponse(data))
+    })
+    .catch((error) => {
+      console.log(error);
+      callback(null, getErrorResponse(500, JSON.stringify(error.message)))
+    });
 }

@@ -14,67 +14,67 @@ awsConfigUpdate();
 const documentClient = new AWS.DynamoDB.DocumentClient();
 
 export const main = (event, context, callback) => {
-	const {
+  const {
 		userId,
-		orderId
+    orderId
 	} = JSON.parse(event.body);
-	
-	if (!userId || !orderId) {
-		callback(null, getErrorResponse(400, 'Missing or invalid data'));
-		return;
-	}
 
-	let orderToUpdate;
-	getOrderDetails(userId, orderId)
-		.then(dbResultSet => dbResultSet.Item)
-		.then(orderData => {
-			if (!orderData) {
-				throw {
-					message: 'Cannot find the order for given order id'
-				};
-			}
+  if (!userId || !orderId) {
+    callback(null, getErrorResponse(400, 'Missing or invalid data'));
+    return;
+  }
 
-			orderToUpdate = orderData;
-			return UpdateOrderStatus(userId, orderId, 'CANCELLED')
-				.catch(err => {
-					return Promise.reject(err);
-				})
-				.then(() => batchUpdateAvailableAndSoldQuantities(orderToUpdate.orderItems, true))
-				.catch(err => {
-					return Promise.reject(err);
-				})
-		})
-		.then(() => callback(null, getSuccessResponse({success: true})))		
-		.catch(err => {
-			callback(null, getErrorResponse(400, `Error updating order. ${err.message}`));
-			return;
-		});
+  let orderToUpdate;
+  getOrderDetails(userId, orderId)
+    .then(dbResultSet => dbResultSet.Item)
+    .then(orderData => {
+      if (!orderData) {
+        throw {
+          message: 'Cannot find the order for given order id'
+        };
+      }
+
+      orderToUpdate = orderData;
+      return UpdateOrderStatus(userId, orderId, 'CANCELLED')
+        .catch(err => {
+          return Promise.reject(err);
+        })
+        .then(() => batchUpdateAvailableAndSoldQuantities(orderToUpdate.orderItems, true))
+        .catch(err => {
+          return Promise.reject(err);
+        })
+    })
+    .then(() => callback(null, getSuccessResponse({ success: true })))
+    .catch(err => {
+      callback(null, getErrorResponse(400, `Error updating order. ${err.message}`));
+      return;
+    });
 }
 
-export const UpdateOrderStatus = (userId, orderId, orderStatus) =>  {
-	var updateParams = {
-		TableName: ORDERS_TABLE_NAME,
-		Key:{
-			"userId": userId,
-			"orderId": orderId,
-		},
-		UpdateExpression: "set orderStatus=:newStatus",
-		ExpressionAttributeValues:{
-				":newStatus":orderStatus,
-		},
-		ReturnValues:"UPDATED_NEW"
-	};
-	return documentClient.update(updateParams).promise();	
+export const UpdateOrderStatus = (userId, orderId, orderStatus) => {
+  var updateParams = {
+    TableName: ORDERS_TABLE_NAME,
+    Key: {
+      "userId": userId,
+      "orderId": orderId,
+    },
+    UpdateExpression: "set orderStatus=:newStatus",
+    ExpressionAttributeValues: {
+      ":newStatus": orderStatus,
+    },
+    ReturnValues: "UPDATED_NEW"
+  };
+  return documentClient.update(updateParams).promise();
 }
 
 const getOrderDetails = (userId, orderId) => {
-	const queryOrderParams = {
-		TableName : ORDERS_TABLE_NAME,
-		Key:{
-			"userId": userId,
-			"orderId": orderId,
-		}
-	}
+  const queryOrderParams = {
+    TableName: ORDERS_TABLE_NAME,
+    Key: {
+      "userId": userId,
+      "orderId": orderId,
+    }
+  }
 
-	return documentClient.get(queryOrderParams).promise();
+  return documentClient.get(queryOrderParams).promise();
 }
