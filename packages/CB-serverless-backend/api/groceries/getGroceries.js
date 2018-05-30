@@ -34,25 +34,34 @@ export const main = (event, context, callback) => {
 
   // If category exists then return the listings for that category
   if (event.queryStringParameters && event.queryStringParameters.category) {
-    const category = event.queryStringParameters.category
-    var params = {
+    const { category, limit } = event.queryStringParameters
+    let params = {
 			...getBaseGroceriesParams(),
-			Limit: PAGINATION_DEFAULT_OFFSET,
+			Limit: limit || PAGINATION_DEFAULT_OFFSET,
 			IndexName: GROCERIES_TABLE_GLOBAL_INDEX_NAME,
       KeyConditionExpression: `#category = :categoryToFilter`,
 			ExpressionAttributeValues: {
         ':categoryToFilter': category
       },
-    };
+		};
+		
+		if (event.queryStringParameters.nextPageIndex) {
+			params = {
+				...params,
+				ExclusiveStartKey: { 
+					'category': category,
+					'groceryId': event.queryStringParameters.nextPageIndex,
+				} 
+			}
+		}
 
     const queryPromise = documentClient.query(params).promise();
 
     queryPromise
       .then((data) => {
-				console.log('Result set ' + JSON.stringify(data))
 				const responseData = {
 					Items: data.Items,
-					nextPageParams: data.LastEvaluatedKey ? `groceryId=${data.LastEvaluatedKey.groceryId}` : '',
+					nextPageParams: data.LastEvaluatedKey ? `nextPageIndex=${data.LastEvaluatedKey.groceryId}` : '',
 				}
         callback(null, getSuccessResponse(responseData))
       })
