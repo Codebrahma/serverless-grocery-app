@@ -1,14 +1,15 @@
 import axios from 'axios';
 import { CATEGORY_URL, GROCERIES_URL, GROCERY_INFO_URL } from './api_constants';
+import request from './request';
 
 export function getTop3Groceries() {
-  return axios.get(`${GROCERIES_URL}`);
+  return request({url: GROCERIES_URL, method: 'GET'});
 }
 
 export function getGroceryInfo(groceryId) {
-  return axios.get(`${GROCERY_INFO_URL}?id=${groceryId}`);
+  return request({url: `${GROCERY_INFO_URL}?id=${groceryId}`, method: 'GET'});
 }
 
 export function getCategoryGroceries(category) {
-  return axios.get(`${CATEGORY_URL + category}`);
+  return request({url: `${CATEGORY_URL + category}`, method: 'GET'});
 }

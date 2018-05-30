@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { CART_DETAILS_URL, CART_URL } from './api_constants';
+import request from './request';
 
 /**
  * Get current Cart for a user
@@ -8,7 +9,7 @@ import { CART_DETAILS_URL, CART_URL } from './api_constants';
  */
 function getCart(userId) {
   const queryString = `?userId=${userId}`;
-  return axios.get(CART_URL + queryString);
+  return request({url: `${CART_URL}${queryString}`, method: 'GET'});
 }
 
 /**
@@ -22,12 +23,12 @@ function updateCart(userId, data) {
     userId,
     cartData: data,
   };
-  return axios.post(CART_URL, postData);
+  return request({url: CART_URL, method: 'POST', data: postData});
 }
 
 function getCartDetails(userId) {
   const queryString = `?userId=${userId}`;
-  return axios.get(CART_DETAILS_URL + queryString);
+  return request({url: `${CART_DETAILS_URL}${queryString}`, method: 'GET'});
 }
 
 export default {
