@@ -13,55 +13,55 @@ awsConfigUpdate();
 const documentClient = new AWS.DynamoDB.DocumentClient();
 
 export const main = (event, context, callback) => {
-	context.callbackWaitsForEmptyEventLoop = false;
-  
+  context.callbackWaitsForEmptyEventLoop = false;
+
   const {
     userId
 	} = JSON.parse(event.body);
-	if (!userId) {
-		callback(null, getErrorResponse(400, 'Missing or invalid data'));
-		return;
-	}
-	let idToGroceryDataMapping, cartItems, completeOrder;
+  if (!userId) {
+    callback(null, getErrorResponse(400, 'Missing or invalid data'));
+    return;
+  }
+  let idToGroceryDataMapping, cartItems, completeOrder;
 
-	getCurrentCart(userId)
-		.then(cart => {			
-			cartItems = cart.Item.cartData;
-      
-			if (!cartItems || size(cartItems) < 1) {
-				callback(null, getSuccessResponse({success: false, message: 'Cart is empty'}));
-				return;
-			}
+  getCurrentCart(userId)
+    .then(cart => {
+      cartItems = cart.Item.cartData;
 
-			idToGroceryDataMapping = reduce(cartItems, (currentReducedValue, productInCart) => {
-				return {
-					...currentReducedValue,
-					[productInCart.groceryId] : productInCart
-				}
-			}, {});			
+      if (!cartItems || size(cartItems) < 1) {
+        callback(null, getSuccessResponse({ success: false, message: 'Cart is empty' }));
+        return;
+      }
 
-			return getPricesOfCartItems(cartItems);
-		})
-		.then(dbData => dbData.Responses.grocery)
-		.then(cartItemsWithPrice => map(cartItemsWithPrice, cartItem => {
-				return {
-					...cartItem,
-					...idToGroceryDataMapping[cartItem.groceryId]
-				}
-			})
-		)
-		.then(cartItemsWithPriceAndQty => reduce(cartItemsWithPriceAndQty, (currentTotal, currentItem) => {
-				return currentTotal + (currentItem.qty * currentItem.price)
-			}, 0)
-		)
-		.then(totalAmount => {			
-			completeOrder = {
-				'orderId': generateId(),
-				'userId': userId,
-				'orderItems': idToGroceryDataMapping,
-				'orderTotal': totalAmount,
-				'orderStatus': 'PAYMENT_PENDING',
-				'orderDate': new Date().toISOString()
+      idToGroceryDataMapping = reduce(cartItems, (currentReducedValue, productInCart) => {
+        return {
+          ...currentReducedValue,
+          [productInCart.groceryId]: productInCart
+        }
+      }, {});
+
+      return getPricesOfCartItems(cartItems);
+    })
+    .then(dbData => dbData.Responses.grocery)
+    .then(cartItemsWithPrice => map(cartItemsWithPrice, cartItem => {
+      return {
+        ...cartItem,
+        ...idToGroceryDataMapping[cartItem.groceryId]
+      }
+    })
+    )
+    .then(cartItemsWithPriceAndQty => reduce(cartItemsWithPriceAndQty, (currentTotal, currentItem) => {
+      return currentTotal + (currentItem.qty * currentItem.price)
+    }, 0)
+    )
+    .then(totalAmount => {
+      completeOrder = {
+        'orderId': generateId(),
+        'userId': userId,
+        'orderItems': idToGroceryDataMapping,
+        'orderTotal': totalAmount,
+        'orderStatus': 'PAYMENT_PENDING',
+        'orderDate': new Date().toISOString()
       }
       // First update the stock
       // If success then place the order
@@ -70,60 +70,60 @@ export const main = (event, context, callback) => {
         .catch((err) => {
           // Rejecting only with err since err.message has been extracted in the batch update function
           return Promise.reject(err);
-        })  
+        })
         .then(() => createAndSaveOrder(completeOrder))
         .catch((err) => {
           return Promise.reject(err.message);
         })
-        
+
     })
-		.then(() => {
-			callback(null, getSuccessResponse({
-				success: true,
-				orderId: completeOrder.orderId,
-				orderTotal: completeOrder.orderTotal
-			 }));
-		})
-		.catch(error => {
+    .then(() => {
+      callback(null, getSuccessResponse({
+        success: true,
+        orderId: completeOrder.orderId,
+        orderTotal: completeOrder.orderTotal
+      }));
+    })
+    .catch(error => {
       console.log(error);
       callback(null, getErrorResponse(500, error))
     });
 }
 
 const createAndSaveOrder = (orderData) => {
-	const createOrderParams = {
-		TableName: ORDERS_TABLE_NAME,
-		Item: {
-			...orderData
-		}
-	}
+  const createOrderParams = {
+    TableName: ORDERS_TABLE_NAME,
+    Item: {
+      ...orderData
+    }
+  }
 
-	return documentClient.put(createOrderParams).promise();
+  return documentClient.put(createOrderParams).promise();
 };
 
 const getPricesOfCartItems = (cartData) => {
-	const keysForBatchGet = map(cartData, item => ({'groceryId': item.groceryId}))
-	const paramsForBatchGet = {
-		RequestItems: {
-			[GROCERIES_TABLE_NAME] : {
-				Keys: keysForBatchGet,
-				ProjectionExpression: 'groceryId, price'
-			}
-		}
-	};
+  const keysForBatchGet = map(cartData, item => ({ 'groceryId': item.groceryId }))
+  const paramsForBatchGet = {
+    RequestItems: {
+      [GROCERIES_TABLE_NAME]: {
+        Keys: keysForBatchGet,
+        ProjectionExpression: 'groceryId, price'
+      }
+    }
+  };
 
-	return documentClient.batchGet(paramsForBatchGet).promise();
+  return documentClient.batchGet(paramsForBatchGet).promise();
 }
 
 const getCurrentCart = (userId) => {
-	const params = {
+  const params = {
     TableName: CART_TABLE_NAME,
     Key: {
       'userId': userId,
-		},	
-	};
-	
-	return documentClient.get(params).promise();
+    },
+  };
+
+  return documentClient.get(params).promise();
 }
 
 export const batchUpdateAvailableAndSoldQuantities = (groceryIdToGroceryItemMap, revert = false) => {
@@ -161,7 +161,7 @@ const getAvailableAndSoldQuantityForGroceries = (cartItems) => {
         ProjectionExpression: 'groceryId, availableQty, soldQty'
       }
     },
-    
+
   }
   return documentClient.batchGet(params).promise();
 }
@@ -185,7 +185,7 @@ const updateAvailableAndSoldQuantities = (currentData, orderedQty, revert = fals
       'groceryId': currentData.groceryId,
     },
     UpdateExpression: `set availableQty=:availableQty, soldQty=:soldQty`,
-    ExpressionAttributeValues:{
+    ExpressionAttributeValues: {
       ":availableQty": updatedAvailableQty > 0 ? updatedAvailableQty : 0,
       ":soldQty": updatedSoldQty > 0 ? updatedSoldQty : 0,
     },
