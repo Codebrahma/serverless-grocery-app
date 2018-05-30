@@ -12,6 +12,7 @@ import AppBar from 'material-ui/AppBar';
 import { updateAuth } from '../Auth/actionCreators';
 import { fetchCartItems } from '../actions/cart';
 import { fetchAllOrders } from '../actions/order';
+import { headerSelector } from '../selectors/header'
 
 const AppHeader = styled(AppBar)`
   position: fixed;
@@ -75,7 +76,7 @@ class Header extends React.Component {
   };
 
   render() {
-    const { cartData } = this.props;
+    const { isCartDataEmpty, cartDataLength } = this.props;
     return (
       <AppHeader
         title={<span>Serverless Shopping App</span>}
@@ -98,21 +99,19 @@ class Header extends React.Component {
               to="/cart"
               href="/cart"
               style={{
-            position: 'relative',
-            margin: '0 2em',
-          }}
-            >
+                position: 'relative',
+                margin: '0 2em',
+              }}>
               <IconButton
                 iconStyle={{
-            color: '#fff',
-            fontSize: 28,
-          }}
-                iconClassName="material-icons"
-              >add_shopping_cart
+                  color: '#fff',
+                  fontSize: 28,
+                }}
+                iconClassName="material-icons">
+                add_shopping_cart
               </IconButton>
               {
-            (cartData instanceof Array) &&
-            cartData.length > 0 ? <CartItemsCount>{cartData.length}</CartItemsCount> : null
+            !isCartDataEmpty? <CartItemsCount>{cartDataLength}</CartItemsCount> : null
           }
             </Link>
             <LogoutButton label="logout" onClick={this.handleLogout} />
@@ -124,18 +123,19 @@ class Header extends React.Component {
 }
 
 Header.propTypes = {
-  cartData: PropTypes.array.isRequired,
+  cartDataLength: PropTypes.number.isRequired,
+  isCartDataEmpty: PropTypes.bool.isRequired,
+  orderListFetched: PropTypes.bool.isRequired,
 };
 
-
-const mapStateToProps = state => ({
-  isAuthenticating: state.auth.isAuthenticating,
-  isAuthenticated: state.auth.isAuthenticated,
-  identityId: state.auth.identityId,
-  userData: state.auth.userData,
-  cartData: state.cart.cartData || [],
-  orderListFetched: state.order.orderListFetched,
-});
+const mapStateToProps = state => {
+  const {orderListFetched, cartDataLength, isCartDataEmpty} = headerSelector(state);
+  return ({
+    orderListFetched,
+    cartDataLength,
+    isCartDataEmpty
+  });
+};
 
 const mapDispatchToProps = dispatch => ({
   updateAuth: bindActionCreators(updateAuth, dispatch),

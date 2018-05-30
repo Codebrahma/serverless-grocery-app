@@ -8,6 +8,7 @@ import OrderDetails from './details';
 import { submitPaymentTokenId } from '../../actions/payment';
 import {displayPaymentModal} from '../../utils/stripe-payment-modal';
 import styles from './styles.css';
+import {orderListSelector} from '../../selectors/order-list';
 
 import sortBy from 'lodash/sortBy';
 
@@ -129,14 +130,6 @@ class OrderList extends React.Component {
     )
   }
 
-  getSortedOrderList = (orderList) => (
-    sortBy(orderList, (item) => {
-      const timeStamp = new Date(item.orderDate);
-      const inMillisec = timeStamp.getTime();
-      return -inMillisec;
-    })
-  );
-
   renderNoOrder = () => (
     <NoOrder>
       There is no order placed yet.
@@ -218,19 +211,18 @@ class OrderList extends React.Component {
   }
 
   render() {
-    let {orderList, orderListFetched} = this.props;
+    let {orderList, orderListFetched, isOrderlistEmpty} = this.props;
     if (!orderListFetched) {
       return null;
     }
-    const orderListSorted = this.getSortedOrderList(orderList);
     return (
       <div>
       {
-        orderList.length === 0?
+        isOrderlistEmpty?
         this.renderNoOrder():
         <div>
         {
-          orderListSorted.map((item, index) => {
+          orderList.map((item, index) => {
             return (this.renderOrderCard(item, index));
           })
         }
@@ -248,14 +240,26 @@ class OrderList extends React.Component {
   }
 }
 
-const mapStateToProps = state => ({
-  orderList: state.order.orderList,
-  orderListFetched: state.order.orderListFetched,
-  currentOrder: state.order.currentOrder,
-  userData: state.auth.userData,
-  paymentComplete: state.payment.paymentComplete,
-  paymentInProgress: state.payment.paymentInProgress,
-});
+const mapStateToProps = state => {
+  const {
+    orderList,
+    isOrderlistEmpty,
+    orderListFetched,
+    orderTotal,
+    orderId,
+    username,
+    paymentInProgress
+  } = orderListSelector(state);
+  return ({
+    orderList,
+    isOrderlistEmpty,
+    orderListFetched,
+    orderTotal,
+    orderId,
+    username,
+    paymentInProgress
+  });
+}
 
 function initMapDispatchToProps(dispatch) {
   return bindActionCreators({

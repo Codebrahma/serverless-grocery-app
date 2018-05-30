@@ -12,6 +12,7 @@ import { placeOrderAction } from '../../actions/order';
 import { submitPaymentTokenId } from '../../actions/payment';
 import { cleanCart } from '../../actions/cart';
 import {displayPaymentModal} from '../../utils/stripe-payment-modal';
+import {billReceiptSelector} from '../../selectors/bill-receipt';
 
 const BillingList = styled.ul`
   position: relative;
@@ -139,8 +140,7 @@ class BillReceipt extends PureComponent {
 
     } else if (nextProps.paymentComplete) {
       this.props.history.push('/order-list')
-    } else if (nextProps.currentOrder &&
-      nextProps.currentOrder.orderId &&
+    } else if (!nextProps.isCurrentOrderEmpty && nextProps.orderId &&
       this.state.placingOrder && this.state.initPaymentModal
     ) {
       this.openPaymentModal(nextProps);
@@ -160,9 +160,6 @@ class BillReceipt extends PureComponent {
     });
   }
 
-  getTotalAmount = () => this.state.cartItems
-    .reduce((acc, cur) => acc + (parseInt(cur.price, 10) * parseInt(cur.qty, 10)), 0);
-
   onOpenPaymentModal = () => {
     this.setState({ paymentModalOpened: true, requestOpenPaymentModal: false });
   };
@@ -176,7 +173,7 @@ class BillReceipt extends PureComponent {
   }
 
   placeOrder = () => {
-    if (this.state.placingOrder || !isNil(this.props.currentOrder)) {
+    if (this.state.placingOrder || !this.props.isCurrentOrderEmpty) {
       this.setState({
         requestOpenPaymentModal: true,
         initPaymentModal: true,
@@ -196,7 +193,7 @@ class BillReceipt extends PureComponent {
     const isDisabled = this.state.requestOpenPaymentModal ||
       this.state.paymentModalOpened ||
       this.props.paymentInProgress ||
-      (this.props.currentOrder && this.props.currentOrder.orderId);
+      (!this.props.isCurrentOrderEmpty && this.props.orderId);
     const buttonText = this.props.paymentInProgress || (
       this.state.requestOpenPaymentModal && !this.state.paymentModalOpened) ?
       'Please wait...' : 'Place Order';
@@ -218,6 +215,9 @@ class BillReceipt extends PureComponent {
         {buttonText}
       </OrderButton>);
   };
+
+  getTotalAmount = () => this.state.cartItems
+    .reduce((acc, cur) => acc + (parseInt(cur.price, 10) * parseInt(cur.qty, 10)), 0);
 
   render() {
     const { cartItems } = this.state;
@@ -269,24 +269,40 @@ class BillReceipt extends PureComponent {
 }
 
 BillReceipt.defaultProps = {
-  cartItems: [],
-  currentOrder: null,
+  // cartItems: [],
+  // currentOrder: null,
 };
 
 BillReceipt.propTypes = {
+  isCurrentOrderEmpty: PropTypes.bool,
+  orderId: PropTypes.string,
+  orderTotal: PropTypes.number,
   cartItems: PropTypes.array,
-  currentOrder: PropTypes.object,
+  paymentInProgress: PropTypes.bool,
+  paymentComplete: PropTypes.bool,
   placeOrderAction: PropTypes.func.isRequired,
   cleanCart: PropTypes.func.isRequired,
+  username: PropTypes.string.isRequired,
 };
 
 function initMapStateToProps(state) {
+  const {
+    isCurrentOrderEmpty,
+    orderId,
+    orderTotal,
+    cartItems,
+    paymentInProgress,
+    paymentComplete,
+    username
+  } = billReceiptSelector(state);
   return {
-    cartItems: state.cart.cartItemsInfo,
-    currentOrder: state.order.currentOrder,
-    paymentComplete: state.payment.paymentComplete,
-    paymentInProgress: state.payment.paymentInProgress,
-    userData: state.auth.userData,
+    isCurrentOrderEmpty,
+    orderId,
+    orderTotal,
+    cartItems,
+    paymentInProgress,
+    paymentComplete,
+    username
   };
 }
 

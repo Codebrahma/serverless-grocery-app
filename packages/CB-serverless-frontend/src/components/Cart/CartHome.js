@@ -13,6 +13,7 @@ import OrderButton from '../../base_components/OrderButton';
 import { cancelOrder } from '../../actions/order';
 import { submitPaymentTokenId } from '../../actions/payment';
 import {displayPaymentModal} from '../../utils/stripe-payment-modal';
+import { cartHomeSelector } from '../../selectors/cart-home';
 
 const CartWrapper = Wrapper.extend`
   color: #222;
@@ -109,8 +110,8 @@ class CartHome extends Component {
   };
 
   getItemInfo = (groceryId) => {
-    const { cartItemsInfo } = this.props;
-    if (!_.isNil(cartItemsInfo)) {
+    const { cartItemsInfo, isCartItemsInfoEmpty } = this.props;
+    if (!isCartItemsInfoEmpty) {
       return cartItemsInfo.findIndex(obj => obj.groceryId === groceryId);
     }
     return {};
@@ -121,8 +122,8 @@ class CartHome extends Component {
   };
 
   makeLastPayment = () => {
-    const { currentOrder, submitPaymentTokenId } = this.props;
-    if (!_.isNil(currentOrder)) {
+    const { isCurrentOrderEmpty, submitPaymentTokenId } = this.props;
+    if (!isCurrentOrderEmpty) {
       displayPaymentModal(
         this.props,
         this.onOpenPaymentModal,
@@ -145,8 +146,8 @@ class CartHome extends Component {
   };
 
   renderCartItems = () => {
-    const { cartItems, cartItemsInfo } = this.props;
-    if (cartItems && cartItems.length > 0 && cartItemsInfo && cartItemsInfo.length > 0) {
+    const { cartItems, cartItemsInfo, isCartItemsInfoEmpty, isCartItemsEmpty } = this.props;
+    if (!isCartItemsEmpty && !isCartItemsInfoEmpty) {
       return cartItems.map((obj) => {
         const { groceryId, qty } = obj;
         const info = cartItemsInfo[this.getItemInfo(groceryId)];
@@ -195,9 +196,8 @@ class CartHome extends Component {
   };
 
   render() {
-    const { currentOrder, cartItems, cartItemsInfo } = this.props;
-    const isAnyOrderPending = !_.isNil(currentOrder) && currentOrder.orderStatus === 'PAYMENT_PENDING';
-
+    const { orderStatus, isCurrentOrderEmpty, cartItems, cartItemsInfo, totalBill, isCartItemsEmpty, isCartItemsInfoEmpty } = this.props;
+    const isAnyOrderPending = !isCurrentOrderEmpty && orderStatus === 'PAYMENT_PENDING';
     return (
       <CartWrapper>
         <CartMain>
@@ -205,15 +205,15 @@ class CartHome extends Component {
           {this.renderCartItems()}
 
           {
-            (cartItems && cartItems.length > 0 && cartItemsInfo && cartItemsInfo.length > 0)
+            (!isCartItemsEmpty && !isCartItemsInfoEmpty)
             &&
             <TotalSection>
               <span>Total:</span>
-              {cartItemsInfo.reduce((total, cur) => total += cur.price * cur.qty, 0)} &#8377;
+              {totalBill} &#8377;
             </TotalSection>
           }
           {
-            (isAnyOrderPending || (cartItems && cartItems.length > 0))
+            (isAnyOrderPending || (!isCartItemsEmpty))
             &&
             <OrderButton
               overlayStyle={{
@@ -234,31 +234,56 @@ class CartHome extends Component {
 }
 
 CartHome.propTypes = {
-  fetchCartItems: PropTypes.func.isRequired,
-  deleteCartItem: PropTypes.func.isRequired,
-  cancelOrder: PropTypes.func.isRequired,
-  updateCartItemQty: PropTypes.func.isRequired,
+  isCurrentOrderEmpty: PropTypes.bool.isRequired,
+  orderTotal: PropTypes.number,
+  orderStatus: PropTypes.string,
+  orderId: PropTypes.string,
+  username: PropTypes.string.isRequired,
+  isCartItemsInfoEmpty: PropTypes.bool.isRequired,
+  cartItemsInfo: PropTypes.array.isRequired,
   cartItems: PropTypes.arrayOf(PropTypes.shape({
     groceryId: PropTypes.string,
     quantity: PropTypes.number,
   })).isRequired,
-  // orderList: PropTypes.array.isRequired,
-  cartItemsInfo: PropTypes.array.isRequired,
-  history: PropTypes.object.isRequired,
-  currentOrder: PropTypes.object.isRequired,
+  totalBill: PropTypes.number.isRequired,
+  isCartItemsEmpty: PropTypes.bool.isRequired,
+  fetchCartItems: PropTypes.func.isRequired,
+  deleteCartItem: PropTypes.func.isRequired,
+  cancelOrder: PropTypes.func.isRequired,
+  updateCartItemQty: PropTypes.func.isRequired,
   paymentInProgress: PropTypes.bool.isRequired,
+  paymentComplete: PropTypes.bool,
 };
 
 
 function initMapStateToProps(state) {
+  const {
+    isCurrentOrderEmpty,
+    orderTotal,
+    orderStatus,
+    orderId,
+    username,
+    isCartItemsInfoEmpty,
+    cartItemsInfo,
+    cartItems,
+    totalBill,
+    isCartItemsEmpty,
+    paymentInProgress,
+    paymentComplete
+  } = cartHomeSelector(state);
   return {
-    cartItems: state.cart.cartData || [],
-    cartItemsInfo: state.cart.cartItemsInfo || [],
-    // orderList: state.order.orderList,
-    currentOrder: state.order.currentOrder || {},
-    userData: state.auth.userData,
-    paymentComplete: state.payment.paymentComplete,
-    paymentInProgress: state.payment.paymentInProgress || false,
+    isCurrentOrderEmpty,
+    orderTotal,
+    orderStatus,
+    orderId,
+    username,
+    isCartItemsInfoEmpty,
+    cartItemsInfo,
+    cartItems,
+    totalBill,
+    isCartItemsEmpty,
+    paymentInProgress,
+    paymentComplete,
   };
 }
 
@@ -273,4 +298,3 @@ function initMapDispatchToProps(dispatch) {
 }
 
 export default connect(initMapStateToProps, initMapDispatchToProps)(CartHome);
-// export default CartHome;
