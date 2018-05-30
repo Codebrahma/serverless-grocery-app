@@ -7,6 +7,10 @@ import { CART_TABLE_NAME } from '../../dynamoDb/constants';
 
 awsConfigUpdate();
 
+/* 
+ * Creates a cart with the list of groceries for a particular user
+ * This cart will be used once an order is created during checkout
+ * */
 export const main = (event, context, callback) => {
   context.callbackWaitsForEmptyEventLoop = false;
 

@@ -12,6 +12,10 @@ import { ORDERS_TABLE_NAME, GROCERIES_TABLE_NAME } from '../../dynamoDb/constant
 
 awsConfigUpdate();
 
+/*
+ * Get orders based on ids
+ * Each order will be having details about each of the item
+ * */
 export const main = (event, context, callback) => {
   context.callbackWaitsForEmptyEventLoop = false;
   if (!event.queryStringParameters || !event.queryStringParameters.userId) {
@@ -48,10 +52,11 @@ export const main = (event, context, callback) => {
           return groceryPromise(groceryId);
         });
         var itemList = await Promise.all(groceryListPromise);
+
         const updatedItemList = itemList.map(({ Item }) => {
           return Item;
         });
-        ;
+        // Creates a current order list
         const currentOrderList = map(updatedItemList, (eachItem) => {
           return {
             ...eachItem,
@@ -64,8 +69,10 @@ export const main = (event, context, callback) => {
           orderItems: currentOrderList,
         }
 
+        // Returns the list with promise
         return Promise.resolve(eachOrder);
       });
+      // Promise which returns all order data
       Promise
         .all(result)
         .then((data) => {
