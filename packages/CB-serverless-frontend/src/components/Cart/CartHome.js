@@ -6,13 +6,13 @@ import styled from 'styled-components';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 
-
 import { Wrapper } from '../../base_components/index';
 import CartItem from './CartItem';
 import { deleteCartItem, fetchCartItems, updateCartItemQty } from '../../actions/cart';
 import OrderButton from '../../base_components/OrderButton';
 import { cancelOrder } from '../../actions/order';
 import { submitPaymentTokenId } from '../../actions/payment';
+import {displayPaymentModal} from '../../utils/stripe-payment-modal';
 
 const CartWrapper = Wrapper.extend`
   color: #222;
@@ -95,7 +95,7 @@ class CartHome extends Component {
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.paymentComplete) {
-      this.props.history.push('/order-placed');
+      this.props.history.push('/order-list');
     }
   }
 
@@ -121,43 +121,27 @@ class CartHome extends Component {
   };
 
   makeLastPayment = () => {
-    const { currentOrder } = this.props;
+    const { currentOrder, submitPaymentTokenId } = this.props;
     if (!_.isNil(currentOrder)) {
-      this.displayPaymentModal(this.props);
+      displayPaymentModal(
+        this.props,
+        this.onOpenPaymentModal,
+        this.onClosePaymentModal,
+        submitPaymentTokenId
+      );
     }
   };
 
+  onOpenPaymentModal = () => {
+    this.setState({ paymentModalOpened: true, requestOpenPaymentModal: false });
+  }
+
+  onClosePaymentModal = () => {
+    this.setState({ paymentModalOpened: false });
+  }
+
   cancelLastOrder = () => {
     this.props.cancelOrder();
-  };
-
-  displayPaymentModal = (props) => {
-    const checkoutHandler = window.StripeCheckout.configure({
-      key: 'pk_test_rM2enW1rNROwx4ukBXGaIzhr',
-      locale: 'auto',
-    });
-    checkoutHandler.open({
-      name: `Pay Rs.${props.currentOrder.orderTotal}`,
-      description: `Order: ${props.currentOrder.orderId}`,
-      closed: () => {
-        this.setState({ paymentModalOpened: false });
-      },
-      opened: () => {
-        this.setState({ paymentModalOpened: true, requestOpenPaymentModal: false });
-      },
-      token: (token) => {
-        if (token && token.id) {
-          props.submitPaymentTokenId({
-            tokenId: token.id,
-            orderId: props.currentOrder.orderId,
-            email: token.email,
-            userId: props.userData.username,
-          });
-        } else {
-          // to do
-        }
-      },
-    });
   };
 
   renderCartItems = () => {

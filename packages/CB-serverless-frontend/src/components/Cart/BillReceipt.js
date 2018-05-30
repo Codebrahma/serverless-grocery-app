@@ -127,6 +127,7 @@ class BillReceipt extends PureComponent {
     super(props);
     this.state = {
       placingOrder: false,
+      initPaymentModal: false,
       requestOpenPaymentModal: false,
       paymentModalOpened: false,
       cartItems: this.props.cartItems,
@@ -137,17 +138,26 @@ class BillReceipt extends PureComponent {
     if (nextProps.paymentInProgress) {
 
     } else if (nextProps.paymentComplete) {
-      this.props.history.push('/order-list');
+      this.props.history.push('/order-list')
     } else if (nextProps.currentOrder &&
       nextProps.currentOrder.orderId &&
-      this.state.placingOrder && this.state.requestOpenPaymentModal) {
+      this.state.placingOrder && this.state.initPaymentModal
+    ) {
+      this.openPaymentModal(nextProps);
+    }
+  }
+
+  openPaymentModal = (props) => {
+    this.setState({
+      initPaymentModal: false
+    }, () => {
       displayPaymentModal(
-        nextProps,
+        props,
         this.onOpenPaymentModal,
         this.onClosePaymentModal,
-        nextProps.submitPaymentTokenId
+        props.submitPaymentTokenId
       );
-    }
+    });
   }
 
   getTotalAmount = () => this.state.cartItems
@@ -158,25 +168,24 @@ class BillReceipt extends PureComponent {
   };
 
   onClosePaymentModal = () => {
-    this.setState({ paymentModalOpened: false }, () => this.props.history.push('/order-list'));
+    this.setState({ paymentModalOpened: false,}, () => {
+      if (!this.props.paymentInProgress) {
+        this.props.history.push('/order-list')
+      }
+    });
   }
-
 
   placeOrder = () => {
     if (this.state.placingOrder || !isNil(this.props.currentOrder)) {
       this.setState({
         requestOpenPaymentModal: true,
-      }, () => displayPaymentModal(
-        this.props,
-        this.onOpenPaymentModal,
-        this.onClosePaymentModal,
-        this.props.submitPaymentTokenId
-      ));
-      return;
+        initPaymentModal: true,
+      }, () => this.openPaymentModal(this.props))
     }
     this.setState((s, p) => ({
       placingOrder: !s.placingOrder,
       requestOpenPaymentModal: true,
+      initPaymentModal: true,
     }), () => {
       this.props.placeOrderAction();
       this.props.cleanCart();
