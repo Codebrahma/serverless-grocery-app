@@ -1,6 +1,10 @@
 import styled from 'styled-components';
 import { Wrapper } from '../../../base_components';
 
+/**
+ * Cart Home styled components
+ */
+
 export const CartWrapper = Wrapper.extend`
   color: #222;
   background: #f5f5f5;
@@ -61,6 +65,57 @@ export const TotalSection = styled.div`
   > span:first-child{
     margin: 0 2em;
   }
+`;
 
+/**
+ * Cart Item styled components
+ */
+
+
+export const CartItemWrap = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 2em;
+  margin-bottom: 1em;
+  border-bottom: 1px solid #eee;
+`;
+
+export const ItemImage = styled.img`
+    flex: 0 0 80px;
+    width: 80px;
+    height: 80px;
+    margin: 0 2em;
+`;
+
+export const ItemTitle = styled.div`
+  flex: 1 1 60%;
+  text-align: left;
+  font-size: 1.1em;
+  margin: 0 1em;
+`;
+
+export const DeleteIconWrap = styled.div`
+  flex: 0 0 50px;
+  text-align: left;
+  font-size: 20px;
+  margin: 0 1em;
+`;
+
+export const SoldOutError = styled.p`
+  color: red;
+  font-size: 14px;
+  margin: 1em auto;
+`;
+
+export const PriceofItem = styled.div`
+  flex: 1 0 200px;
+  > span{
+    margin: 0 1em;
+  }
+  > span:first-child{
+    color: #aaa;
+  }
 `;
 
