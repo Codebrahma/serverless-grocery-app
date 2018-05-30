@@ -1,6 +1,7 @@
 import AWS from 'aws-sdk';
 import { CART_TABLE_NAME, GROCERIES_TABLE_NAME } from '../../dynamoDb/constants';
 import awsConfigUpdate from '../../utils/awsConfigUpdate';
+import map from 'lodash/map';
 
 awsConfigUpdate();
 const documentClient = new AWS.DynamoDB.DocumentClient();
