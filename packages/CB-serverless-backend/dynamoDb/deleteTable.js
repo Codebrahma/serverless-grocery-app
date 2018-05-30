@@ -13,7 +13,7 @@ var dynamodb = new AWS.DynamoDB();
 /* Delete Tables */
 const getDeleteParams = (tableName) => ({
   TableName: tableName
-});
+});Î
 
 const tableName = [
   'grocery',
