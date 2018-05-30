@@ -9,7 +9,7 @@ import { submitPaymentTokenId } from '../../actions/payment';
 import {displayPaymentModal} from '../../utils/stripe-payment-modal';
 import styles from './styles.css';
 
-import isEmpty from 'lodash/isEmpty';
+import sortBy from 'lodash/sortBy';
 
 const NoOrder = styled.div`
   height: 100px;
@@ -63,7 +63,7 @@ const Icon = styled.i`
 `;
 
 const pendingConfig = {
-  status: "Pending",
+  statusText: "Pending",
   statusColor: '#ecb613',
   payText: "Pay",
   cssStyle: 'order-pending',
@@ -71,7 +71,7 @@ const pendingConfig = {
 };
 
 const completedConfig = {
-  status: "Completed",
+  statusText: "Completed",
   statusColor: '#66b34d',
   payText: "Paid",
   cssStyle: 'order-complete',
@@ -79,7 +79,7 @@ const completedConfig = {
 };
 
 const canceledConfig = {
-  status: "Canceled",
+  statusText: "Canceled",
   statusColor: '#e64d19',
   payText: "Amount",
   cssStyle: 'order-canceled',
@@ -103,10 +103,8 @@ class OrderList extends React.Component {
   }
 
   onSelect = (selectedOrder) => {
-    const {orderTotal, orderItems} = selectedOrder
     this.setState({
-      orderItems,
-      orderTotal,
+      selectedOrder,
       openDialog: true
     });
   }
@@ -131,88 +129,115 @@ class OrderList extends React.Component {
     )
   }
 
+  getSortedOrderList = (orderList) => (
+    sortBy(orderList, (item) => {
+      const timeStamp = new Date(item.orderDate);
+      const inMillisec = timeStamp.getTime();
+      return -inMillisec;
+    })
+  );
+
+  renderNoOrder = () => (
+    <NoOrder>
+      There is no order placed yet.
+    </NoOrder>
+  )
+
+  renderRibbon = ({cssStyle, statusColor}) => (
+    <div className={`ribbon ${cssStyle} ribbon-top-right`}>
+      <span style={{backgroundColor: statusColor}}>NEW</span>
+    </div>
+  )
+
+  renderContent = ({orderId, orderTotal, orderItems, orderStatus, statusText, textColor, statusColor}) => (
+    <Content>
+      <div
+        onClick={() => this.onSelect({orderId, orderTotal, orderItems, orderStatus})}
+        style={{
+          cursor: 'pointer',
+          color: textColor,
+          marginBottom: '2%'
+        }}>
+        {`OrderId: ${orderId}`}
+      </div>
+      {
+        statusText === "Completed" ?
+        <IconContainer>
+          <Icon className="material-icons">done</Icon>
+        </IconContainer> :
+        <div style={{color: statusColor}}>
+          {statusText}
+        </div>
+      }
+    </Content>
+  );
+
+  renderButton = ({payText, orderTotal}) => (
+    <ButtonContainer>
+      <RaisedButton
+        label={
+          this.props.paymentInProgress?
+          'Please wait...' :
+          `${payText}: ${orderTotal}`
+        }
+        primary={true}
+        buttonStyle={{backgroundColor: '#ecb613'}}
+        onClick={this.openStripePaymentModal}
+        />
+    </ButtonContainer>
+  );
+
+  renderAmountText = ({textColor, orderTotal, payText}) => (
+    <AmountContainer style={{color: textColor,}}>
+      {payText}: &#8377;{` ${orderTotal}`}
+    </AmountContainer>
+  )
+
+  renderOrderCard = ({orderId, orderItems, orderStatus, orderTotal, orderDate}, index) => {
+    const timeStamp = (new Date(orderDate)).getTime();
+    const inMinutes = (Date.now() - timeStamp) / (60000);
+    const {
+      statusText,
+      statusColor,
+      payText,
+      cssStyle,
+      textColor
+    } = (orderStatus === 'PAYMENT_PENDING'? pendingConfig : (
+      orderStatus === 'CANCELLED'? canceledConfig : completedConfig));
+    return (
+      <Card key={index}>
+        { inMinutes < 5 && this.renderRibbon({cssStyle, statusColor}) }
+        {this.renderContent({orderId, orderTotal, orderItems, orderStatus, textColor, statusColor, statusText})}
+        {
+          orderStatus === 'PAYMENT_PENDING' ?
+          this.renderButton({payText, orderTotal}) :
+          this.renderAmountText({textColor, orderTotal, payText})
+        }
+      </Card>
+    );
+  }
+
   render() {
     let {orderList, orderListFetched} = this.props;
     if (!orderListFetched) {
       return null;
     }
-    orderList[0].orderStatus = 'Complete';
+    const orderListSorted = this.getSortedOrderList(orderList);
     return (
       <div>
       {
         orderList.length === 0?
-        <NoOrder>
-          There is no order placed yet.
-        </NoOrder>:
+        this.renderNoOrder():
         <div>
         {
-          orderList.map(({orderId, orderStatus, orderTotal, orderDate}, index) => {
-            const timeStamp = (new Date(orderDate)).getTime();
-            const timeDifference = new Date((Date.now() - timeStamp)).getUTCMinutes();
-            const {
-              status,
-              statusColor,
-              payText,
-              cssStyle,
-              textColor
-            } = (orderStatus === 'PAYMENT_PENDING'? pendingConfig : (
-              orderStatus === 'CANCELLED'? canceledConfig : completedConfig));
-            return (
-              <Card key={index}>
-              {
-                timeDifference < 5 &&
-                <div className={`ribbon ${cssStyle} ribbon-top-right`}>
-                  <span style={{backgroundColor: statusColor}}>NEW</span>
-                </div>
-              }
-                <Content>
-                  <div
-                    onClick={() => this.onSelect(orderId)}
-                    style={{
-                      cursor: 'pointer',
-                      color: textColor,
-                      marginBottom: '2%'
-                    }}>
-                    {`OrderId: ${orderId}`}
-                  </div>
-                  {
-                    status === "Completed" ?
-                    <IconContainer>
-                      <Icon className="material-icons">done</Icon>
-                    </IconContainer> :
-                    <div style={{color: statusColor}}>
-                      {status}
-
-                    </div>
-                  }
-                </Content>
-                {
-                  orderStatus === 'PAYMENT_PENDING' ?
-                  <ButtonContainer>
-                    <RaisedButton
-                      label={
-                        this.props.paymentInProgress?
-                        'Please wait...' :
-                        `${payText}: ${orderTotal}`
-                      }
-                      primary={true}
-                      buttonStyle={{backgroundColor: '#ecb613'}}
-                      onClick={this.openStripePaymentModal}
-                      />
-                  </ButtonContainer> :
-                  <AmountContainer style={{color: textColor,}}>
-                    {payText}: &#8377;{` ${orderTotal}`}
-                  </AmountContainer>
-                }
-              </Card>
-            );
+          orderListSorted.map((item, index) => {
+            return (this.renderOrderCard(item, index));
           })
         }
         </div>
       }
         <OrderDetails
-          orderItems={this.state.selectedOrder}
-          orderTotal={this.state.orderTotal}
+          order={this.state.selectedOrder}
           openDialog={this.state.openDialog}
           closeDialog={this.closeDialog}
           openStripePaymentModal={this.openStripePaymentModal}
