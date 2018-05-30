@@ -25,10 +25,14 @@ function* submitPayment(action) {
   try {
     const response =  yield call(() => submitPaymentRequest(payload));
     const {data} = response;
-    if (data.success)
+    if (data.success) {
       yield put({
         type: 'PAYMENT_SUCCESS'
       })
+      yield put({
+        type: 'FETCH_ALL_ORDERS',
+      });
+    }
     else
       yield put({
         type: 'PAYMENT_FAILURE',

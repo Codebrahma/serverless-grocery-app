@@ -15,6 +15,10 @@ function* placeOrder(action) {
       type: 'SAVE_ORDER_ID',
       payload: response.data,
     });
+
+    yield put({
+      type: 'FETCH_ALL_ORDERS',
+    });
   } catch (e) {
     console.log(e);
   }
