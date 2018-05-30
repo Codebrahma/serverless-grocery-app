@@ -7,7 +7,7 @@ import map from 'lodash/map';
 import awsConfigUpdate from '../../utils/awsConfigUpdate';
 import getErrorResponse from '../../utils/getErrorResponse';
 import getSuccessResponse from '../../utils/getSuccessResponse';
-import { GROCERIES_TABLE_NAME, GROCERIES_TABLE_GLOBAL_INDEX_NAME } from '../../dynamoDb/constants';
+import { GROCERIES_TABLE_NAME, GROCERIES_TABLE_GLOBAL_INDEX_NAME, PAGINATION_DEFAULT_OFFSET } from '../../dynamoDb/constants';
 
 awsConfigUpdate();
 
@@ -37,6 +37,7 @@ export const main = (event, context, callback) => {
     const category = event.queryStringParameters.category
     var params = {
 			...getBaseGroceriesParams(),
+			Limit: PAGINATION_DEFAULT_OFFSET,
 			IndexName: GROCERIES_TABLE_GLOBAL_INDEX_NAME,
       KeyConditionExpression: `#category = :categoryToFilter`,
 			ExpressionAttributeValues: {
@@ -48,7 +49,12 @@ export const main = (event, context, callback) => {
 
     queryPromise
       .then((data) => {
-        callback(null, getSuccessResponse(data))
+				console.log('Result set ' + JSON.stringify(data))
+				const responseData = {
+					Items: data.Items,
+					nextPageParams: data.LastEvaluatedKey ? `groceryId=${data.LastEvaluatedKey.groceryId}` : '',
+				}
+        callback(null, getSuccessResponse(responseData))
       })
       .catch((error) => {
         callback(null, getErrorResponse(500, 'Unable to fetch! Try again later'));
