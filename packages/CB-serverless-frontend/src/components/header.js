@@ -77,6 +77,7 @@ class Header extends React.Component {
 
   render() {
     const { isCartDataEmpty, cartDataLength } = this.props;
+    // TODO: USE SUB RENDERs
     return (
       <AppHeader
         title={<span>Serverless Shopping App</span>}

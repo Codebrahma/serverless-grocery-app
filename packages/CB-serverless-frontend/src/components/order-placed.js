@@ -1,4 +1,5 @@
 /* eslint-disable react/forbid-prop-types */
+// TODO: Change component name to camel case
 import React from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
@@ -65,6 +66,7 @@ class OrderPlaced extends React.Component {
   }
 
   componentWillMount() {
+    // TODO: Write comments about these conditional cases
     const { cartItems, currentOrder } = this.props;
     if (isEmpty(cartItems) || isEmpty(currentOrder)) {
       // this.props.cleanCart();
@@ -82,6 +84,7 @@ class OrderPlaced extends React.Component {
   }
 
   render() {
+    // TODO: convert to sub renders
     const { cartItems, orderId } = this.state;
     let totalAmount = 0;
     return (

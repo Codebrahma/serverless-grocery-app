@@ -167,6 +167,7 @@ class Login extends React.Component {
   }
 
   render() {
+    // TODO: Write comments on index.js for modules For ex, This component renders Login / Register screen (Max 3 points)
     const {authScreen} = this.state;
     const {message, type} = this.props.authError;
     const inProgress = (message === USER_NOT_VERIFIED ||

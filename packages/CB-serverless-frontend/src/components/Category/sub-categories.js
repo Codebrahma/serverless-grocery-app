@@ -1,3 +1,4 @@
+// TODO: Change component name
 import React from 'react';
 import styled from 'styled-components';
 import Checkbox from 'material-ui/Checkbox';
@@ -26,6 +27,7 @@ const SubCategorySkeleton = styled.div`
 export default ({ subCategories, checked, onCheck }) => (
   <Container>
     {
+      // TODO: Make subCategory sizes to be dynamic rather than fixing it to 4
       subCategories.length === 0 &&
       [1, 2, 3, 4].map(val => (
         <SubCategorySkeleton>

@@ -198,6 +198,7 @@ class CartHome extends Component {
   render() {
     const { orderStatus, isCurrentOrderEmpty, cartItems, cartItemsInfo, totalBill, isCartItemsEmpty, isCartItemsInfoEmpty } = this.props;
     const isAnyOrderPending = !isCurrentOrderEmpty && orderStatus === 'PAYMENT_PENDING';
+    // TODO: Write Comments for conditional cases
     return (
       <CartWrapper>
         <CartMain>

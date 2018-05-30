@@ -173,6 +173,7 @@ class BillReceipt extends PureComponent {
   }
 
   placeOrder = () => {
+    // TODO: Write Components for conditional cases
     if (this.state.placingOrder || !this.props.isCurrentOrderEmpty) {
       this.setState({
         requestOpenPaymentModal: true,
@@ -190,6 +191,7 @@ class BillReceipt extends PureComponent {
   };
 
   displayOrderButton = () => {
+    // TODO: Write Components for conditional cases
     const isDisabled = this.state.requestOpenPaymentModal ||
       this.state.paymentModalOpened ||
       this.props.paymentInProgress ||
@@ -230,6 +232,7 @@ class BillReceipt extends PureComponent {
       return null;
     }
 
+    // TODO: Write Commnents for conditional cases of rendering components
     return (
       <BillReceiptWrap>
         {

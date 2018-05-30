@@ -54,7 +54,7 @@ class CategoryItems extends Component {
       && this.isValid(this.props.match.params.category)
     ) {
       const { category } = this.props.match.params;
-
+      
       API.getCategoryGroceries(category).then((response) => {
         const { data } = response;
         const { Items } = data;
