@@ -1,11 +1,7 @@
 import React from 'react';
-import { connect } from 'react-redux';
 import styled from 'styled-components';
-import { bindActionCreators } from 'redux';
-import { withRouter } from 'react-router-dom';
 import RaisedButton from 'material-ui/RaisedButton';
 import Dialog from 'material-ui/Dialog';
-
 import isEmpty from 'lodash/isEmpty';
 
 const List = styled.div`

@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { RaisedButton } from 'material-ui';
 import _ from 'lodash';
-
+import {profileHomeSelector} from '../selectors/profile-home';
 
 import { Wrapper } from '../base_components';
 
@@ -21,16 +21,16 @@ const Field = styled.div`
   flex-direction: row;
   justify-content: flex-start;
   align-items: center;
-  
+
   > input.profileInput, .profileInput {
     padding: 1em 2em;
     flex: 1 1 20%;
     border-radius: 30px;
     color: #555;
     font-size: 16px;
-    border: 1px solid #ddd;  
+    border: 1px solid #ddd;
   }
-  
+
   > span:first-child{
     flex: 0 0 150px;
     font-weight: bold;
@@ -39,7 +39,7 @@ const Field = styled.div`
     display: inline-block;
     text-align: left;
   }
-  
+
   > span.profileInputDisabled{
     flex: 1 1 20%;
     background: #eee;
@@ -66,8 +66,8 @@ class ProfileHome extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      fullName: '',
-      phoneNumber: this.props.userData.attributes.phoneNumber || '',
+      fullName: this.props.name,
+      phoneNumber: this.props.phoneNumber,
     };
   }
 
@@ -88,10 +88,16 @@ class ProfileHome extends Component {
   render() {
     const { fullName, phoneNumber } = this.state;
     const { attributes } = this.props.userData;
-    const saveDisabled = ((_.isEmpty(fullName) || _.isNil(fullName)) &&
-      (_.isEmpty(phoneNumber) || _.isNil(phoneNumber)))
-      || (_.isEqual(fullName, attributes.name) && _.isEqual(phoneNumber, attributes.phone_number));
-
+    const {
+      isPhoneNumberEmpty,
+      isFullNameEmpty,
+      name,
+      email,
+      emailVerified,
+      phoneNumberVerified
+    } = this.props;
+    const saveDisabled = ((isFullNameEmpty && isPhoneNumberEmpty))
+      || (_.isEqual(fullName, name) && _.isEqual(phoneNumber, this.props.phoneNumber));
     return (
       <Wrapper
         style={{
@@ -111,18 +117,18 @@ class ProfileHome extends Component {
             name="fullName"
             required
             className="profileInput"
-            value={fullName || attributes.name}
+            value={fullName || name}
             onChange={this.handleChange}
           />
         </Field>
         <Field>
           <span>Email:</span>
           <span className="profileInputDisabled">
-            {attributes.email}
+            {email}
           </span>
           <Verified
             className="material-icons"
-            isVerified={attributes.email_verified}
+            isVerified={emailVerified}
           >
             verified_user
           </Verified>
@@ -133,12 +139,12 @@ class ProfileHome extends Component {
             type="text"
             name="phoneNumber"
             className="profileInput"
-            value={phoneNumber || attributes.phone_number}
+            value={phoneNumber || this.props.phoneNumber}
             onChange={this.handleChange}
           />
           <Verified
             className="material-icons"
-            isVerified={attributes.phone_number_verified}
+            isVerified={phoneNumberVerified}
           >verified_user
           </Verified>
         </Field>
@@ -166,15 +172,33 @@ ProfileHome.defaultProps = {
 
 
 ProfileHome.propTypes = {
-  userData: PropTypes.shape({
-    username: PropTypes.string.isRequired,
-    attributes: PropTypes.object.isRequired,
-  }),
+  isPhoneNumberEmpty: PropTypes.bool.isRequired,
+  isFullNameEmpty: PropTypes.bool.isRequired,
+  phoneNumber: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
+  email: PropTypes.string.isRequired,
+  emailVerified: PropTypes.bool.isRequired,
+  phoneNumberVerified: PropTypes.bool.isRequired,
 };
 
 function initMapStateToProps(state) {
+  const {
+    isPhoneNumberEmpty,
+    isFullNameEmpty,
+    phoneNumber,
+    name,
+    email,
+    emailVerified,
+    phoneNumberVerified
+  } = profileHomeSelector(state);
   return {
-    userData: state.auth.userData,
+    isPhoneNumberEmpty,
+    isFullNameEmpty,
+    phoneNumber,
+    name,
+    email,
+    emailVerified,
+    phoneNumberVerified
   };
 }
 

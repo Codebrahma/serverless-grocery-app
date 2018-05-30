@@ -6,8 +6,8 @@ export const displayPaymentModal = (props, onOpened, onClosed, onSubmit) => {
     locale: 'auto',
   });
   checkoutHandler.open({
-    name: `Pay Rs.${props.currentOrder.orderTotal}`,
-    description: `Order: ${props.currentOrder.orderId}`,
+    name: `Pay Rs.${props.orderTotal}`,
+    description: `Order: ${props.orderId}`,
     closed: () => {
       onClosed && onClosed();
     },
@@ -18,9 +18,9 @@ export const displayPaymentModal = (props, onOpened, onClosed, onSubmit) => {
       if (token && token.id) {
         onSubmit && onSubmit({
           tokenId: token.id,
-          orderId: props.currentOrder.orderId,
+          orderId: props.orderId,
           email: token.email,
-          userId: props.userData.username,
+          userId: props.username,
         });
       } else {
         // to do
