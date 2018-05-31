@@ -1,5 +1,9 @@
 import styled from 'styled-components';
 
+
+/**
+ * Product Item loading component
+ */
 const ProductSkeleton = styled.div`
   margin: 1em 0.5em;
   width: 270px;

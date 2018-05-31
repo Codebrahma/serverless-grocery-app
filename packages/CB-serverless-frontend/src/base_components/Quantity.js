@@ -37,6 +37,11 @@ const RowFlex = styled.div`
   align-items: center;
 `;
 
+
+/**
+ * Quantity Component
+ * Contains increment and decrement buttons
+ */
 class Quantity extends React.PureComponent {
   constructor(props) {
     super(props);
