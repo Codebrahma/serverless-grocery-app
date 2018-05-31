@@ -3,7 +3,7 @@ import CartService from '../../service/cart';
 import { deDupeItems } from '../../utils/array';
 
 /**
- * Get username value from redux store
+ * Get userId value from redux store
  */
 const userIdSelector = state => state.auth.userData && state.auth.userData.username;
 
@@ -19,7 +19,7 @@ const { updateCart } = CartService;
  */
 function* cartItemsAdd(action) {
   try {
-    // get username from the store
+    // get userId from the store
     const userId = yield select(userIdSelector);
 
     // get current Cart items from store
@@ -28,6 +28,8 @@ function* cartItemsAdd(action) {
     // Create new empty cart
     let newCart = [];
     // merge the current cart with the newly added item
+    // in case the newly added item is already in cart
+    // then increase the quantity of that item
     newCart = deDupeItems([...currentCart, ...[action.payload]]);
 
     // Make API request to update cart at backend for that user
