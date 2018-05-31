@@ -62,7 +62,7 @@ export const main = (event, context, callback) => {
     }
 
     const queryPromise = documentClient.query(params).promise();
-    
+
     // Provide next Page index to frontend if more items are available
     queryPromise
       .then((data) => {
@@ -76,24 +76,24 @@ export const main = (event, context, callback) => {
         callback(null, getErrorResponse(500, 'Unable to fetch! Try again later'));
       });
   } else {
-		const topSellingFetchParams = {
-			TableName : GROCERIES_TOP_SELLING_TABLE_NAME,
-			ExpressionAttributeNames: {
-				'#category': 'category',
-				'#groceries': 'groceries',
-			},
-			ProjectionExpression: "#category, #groceries",
-		}
+    const topSellingFetchParams = {
+      TableName: GROCERIES_TOP_SELLING_TABLE_NAME,
+      ExpressionAttributeNames: {
+        '#category': 'category',
+        '#groceries': 'groceries',
+      },
+      ProjectionExpression: "#category, #groceries",
+    }
     const queryPromise = documentClient.scan(topSellingFetchParams).promise();
 
-		queryPromise
-			.then(data => {
-				if (data.Items.length < 1) {
-					processGroceries();
-				}
+    queryPromise
+      .then(data => {
+        if (data.Items.length < 1) {
+          processGroceries();
+        }
         callback(null, getSuccessResponse(data.Items));
-			})
-			.catch((error) => {
+      })
+      .catch((error) => {
         callback(null, getErrorResponse(500, JSON.stringify(error.message)));
       });
   }

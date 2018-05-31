@@ -24,47 +24,47 @@ const createGroceryTable = () => {
     ProvisionedThroughput: {
       ReadCapacityUnits: 2,
       WriteCapacityUnits: 2
-		},
-		GlobalSecondaryIndexes: [
-			{
-				IndexName: 'GroceryCategoryIndex',
-				KeySchema: [
-					{ AttributeName: 'category', KeyType: 'HASH' },
-					{ AttributeName: 'groceryId', KeyType: 'RANGE' },
-				],
-				Projection: {
-					ProjectionType: 'ALL'
-				},
-				ProvisionedThroughput: {
-					ReadCapacityUnits: 2,
-					WriteCapacityUnits: 2
-				},
-			}
-		],
-		StreamSpecification: {
-			StreamEnabled: true,
-			StreamViewType: 'NEW_IMAGE'
-		}
+    },
+    GlobalSecondaryIndexes: [
+      {
+        IndexName: 'GroceryCategoryIndex',
+        KeySchema: [
+          { AttributeName: 'category', KeyType: 'HASH' },
+          { AttributeName: 'groceryId', KeyType: 'RANGE' },
+        ],
+        Projection: {
+          ProjectionType: 'ALL'
+        },
+        ProvisionedThroughput: {
+          ReadCapacityUnits: 2,
+          WriteCapacityUnits: 2
+        },
+      }
+    ],
+    StreamSpecification: {
+      StreamEnabled: true,
+      StreamViewType: 'NEW_IMAGE'
+    }
   };
   return dynamodb.createTable(groceryParams).promise();
 };
 
 const createTopSellingTable = () => {
-	const createTableParams = {
-		TableName: 'top_selling_groceries',
-		KeySchema: [
-			{ AttributeName: 'category', KeyType: 'HASH'},
+  const createTableParams = {
+    TableName: 'top_selling_groceries',
+    KeySchema: [
+      { AttributeName: 'category', KeyType: 'HASH' },
     ],
     AttributeDefinitions: [
-			{ AttributeName: 'category', AttributeType: 'S' },
+      { AttributeName: 'category', AttributeType: 'S' },
     ],
     ProvisionedThroughput: {
       ReadCapacityUnits: 2,
       WriteCapacityUnits: 2
     }
-	}
+  }
 
-  return dynamodb.createTable(createTableParams).promise();  
+  return dynamodb.createTable(createTableParams).promise();
 }
 
 const createOrderTable = () => {
@@ -112,14 +112,14 @@ listTables
   .then((data, err) => {
     let groceryTablePromise,
       userTablePromise,
-			orderTablePromise,
-			topSellingTablePromise;
+      orderTablePromise,
+      topSellingTablePromise;
 
     groceryTablePromise = (indexOf(data.TableNames, 'grocery') === -1) ? createGroceryTable() : Promise.resolve();
     userTablePromise = (indexOf(data.TableNames, 'cart') === -1) ? createCartTable() : Promise.resolve();
-		orderTablePromise = (indexOf(data.TableNames, 'orders') === -1) ? createOrderTable() : Promise.resolve();
-		topSellingTablePromise = (indexOf(data.TableNames, 'top_selling_groceries') === -1) ? createTopSellingTable() : Promise.resolve();
-      
+    orderTablePromise = (indexOf(data.TableNames, 'orders') === -1) ? createOrderTable() : Promise.resolve();
+    topSellingTablePromise = (indexOf(data.TableNames, 'top_selling_groceries') === -1) ? createTopSellingTable() : Promise.resolve();
+
     return Promise.all([groceryTablePromise, userTablePromise, orderTablePromise, topSellingTablePromise]);
   })
   .then(() => {
