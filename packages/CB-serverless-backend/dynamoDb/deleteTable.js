@@ -1,5 +1,5 @@
-var AWS = require('aws-sdk');
-var indexOf = require('lodash/indexOf');
+const AWS = require('aws-sdk');
+const indexOf = require('lodash/indexOf');
 const chalk = require('chalk');
 
 // Configure the AWS to lookup the right server and endpoint for DynamoDB
@@ -9,11 +9,11 @@ AWS.config.update({
   endpoint: 'http://localhost:8000',
 });
 
-var dynamodb = new AWS.DynamoDB();
+const dynamodb = new AWS.DynamoDB();
 /* Delete Tables */
-const getDeleteParams = (tableName) => ({
-  TableName: tableName
-});Î
+const getDeleteParams = tableName => ({
+  TableName: tableName,
+});
 
 const tableName = [
   'grocery',
@@ -21,7 +21,7 @@ const tableName = [
   'orders',
 ];
 
-const deleteAllTablePromise = tableName.map((table) => dynamodb.deleteTable(getDeleteParams(table)).promise());
+const deleteAllTablePromise = tableName.map(table => dynamodb.deleteTable(getDeleteParams(table)).promise());
 
 Promise
   .all(deleteAllTablePromise)
@@ -29,5 +29,5 @@ Promise
     console.log(chalk.green('Deleted all tables successfully'));
   })
   .catch((e) => {
-    console.log(chalk.red('Could not delete tables. Reason: ', e.message))
-  })
+    console.log(chalk.red('Could not delete tables. Reason: ', e.message));
+  });
