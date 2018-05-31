@@ -102,7 +102,7 @@ class Routes extends React.Component {
         <div className="root-container">
           {
           !this.props.isAuthenticated && this.state.loginReady ?
-            <Route render={() => <AuthModule />} />
+            <Route render={(matchProps) => <AuthModule {...matchProps} />} />
           :
           (this.state.loginReady ?
             <React.Fragment>
