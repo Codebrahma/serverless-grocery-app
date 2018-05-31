@@ -11,6 +11,7 @@ import { cancelOrder } from '../../actions/order';
 import { submitPaymentTokenId as submitPaymentTokenIdAction } from '../../actions/payment';
 import { displayPaymentModal } from '../../utils/stripe-payment-modal';
 import { cartHomeSelector } from '../../selectors/cart-home';
+import CircularProgress from 'material-ui/CircularProgress';
 import {
   CartHead,
   CartMain,
@@ -89,7 +90,7 @@ class CartHome extends Component {
 
   renderCartItems = () => {
     const {
-      cartItems, cartItemsInfo, isCartItemsInfoEmpty, isCartItemsEmpty,
+      cartItems, cartItemsInfo, isCartItemsInfoEmpty, isCartItemsEmpty, fetchingCart
     } = this.props;
     if (!isCartItemsEmpty && !isCartItemsInfoEmpty) {
       return cartItems.map((obj) => {
@@ -105,6 +106,11 @@ class CartHome extends Component {
             onDelete={this.onCartItemDelete}
           />);
       });
+    }
+    if (fetchingCart) {
+      return (
+        <CircularProgress size={60} thickness={7} style={{paddingTop: '5%'}}/>
+      );
     }
     return (
       <EmptyCart>Nothing in cart.</EmptyCart>
@@ -209,6 +215,7 @@ CartHome.propTypes = {
   updateCartItemQty: PropTypes.func.isRequired,
   paymentInProgress: PropTypes.bool.isRequired,
   paymentComplete: PropTypes.bool,
+  fetchingCart: PropTypes.bool,
 };
 
 
@@ -226,6 +233,7 @@ function initMapStateToProps(state) {
     isCartItemsEmpty,
     paymentInProgress,
     paymentComplete,
+    fetchingCart
   } = cartHomeSelector(state);
   return {
     isCurrentOrderEmpty,
@@ -240,6 +248,7 @@ function initMapStateToProps(state) {
     isCartItemsEmpty,
     paymentInProgress,
     paymentComplete,
+    fetchingCart
   };
 }
 
