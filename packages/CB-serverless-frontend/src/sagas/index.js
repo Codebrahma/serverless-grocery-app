@@ -1,19 +1,19 @@
 import { fork } from 'redux-saga/effects';
-import attemptLoginSaga from './attemptLoginSaga';
-import verifyUserSaga from './verifyUserSaga';
-import forgotPasswordRequestSaga from './forgotPasswordRequestSaga';
-import forgotPasswordSaga from './forgotPasswordSaga';
-import requestVerificationCodeSaga from './requestVerificationCodeSaga';
-import cartItemsFetchSaga from './cartItemsFetchSaga';
-import cartItemsAddSaga from './cartItemsAddSaga';
-import cartItemsDeleteSaga from './cartItemsDeleteSaga';
-import cartItemUpdateQtySaga from './cartItemsUpdateQtySaga';
-import cartItemsCleanSaga from './cartItemsCleanSaga';
-import placeOrderSaga from './placeOrderSaga';
-import cleanOrderSaga from './cleanOrderSaga';
+import attemptLoginSaga from './auth/attemptLoginSaga';
+import verifyUserSaga from './auth/verifyUserSaga';
+import forgotPasswordRequestSaga from './auth/forgotPasswordRequestSaga';
+import forgotPasswordSaga from './auth/forgotPasswordSaga';
+import requestVerificationCodeSaga from './auth/requestVerificationCodeSaga';
+import cartItemsFetchSaga from './cart/cartItemsFetchSaga';
+import cartItemsAddSaga from './cart/cartItemsAddSaga';
+import cartItemsDeleteSaga from './cart/cartItemsDeleteSaga';
+import cartItemUpdateQtySaga from './cart/cartItemsUpdateQtySaga';
+import cartItemsCleanSaga from './cart/cartItemsCleanSaga';
+import placeOrderSaga from './order/placeOrderSaga';
+import cleanOrderSaga from './order/cleanOrderSaga';
 import paymentTokenIdSubmitSaga from './paymentTokenIdSubmitSaga';
-import fetchOrderSaga from './fetchAllOrdersSaga';
-import cancelOrderSaga from './cancelOrderSaga';
+import fetchOrderSaga from './order/fetchAllOrdersSaga';
+import cancelOrderSaga from './order/cancelOrderSaga';
 
 function* rootSaga() {
   yield fork(attemptLoginSaga);

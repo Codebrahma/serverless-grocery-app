@@ -1,5 +1,5 @@
 import { put } from 'redux-saga/effects';
-import { USER_NOT_VERIFIED, USER_ALREADY_EXIST } from '../constants/app';
+import { USER_NOT_VERIFIED, USER_ALREADY_EXIST } from '../../constants/app';
 
 function* loginFailureSaga({e, authScreen}) {
   let errorMessage = typeof e === 'string' && e;

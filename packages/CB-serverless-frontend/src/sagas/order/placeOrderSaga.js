@@ -1,5 +1,5 @@
 import { put, call, select, takeLatest } from 'redux-saga/effects';
-import OrderService from '../service/order';
+import OrderService from '../../service/order';
 
 const userIdSelector = state => state.auth.userData && state.auth.userData.username;
 const { placeOrderAPI } = OrderService;
