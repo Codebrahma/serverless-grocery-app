@@ -1,83 +1,25 @@
-/* eslint-disable react/forbid-prop-types */
+/* eslint-disable react/forbid-prop-types,react/no-unused-state,react/prop-types */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
-import styled from 'styled-components';
 import { connect } from 'react-redux';
 import _ from 'lodash';
-
-import { Wrapper } from '../../base_components/index';
 import CartItem from './CartItem';
 import { deleteCartItem, fetchCartItems, updateCartItemQty } from '../../actions/cart';
 import OrderButton from '../../base_components/OrderButton';
 import { cancelOrder } from '../../actions/order';
-import { submitPaymentTokenId } from '../../actions/payment';
-import {displayPaymentModal} from '../../utils/stripe-payment-modal';
+import { submitPaymentTokenId as submitPaymentTokenIdAction } from '../../actions/payment';
+import { displayPaymentModal } from '../../utils/stripe-payment-modal';
 import { cartHomeSelector } from '../../selectors/cart-home';
-
-const CartWrapper = Wrapper.extend`
-  color: #222;
-  background: #f5f5f5;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: stretch;
-`;
-
-const CartMain = styled.div`
-  flex: 7;
-  padding: 3em 2em;
-  background: #fff;
-  box-shadow: 0 0 10px 1px #eee;
-`;
-
-const EmptyCart = styled.div`
-  padding: 2em;
-  font-size: 20px;
-  text-align: center;
-  color: #888;
-  background: #eee;
-  margin: 4em auto 1em;
-`;
-
-const CartHead = styled.h1`
-  border-bottom: 1px solid #eee;
-  padding-bottom: 1em;
-`;
-
-const RightSideContent = styled.div`
-  margin: 0 1em;
-  flex: 2.5;
-  color: #333;
-`;
-
-const OrderPending = styled.section`
-  background: #fff;
-  padding: 1em 2em;
-
-  > h3 {
-    margin: 1em 0 2em;
-  }
-
-  > p {
-    margin: 1em 0 3em;
-    font-weight: bold;
-    color: #888;
-    letter-spacing: 0.5px;
-  }
-`;
-
-const TotalSection = styled.div`
-  margin: 2em auto;
-  font-size: 1.5em;
-  padding: 0 3em;
-  text-align: right;
-  > span:first-child{
-    margin: 0 2em;
-  }
-
-`;
-
+import {
+  CartHead,
+  CartMain,
+  CartWrapper,
+  EmptyCart,
+  OrderPending,
+  RightSideContent,
+  TotalSection,
+} from './styles/components';
 
 class CartHome extends Component {
   constructor(props) {
@@ -109,16 +51,20 @@ class CartHome extends Component {
     this.props.deleteCartItem(id);
   };
 
+  onOpenPaymentModal = () => {
+    this.setState({ paymentModalOpened: true, requestOpenPaymentModal: false });
+  };
+
+  onClosePaymentModal = () => {
+    this.setState({ paymentModalOpened: false });
+  };
+
   getItemInfo = (groceryId) => {
     const { cartItemsInfo, isCartItemsInfoEmpty } = this.props;
     if (!isCartItemsInfoEmpty) {
       return cartItemsInfo.findIndex(obj => obj.groceryId === groceryId);
     }
     return {};
-  };
-
-  doCheckout = () => {
-    this.props.history.push('/checkout');
   };
 
   makeLastPayment = () => {
@@ -128,25 +74,23 @@ class CartHome extends Component {
         this.props,
         this.onOpenPaymentModal,
         this.onClosePaymentModal,
-        submitPaymentTokenId
+        submitPaymentTokenId,
       );
     }
   };
 
-  onOpenPaymentModal = () => {
-    this.setState({ paymentModalOpened: true, requestOpenPaymentModal: false });
-  }
-
-  onClosePaymentModal = () => {
-    this.setState({ paymentModalOpened: false });
-  }
+  doCheckout = () => {
+    this.props.history.push('/checkout');
+  };
 
   cancelLastOrder = () => {
     this.props.cancelOrder();
   };
 
   renderCartItems = () => {
-    const { cartItems, cartItemsInfo, isCartItemsInfoEmpty, isCartItemsEmpty } = this.props;
+    const {
+      cartItems, cartItemsInfo, isCartItemsInfoEmpty, isCartItemsEmpty,
+    } = this.props;
     if (!isCartItemsEmpty && !isCartItemsInfoEmpty) {
       return cartItems.map((obj) => {
         const { groceryId, qty } = obj;
@@ -195,8 +139,24 @@ class CartHome extends Component {
     return null;
   };
 
+  renderCartTotalSection = () => {
+    const { totalBill, isCartItemsEmpty, isCartItemsInfoEmpty } = this.props;
+
+    if (!isCartItemsEmpty && !isCartItemsInfoEmpty) {
+      return (
+        <TotalSection>
+          <span>Total:</span>
+          {totalBill} &#8377;
+        </TotalSection>);
+    }
+    return null;
+  };
+
   render() {
-    const { orderStatus, isCurrentOrderEmpty, cartItems, cartItemsInfo, totalBill, isCartItemsEmpty, isCartItemsInfoEmpty } = this.props;
+    const {
+      orderStatus, isCurrentOrderEmpty,
+      isCartItemsEmpty,
+    } = this.props;
     const isAnyOrderPending = !isCurrentOrderEmpty && orderStatus === 'PAYMENT_PENDING';
     return (
       <CartWrapper>
@@ -205,12 +165,7 @@ class CartHome extends Component {
           {this.renderCartItems()}
 
           {
-            (!isCartItemsEmpty && !isCartItemsInfoEmpty)
-            &&
-            <TotalSection>
-              <span>Total:</span>
-              {totalBill} &#8377;
-            </TotalSection>
+            this.renderCartTotalSection()
           }
           {
             (isAnyOrderPending || (!isCartItemsEmpty))
@@ -248,6 +203,7 @@ CartHome.propTypes = {
   totalBill: PropTypes.number.isRequired,
   isCartItemsEmpty: PropTypes.bool.isRequired,
   fetchCartItems: PropTypes.func.isRequired,
+  submitPaymentTokenId: PropTypes.func.isRequired,
   deleteCartItem: PropTypes.func.isRequired,
   cancelOrder: PropTypes.func.isRequired,
   updateCartItemQty: PropTypes.func.isRequired,
@@ -269,7 +225,7 @@ function initMapStateToProps(state) {
     totalBill,
     isCartItemsEmpty,
     paymentInProgress,
-    paymentComplete
+    paymentComplete,
   } = cartHomeSelector(state);
   return {
     isCurrentOrderEmpty,
@@ -293,7 +249,7 @@ function initMapDispatchToProps(dispatch) {
     cancelOrder,
     deleteCartItem,
     updateCartItemQty,
-    submitPaymentTokenId,
+    submitPaymentTokenId: submitPaymentTokenIdAction,
   }, dispatch);
 }
 
