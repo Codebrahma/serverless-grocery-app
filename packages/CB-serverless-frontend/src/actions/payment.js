@@ -4,3 +4,7 @@ export const submitPaymentTokenId = ({tokenId, orderId, email, userId}) => {
     payload: {tokenId, orderId, email, userId}
   }
 }
+
+export const clearPayment = () => ({
+  type: "CLEAR_PAYMENT"
+})

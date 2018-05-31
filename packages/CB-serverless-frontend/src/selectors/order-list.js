@@ -11,7 +11,8 @@ export const orderListSelector = createSelector(
     (state) => {return (state.order.currentOrder || {});},
     userDataSelector,
     (state) => state.payment.paymentInProgress,
-  ], (orderList, orderListFetched, currentOrder, {username}, paymentInProgress) => {
+    (state) => state.payment.paymentComplete,
+  ], (orderList, orderListFetched, currentOrder, {username}, paymentInProgress, paymentComplete) => {
     const isOrderlistEmpty = isEmpty(orderList);
     const sortedOrderList = isOrderlistEmpty? [] : sortBy(orderList, (item) => {
       const timeStamp = new Date(item.orderDate);
@@ -26,7 +27,8 @@ export const orderListSelector = createSelector(
       orderTotal,
       orderId,
       username,
-      paymentInProgress
+      paymentInProgress,
+      paymentComplete
     });
   }
 )

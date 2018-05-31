@@ -8,7 +8,7 @@ import CartItem from './CartItem';
 import { deleteCartItem, fetchCartItems, updateCartItemQty } from '../../actions/cart';
 import OrderButton from '../../base_components/OrderButton';
 import { cancelOrder } from '../../actions/order';
-import { submitPaymentTokenId as submitPaymentTokenIdAction } from '../../actions/payment';
+import { submitPaymentTokenId as submitPaymentTokenIdAction, clearPayment } from '../../actions/payment';
 import { displayPaymentModal } from '../../utils/stripe-payment-modal';
 import { cartHomeSelector } from '../../selectors/cart-home';
 import CircularProgress from 'material-ui/CircularProgress';
@@ -39,6 +39,7 @@ class CartHome extends Component {
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.paymentComplete) {
+      nextProps.clearPayment();
       this.props.history.push('/order-list');
     }
   }
@@ -258,6 +259,7 @@ function initMapDispatchToProps(dispatch) {
     cancelOrder,
     deleteCartItem,
     updateCartItemQty,
+    clearPayment,
     submitPaymentTokenId: submitPaymentTokenIdAction,
   }, dispatch);
 }

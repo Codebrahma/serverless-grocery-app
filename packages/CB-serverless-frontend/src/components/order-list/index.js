@@ -5,7 +5,7 @@ import { bindActionCreators } from 'redux';
 import { withRouter } from 'react-router-dom';
 import RaisedButton from 'material-ui/RaisedButton';
 import OrderDetails from './details';
-import { submitPaymentTokenId } from '../../actions/payment';
+import { submitPaymentTokenId, clearPayment } from '../../actions/payment';
 import {displayPaymentModal} from '../../utils/stripe-payment-modal';
 import styles from './styles.css';
 import {orderListSelector} from '../../selectors/order-list';
@@ -98,8 +98,9 @@ class OrderList extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.paymentInProgress && !nextProps.paymentInProgress) {
+    if (nextProps.paymentComplete) {
       this.closeDialog();
+      nextProps.clearPayment();
     }
   }
 
@@ -203,7 +204,7 @@ class OrderList extends React.Component {
         {this.renderContent({orderId, orderTotal, orderItems, orderStatus, textColor, statusColor, statusText})}
         {
           orderStatus === 'PAYMENT_PENDING' ?
-          this.renderButton({payText, orderTotal}) :
+          (this.state.openDialog? null : this.renderButton({payText, orderTotal})) :
           this.renderAmountText({textColor, orderTotal, payText})
         }
       </Card>
@@ -248,7 +249,8 @@ const mapStateToProps = state => {
     orderTotal,
     orderId,
     username,
-    paymentInProgress
+    paymentInProgress,
+    paymentComplete
   } = orderListSelector(state);
   return ({
     orderList,
@@ -257,13 +259,15 @@ const mapStateToProps = state => {
     orderTotal,
     orderId,
     username,
-    paymentInProgress
+    paymentInProgress,
+    paymentComplete
   });
 }
 
 function initMapDispatchToProps(dispatch) {
   return bindActionCreators({
-    submitPaymentTokenId
+    submitPaymentTokenId,
+    clearPayment
   }, dispatch);
 }
 
