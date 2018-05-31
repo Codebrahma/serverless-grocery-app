@@ -136,8 +136,14 @@ class BillReceipt extends PureComponent {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.paymentComplete) {
+    if (nextProps.paymentInProgress) {
+
+    } else if (nextProps.paymentComplete) {
       this.props.history.push('/order-list')
+    } else if (!nextProps.isCurrentOrderEmpty && nextProps.orderId &&
+      this.state.placingOrder && this.state.initPaymentModal) {
+        nextProps.cleanCart();
+        this.openPaymentModal(nextProps);
     }
   }
 
@@ -179,7 +185,6 @@ class BillReceipt extends PureComponent {
       initPaymentModal: true,
     }), () => {
       this.props.placeOrderAction();
-      this.props.cleanCart();
     });
   };
 
@@ -217,13 +222,7 @@ class BillReceipt extends PureComponent {
     const { cartItems } = this.state;
 
     if (cartItems.length === 0) {
-      this.props.history.push('/');
-    }
-
-    if (!this.props.isCurrentOrderEmpty && this.props.orderId &&
-      this.state.placingOrder && this.state.initPaymentModal
-    ) {
-      this.openPaymentModal(this.props);
+      this.props.history.push('/cart');
     }
 
     if (!cartItems || cartItems.success === false || cartItems.length === 0) {
