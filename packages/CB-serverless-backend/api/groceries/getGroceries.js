@@ -87,9 +87,9 @@ export const main = (event, context, callback) => {
 
 		queryPromise
 			.then(data => {
-        callback(null, getSuccessResponse(data));				
+        callback(null, getSuccessResponse(data.Items));
 			})
-			.cathc((error) => {
+			.catch((error) => {
         callback(null, getErrorResponse(500, JSON.stringify(error.message)));
       });
   }

@@ -53,18 +53,18 @@ const createTopSellingTable = () => {
 	const createTableParams = {
 		TableName: 'top_selling_groceries',
 		KeySchema: [
-			{ AttributeName: 'category', KeyType: 'HASH'},			
-			{ AttributeName: 'groceryId', KeyType: 'RANGE' },
+			{ AttributeName: 'category', KeyType: 'HASH'},
     ],
     AttributeDefinitions: [
 			{ AttributeName: 'category', AttributeType: 'S' },
-			{ AttributeName: 'groceryId', AttributeType: 'S' },
     ],
     ProvisionedThroughput: {
       ReadCapacityUnits: 2,
       WriteCapacityUnits: 2
     }
 	}
+
+  return dynamodb.createTable(createTableParams).promise();  
 }
 
 const createOrderTable = () => {
@@ -112,14 +112,15 @@ listTables
   .then((data, err) => {
     let groceryTablePromise,
       userTablePromise,
-      orderTablePromise;
+			orderTablePromise,
+			topSellingTablePromise;
 
     groceryTablePromise = (indexOf(data.TableNames, 'grocery') === -1) ? createGroceryTable() : Promise.resolve();
     userTablePromise = (indexOf(data.TableNames, 'cart') === -1) ? createCartTable() : Promise.resolve();
-		orderTablePromise = (indexOf(data.TableNames, 'order') === -1) ? createOrderTable() : Promise.resolve();
+		orderTablePromise = (indexOf(data.TableNames, 'orders') === -1) ? createOrderTable() : Promise.resolve();
 		topSellingTablePromise = (indexOf(data.TableNames, 'top_selling_groceries') === -1) ? createTopSellingTable() : Promise.resolve();
       
-    return Promise.all([groceryTablePromise, userTablePromise, orderTablePromise]);
+    return Promise.all([groceryTablePromise, userTablePromise, orderTablePromise, topSellingTablePromise]);
   })
   .then(() => {
     console.log(chalk.green('Created Tables Successfully'));
