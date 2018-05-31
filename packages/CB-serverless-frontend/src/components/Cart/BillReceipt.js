@@ -136,14 +136,8 @@ class BillReceipt extends PureComponent {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.paymentInProgress) {
-
-    } else if (nextProps.paymentComplete) {
+    if (nextProps.paymentComplete) {
       this.props.history.push('/order-list')
-    } else if (!nextProps.isCurrentOrderEmpty && nextProps.orderId &&
-      this.state.placingOrder && this.state.initPaymentModal
-    ) {
-      this.openPaymentModal(nextProps);
     }
   }
 
@@ -224,6 +218,12 @@ class BillReceipt extends PureComponent {
 
     if (cartItems.length === 0) {
       this.props.history.push('/');
+    }
+
+    if (!this.props.isCurrentOrderEmpty && this.props.orderId &&
+      this.state.placingOrder && this.state.initPaymentModal
+    ) {
+      this.openPaymentModal(this.props);
     }
 
     if (!cartItems || cartItems.success === false || cartItems.length === 0) {
