@@ -41,6 +41,9 @@ function* cartItemsAdd(action) {
   }
 }
 
+/**
+ * Saga which handles the action UPDATE_CART_ITEMS
+ */
 function* cartItemsAddSaga() {
   yield takeLatest('UPDATE_CART_ITEMS', cartItemsAdd);
 }
