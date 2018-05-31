@@ -1,13 +1,9 @@
 const AWS = require('aws-sdk');
 const indexOf = require('lodash/indexOf');
 const chalk = require('chalk');
+const { awsConfigUpdate } = require('./awsConfigUpdate');
 
-// Configure the AWS to lookup the right server and endpoint for DynamoDB
-// In case of local set endpoint to localhost
-AWS.config.update({
-  region: 'ap-south-1',
-  endpoint: 'http://localhost:8000',
-});
+awsConfigUpdate();
 
 const dynamodb = new AWS.DynamoDB();
 /* Delete Tables */

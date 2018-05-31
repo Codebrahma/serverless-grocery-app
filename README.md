@@ -35,13 +35,15 @@ App will have users who can register / login
 5. Front End would be developed locally and finally deployed on S3.
 
 **To setup Backend:**
-
-1. Install AWS DynamoDB locally and run the server which will default to port 8000.
-2. Run createTable and populateTable using node command which will populate all groceries in the DB.
-3. For the current version auth should be used with cognito.
-4. ```npm install -g serverless``` to install serverless globally
-5. ```npm install``` in the backend repository.
-6. ```npm run start``` will start the serverless backend offline.
+1. Choose a region as per AWS (Our App is ap-south-1).
+2. Check out ```utils/config.js``` and change the region as per that. Choose db url locally or accordingly on Cloud. For more details look at https://docs.aws.amazon.com/general/latest/gr/rande.html
+3. Install AWS DynamoDB for this region locally and run the server which will default to port 8000.
+4. ```npm run initialize-db``` to create all db tables with populated value (Local / cloud depending upon the config url)
+5. At any moment you can use  ```npm run reinitialize-db``` to flush all the data present in the tables.
+6. For the current version auth should be used with cognito.
+7. ```npm install -g serverless``` to install serverless globally
+8. ```npm install``` in the backend repository.
+9. ```npm run start``` will start the serverless backend offline.
 
 **To setup Frontend:**
 
