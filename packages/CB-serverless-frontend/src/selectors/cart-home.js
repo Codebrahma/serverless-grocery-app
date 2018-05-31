@@ -12,9 +12,10 @@ export const cartHomeSelector = createSelector(
     userDataSelector,
     (state) => state.payment.paymentComplete,
     (state) => {return (state.payment.paymentInProgress || false);},
+    (state) => state.cart.inProgress
   ], ({isCartDataEmpty, cartData}, {cartItemsInfo, isCartItemsInfoEmpty, totalBill},
     {isCurrentOrderEmpty, orderId, orderStatus, orderTotal}, {username},
-    paymentComplete, paymentInProgress) => {
+    paymentComplete, paymentInProgress, inProgress) => {
     return ({
       isCurrentOrderEmpty,
       orderTotal,
@@ -28,6 +29,7 @@ export const cartHomeSelector = createSelector(
       totalBill,
       isCartItemsEmpty: isCartDataEmpty,
       paymentComplete,
+      fetchingCart: inProgress
     });
   }
 )

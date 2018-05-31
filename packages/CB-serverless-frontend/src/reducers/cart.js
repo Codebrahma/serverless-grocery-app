@@ -1,6 +1,7 @@
 const initialState = {
   cartData: [],
   cartItemsInfo: [],
+  inProgress: false
 };
 
 export default (state = initialState, { type, payload = {} }) => {
@@ -19,12 +20,18 @@ export default (state = initialState, { type, payload = {} }) => {
       return {
         ...state,
         cartItemsInfo: payload,
+        inProgress: false
       };
     case 'SAVE_NEW_CART_INFO':
       return {
         ...state,
         cartItemsInfo: payload,
       };
+    case 'IN_PROGRESS':
+      return {
+        ...state,
+        inProgress: true
+      }
     default:
       return state;
   }

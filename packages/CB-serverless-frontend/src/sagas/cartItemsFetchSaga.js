@@ -5,6 +5,9 @@ const userIdSelector = state => state.auth.userData && state.auth.userData.usern
 const { getCart, getCartDetails } = CartService;
 
 function* cartItemsFetch(action) {
+  yield put({
+    type: 'IN_PROGRESS',
+  });
   try {
     const userId = yield select(userIdSelector);
     const response = yield call(() => getCart(userId));
