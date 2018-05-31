@@ -1,4 +1,5 @@
 import AWS from 'aws-sdk';
+import _ from 'lodash';
 import map from 'lodash/map';
 import awsConfigUpdate from '../../utils/awsConfigUpdate';
 import { GROCERIES_TABLE_NAME, GROCERIES_TOP_SELLING_TABLE_NAME } from '../../dynamoDb/constants';
@@ -11,13 +12,17 @@ const getBaseGroceriesParams = () => ({
 	ExpressionAttributeNames: {
 		'#groceryId': 'groceryId',
 		'#category': 'category',
+		'#subCategory': 'subCategory',
+		'#name': 'name',
+		'#url': 'url',
+		'#availableQty': 'availableQty',
 		'#soldQty': 'soldQty',
+		'#price': 'price',
 	},
-	ProjectionExpression: "#groceryId, #category, #soldQty",
+	ProjectionExpression: "#groceryId, #category, #subCategory, #name, #url, #availableQty, #soldQty, #price",
 });
 
 export const main = (event, content, callback) => {
-	const updates = event.Records;
 	const documentClient = new AWS.DynamoDB.DocumentClient();
 	const queryPromise = documentClient.scan(getBaseGroceriesParams()).promise();
 
@@ -36,23 +41,30 @@ export const main = (event, content, callback) => {
               .value();
 
             return {
-              category,
-              groceries: filteredResult,
+							PutRequest: {
+								Item: {
+									category,
+									groceries: filteredResult,
+								}
+							}
             }
           })
-          .value();
+					.value();
+					
 				const updateTopSellingTableParams = {
-					TableName: GROCERIES_TOP_SELLING_TABLE_NAME,
-					Item: {
-						...uniqueCategories
+					RequestItems: {
+						[GROCERIES_TOP_SELLING_TABLE_NAME] : uniqueCategories
 					}
 				}
-				documentClient.put(updateTopSellingTableParams)
-					.then(() => {
-						console.log('Update successful');
-					})
+				documentClient.batchWrite(updateTopSellingTableParams, function(err, data) {
+					if (err) {
+						console.log('Err ' + err.message);
+					} else {
+						console.log('Update successful');						
+					}
+				});
       })
       .catch((error) => {
-						console.log('Update unsuccessful');        
+						console.log('Update unsuccessful ' + error.message);        
       });
 }

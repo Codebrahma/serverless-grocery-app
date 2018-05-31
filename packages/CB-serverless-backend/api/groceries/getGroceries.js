@@ -8,6 +8,7 @@ import awsConfigUpdate from '../../utils/awsConfigUpdate';
 import getErrorResponse from '../../utils/getErrorResponse';
 import getSuccessResponse from '../../utils/getSuccessResponse';
 import { GROCERIES_TABLE_NAME, GROCERIES_TOP_SELLING_TABLE_NAME, GROCERIES_TABLE_GLOBAL_INDEX_NAME } from '../../dynamoDb/constants';
+import { main as processGroceries } from './processGroceriesUpdate';
 
 awsConfigUpdate();
 
@@ -87,6 +88,9 @@ export const main = (event, context, callback) => {
 
 		queryPromise
 			.then(data => {
+				if (data.Items.length < 1) {
+					processGroceries();
+				}
         callback(null, getSuccessResponse(data.Items));
 			})
 			.catch((error) => {
