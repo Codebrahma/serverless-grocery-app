@@ -69,6 +69,7 @@ class Login extends React.Component {
       forgotPassword: false,
       verification: false,
     }
+    this.props.history.push('/');
   }
 
   handleChange = (authScreen) => {
