@@ -34,8 +34,6 @@ class Routes extends React.Component {
     this.state = {
       loginReady: false,
     };
-    // Remove when real signout component is ready
-    this.handleLogout = this.handleLogout.bind(this);
   }
 
   async componentDidMount() {
@@ -65,15 +63,6 @@ class Routes extends React.Component {
     }
   }
 
-  resetInitialState = () => {
-    this.props.updateAuth({
-      isAuthenticating: false,
-      isAuthenticated: false,
-      identityId: null,
-      userData: null,
-    });
-  };
-
   resetAndStartAuthentication = () => {
     this.props.updateAuth({
       isAuthenticating: true,
@@ -88,13 +77,6 @@ class Routes extends React.Component {
       isAuthenticating: false,
     });
   };
-
-
-  // Remove when real signout component is ready
-  async handleLogout() {
-    await Auth.signOut();
-    this.resetInitialState();
-  }
 
   render() {
     return (
