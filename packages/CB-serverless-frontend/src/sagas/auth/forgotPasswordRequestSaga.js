@@ -17,7 +17,7 @@ const forgotPasswordFormSelector = state => state.form.forgotPassword.values;
  */
 function* forgotPasswordRequest(action) {
   /**
-   * Promise returned by forgotPassword methdd of AWS Amplify
+   * Promise returned by forgotPassword method of AWS Amplify
    */
   const forgotPasswordRequestPromise = ({ username }) => Auth.forgotPassword(username);
   try {
@@ -30,7 +30,7 @@ function* forgotPasswordRequest(action) {
      */
     yield call(forgotPasswordRequestPromise, { username });
     /**
-     * Send an action to inform forgot password complete
+     * Send an action to inform forgot password is in progress
      */
     yield put({
       type: 'FORGOT_PASSWORD_REQUESTED',
