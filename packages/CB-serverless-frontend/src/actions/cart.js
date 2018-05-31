@@ -34,8 +34,6 @@ export const saveItemInfoToCart = data => ({
   payload: data,
 });
 
-export const cleanCart = () => {
-  return {
-    type: 'CLEAN_CART_ITEMS',
-  };
-};
+export const cleanCart = () => ({
+  type: 'CLEAN_CART_ITEMS',
+});
