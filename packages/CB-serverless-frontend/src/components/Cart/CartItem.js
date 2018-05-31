@@ -6,6 +6,11 @@ import Quantity from '../../base_components/Quantity';
 import CartItemSkeleton from '../../base_components/CartItemSkeleton';
 import { CartItemWrap, DeleteIconWrap, ItemImage, ItemTitle, SoldOutError } from './styles/components';
 
+/**
+  Item view with image, name and quantity to display in cart page,
+  having option to delete the item or increase/decrease the quantity of it.
+*/
+
 class CartItem extends React.Component {
   displayName = 'CartItem Component';
 

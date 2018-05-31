@@ -5,6 +5,12 @@ import { Wrapper } from '../../base_components/index';
 import ProductRow from './ProductRow';
 import * as API from '../../service/grocery';
 
+/**
+  Home page to show top three items from each categories.
+  having options to add items to the cart and
+  go to the particular category to see all the items.
+*/
+
 class ProductHome extends Component {
   constructor(props) {
     super(props);
@@ -13,7 +19,6 @@ class ProductHome extends Component {
       error: null,
     };
   }
-
 
   componentDidMount() {
     API.getTop3Groceries()
@@ -28,7 +33,6 @@ class ProductHome extends Component {
         }));
       });
   }
-
 
   showErrorMessage = () => {
     if (this.state.error) {
@@ -66,7 +70,6 @@ class ProductHome extends Component {
     );
   }
 }
-
 
 ProductHome.propTypes = {};
 

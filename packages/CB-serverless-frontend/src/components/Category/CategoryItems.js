@@ -6,7 +6,6 @@ import styled from 'styled-components';
 import { withRouter } from 'react-router-dom';
 import CircularProgress from 'material-ui/CircularProgress';
 
-
 import ProductItem from '../Product/ProductItem';
 import SubCategories from './sub-categories';
 import * as API from '../../service/grocery';
@@ -35,6 +34,11 @@ const Container = styled.div`
   background: #eee;
   height: 100%;
 `;
+
+/**
+  Display all the items for the particular category.
+  having option to filter the items based on sub-categoryies.
+*/
 
 class CategoryItems extends Component {
   constructor(props) {
