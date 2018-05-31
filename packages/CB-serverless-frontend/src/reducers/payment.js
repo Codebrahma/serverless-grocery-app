@@ -4,6 +4,10 @@ const initialState = {
   paymentInProgress: null
 }
 
+/**
+  Store the payment status: inProgress, completed or failed
+*/
+
 export default (state = initialState, { type, payload = {}}) => {
   switch(type) {
     case 'PAYMENT_IN_PROGRESS':

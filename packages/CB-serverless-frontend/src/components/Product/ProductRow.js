@@ -24,7 +24,7 @@ const ItemsWrapper = styled.div`
   margin: 1em auto 5em;
   box-shadow: 0 0 26px 0 #eee;
   background: #eee;
-  
+
   @media (max-width: 922px) {
     justify-content: space-evenly;
   }
@@ -44,6 +44,10 @@ const MoreText = styled.span`
     color: ${pinkA200}
   }
 `;
+
+/**
+  Row containing product items with link to category page.
+*/
 
 const ProductRow = ({ title, items }) => (
   <RowWrapper>

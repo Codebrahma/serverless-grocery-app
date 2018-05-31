@@ -20,8 +20,12 @@ const SubCategorySkeleton = styled.div`
   background-size: 100px 100%, 30px 50px, 50% 20px;
   background-position: -150% 0, 5px 5px, 40% 10px;
   height: 40px;
-  animation: loadingSubCat 2s infinite;  
+  animation: loadingSubCat 2s infinite;
 `;
+
+/**
+  Checkboxes with sub-categories to filter items in category page.
+*/
 
 export default ({ subCategories, checked, onCheck }) => (
   <Container>

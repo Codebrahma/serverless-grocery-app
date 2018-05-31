@@ -22,6 +22,11 @@ import {
   TotalSection,
 } from './styles/components';
 
+/**
+  Display cart Items details and option to makepayment or cancel order if it is
+  pending, otherwise option to checkout.
+*/
+
 class CartHome extends Component {
   constructor(props) {
     super(props);

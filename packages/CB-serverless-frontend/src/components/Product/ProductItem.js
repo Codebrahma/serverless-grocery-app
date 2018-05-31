@@ -7,7 +7,6 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { Card, CardActions, CardTitle, FlatButton } from 'material-ui';
 
-
 import { pink500, pink800, pinkA200 } from 'material-ui/styles/colors';
 import Quantity from '../../base_components/Quantity';
 import ProductImageWrap from '../../base_components/ProductImage';
@@ -36,9 +35,9 @@ const AddCart = styled(FlatButton)`
       background-color: ${pinkA200} !important;
     ` : '')}
     > div{
-      color: #fff !important;      
+      color: #fff !important;
       > span{
-        color: #fff !important;      
+        color: #fff !important;
       }
     }
   }
@@ -89,6 +88,9 @@ const CrossSoldOut = styled.span`
     text-align: center;
 `;
 
+/**
+  Individual product-item with image, name, price and option to add it to cart.
+*/
 
 class ProductItem extends Component {
   constructor(props) {

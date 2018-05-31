@@ -87,6 +87,12 @@ const canceledConfig = {
   textColor: '#df5020'
 }
 
+/**
+  List of all the order placed, canceled or pending.
+  On click orderId, open the modal to show details of that order.
+  Option for payment if order is in Pending state.   
+*/
+
 class OrderList extends React.Component {
   constructor(props) {
     super(props);

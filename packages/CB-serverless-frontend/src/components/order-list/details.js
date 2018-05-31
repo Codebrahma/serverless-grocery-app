@@ -32,6 +32,11 @@ const TitleContainer = styled.div`
   justify-content: space-between;
 `;
 
+/**
+  Modal to show the details of the order.
+  Having option to pay for the order, if in Pending state.
+*/
+
 class OrderDetails extends React.Component {
   constructor(props) {
     super(props);

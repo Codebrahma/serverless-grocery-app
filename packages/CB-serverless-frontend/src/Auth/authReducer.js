@@ -12,6 +12,10 @@ const initialState = {
   verifyUser: false
 }
 
+/**
+  Store the authenticated userDetails along with accessToken.
+*/
+
 export default (state = initialState, { type, payload = {}}) => {
   switch(type) {
     case 'ATTEMPT_LOGIN_SUCCESS':

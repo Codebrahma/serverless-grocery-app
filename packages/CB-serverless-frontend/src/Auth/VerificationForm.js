@@ -5,6 +5,10 @@ import { TextField } from 'redux-form-material-ui';
 import { RaisedButton } from 'material-ui';
 import { ButtonSection, ButtonContainer } from './common/buttons';
 
+/**
+  Verification form containing verifiacation-code field.
+*/
+
 const validate = (values) => {
   const errors = {};
   if (!values.verification) {

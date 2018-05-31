@@ -47,6 +47,11 @@ const CartItemsCount = styled.div`
   width: 30px;
 `;
 
+/**
+  Header having home icon, title of the application, cartItems count
+  and logout option.
+*/
+
 class Header extends React.Component {
   constructor(props) {
     super(props);

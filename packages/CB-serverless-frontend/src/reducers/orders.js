@@ -4,6 +4,11 @@ const initialState = {
   orderListFetched: false,
 };
 
+/**
+  Store all order details in orderList and
+  pending order in currentOrder
+*/
+
 export default (state = initialState, { type, payload = {}, ...rest }) => {
   switch (type) {
     case 'SAVE_ORDER_ID':

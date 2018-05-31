@@ -12,6 +12,11 @@ const ForgotPassword = styled.div`
   cursor: pointer;
 `;
 
+/**
+  Login form containing username and password fields
+  containing option for forgot password
+*/
+
 const validate = (values) => {
   const errors = {};
 
@@ -24,7 +29,6 @@ const validate = (values) => {
   if (!values.dueDate) {
     errors.dueDate = "Due Date is required";
   }
-
   return errors;
 }
 

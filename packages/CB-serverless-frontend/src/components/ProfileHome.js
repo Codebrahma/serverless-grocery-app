@@ -62,6 +62,11 @@ const Verified = styled.span`
   margin-left: 1em;
 `;
 
+/**
+  Profile page with user info: Name, email, phoneNumber,
+  and button to save the changes in name/phoneNumber.
+*/
+
 class ProfileHome extends Component {
   constructor(props) {
     super(props);

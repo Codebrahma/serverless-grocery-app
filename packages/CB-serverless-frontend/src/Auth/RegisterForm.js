@@ -4,6 +4,10 @@ import { reduxForm, Field } from 'redux-form';
 import { TextField } from 'redux-form-material-ui';
 import { RaisedButton } from 'material-ui';
 
+/**
+  Registration form containing FullName, Email, Password, PhoneNumber fields.
+*/
+
 const validate = (values) => {
   const errors = {};
 

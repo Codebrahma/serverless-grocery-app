@@ -4,6 +4,10 @@ const initialState = {
   inProgress: false
 };
 
+/**
+  Store the data for the cart and its details
+*/
+
 export default (state = initialState, { type, payload = {} }) => {
   switch (type) {
     case 'USER_CART_ITEMS':

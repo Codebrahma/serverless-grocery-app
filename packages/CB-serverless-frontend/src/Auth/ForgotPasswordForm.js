@@ -5,6 +5,11 @@ import { TextField } from 'redux-form-material-ui';
 import { RaisedButton } from 'material-ui';
 import { ButtonSection, ButtonContainer } from './common/buttons';
 
+/**
+  ForgotPassword form, to reset the password.
+  Submit the username, finally type code and new password.
+*/
+
 const validate = (values) => {
   const errors = {};
   if (!values.username) {

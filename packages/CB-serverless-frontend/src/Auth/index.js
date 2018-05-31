@@ -61,6 +61,10 @@ const LoginContainer = styled.div`
 
 `;
 
+/**
+  Login/Registration authentication form 
+*/
+
 class Login extends React.Component {
   constructor(props) {
     super(props);
