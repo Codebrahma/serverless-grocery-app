@@ -1,14 +1,16 @@
-import { put, call, select, takeLatest } from 'redux-saga/effects';
-import CartService from '../../service/cart';
+import { put, takeLatest } from 'redux-saga/effects';
 
-const userIdSelector = state => state.auth.userData && state.auth.userData.username;
-const { updateCart } = CartService;
 
 function* cleanOrderAndPayment(action) {
+  // remove values in order reducer
   yield put({ type: 'CLEAR_ORDER' });
+  // remove values in payment reducer
   yield put({ type: 'CLEAR_PAYMENT' });
 }
 
+/**
+ * Saga to clear everything in order reducer and payment reducer
+ */
 function* cleanOrderSaga() {
   yield takeLatest('CLEAN_ORDER', cleanOrderAndPayment);
 }
