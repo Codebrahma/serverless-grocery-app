@@ -11,6 +11,18 @@ const CheckoutButton = styled(RaisedButton)`
   }
 `;
 
+/**
+ * Order Button Component
+ * @param backgroundColor {string} button bg color
+ * @param fullWidth {boolean}
+ * @param disabled {bool}
+ * @param buttonStyle {object}
+ * @param overlayStyle {object} style object of button overlay
+ * @param onClick {func} callback
+ * @param title {string} button text
+ * @returns {*}
+ * @constructor
+ */
 const OrderButton = ({
   backgroundColor, fullWidth, disabled, buttonStyle, overlayStyle, onClick, title,
 }) => (

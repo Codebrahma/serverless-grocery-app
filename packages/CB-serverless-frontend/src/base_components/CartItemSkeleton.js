@@ -1,5 +1,9 @@
 import styled from 'styled-components';
 
+
+/**
+ * Cart Item loading component
+ */
 const CartItemSkeleton = styled.div`
   margin: 1em 0.5em;
   width: 100%;

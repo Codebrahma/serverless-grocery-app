@@ -1,4 +1,3 @@
-import axios from 'axios';
 import { PAYMENT_URL } from './api_constants';
 import request from './request';
 
@@ -8,9 +7,9 @@ import request from './request';
   * @return {AxiosPromise<any>}
  */
 function submitPaymentRequest(data) {
-  return request({url: PAYMENT_URL, method: 'POST', data});
+  return request({ url: PAYMENT_URL, method: 'POST', data });
 }
 
 export default {
-   submitPaymentRequest,
- };
+  submitPaymentRequest,
+};
