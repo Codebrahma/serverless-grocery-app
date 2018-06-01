@@ -13,33 +13,34 @@ import loginFailureSaga from './loginFailureSaga';
 const forgotPasswordFormSelector = state => state.form.forgotPassword.values;
 
 /**
+ * Promise returned by forgotPassword method of AWS Amplify
+ */
+const forgotPasswordRequest = ({username}) => Auth.forgotPassword(username);
+
+/**
  * Function called on receiving the action
  */
-function* forgotPasswordRequest(action) {
-  /**
-   * Promise returned by forgotPassword method of AWS Amplify
-   */
-  const forgotPasswordRequestPromise = ({ username }) => Auth.forgotPassword(username);
+function* forgotPassword(action) {
   try {
     /**
      * Get username (email) value from the form
      */
-    const { username } = yield select(forgotPasswordFormSelector);
+    const {username} = yield select(forgotPasswordFormSelector);
     /**
      * Make Request to Cognito to trigger a forgot password request
      */
-    yield call(forgotPasswordRequestPromise, { username });
+    yield call(forgotPasswordRequest, { username });
     /**
      * Send an action to inform forgot password is in progress
      */
     yield put({
-      type: 'FORGOT_PASSWORD_REQUESTED',
+      type: 'FORGOT_PASSWORD_REQUESTED'
     });
   } catch (e) {
     /**
      * Trigger saga incase any error encountered
      */
-    const loginFail = (() => (loginFailureSaga({ e, authScreen: 'login' })));
+    const loginFail = (() => (loginFailureSaga({e, authScreen: 'login' })));
     yield call(loginFail);
   }
 }
@@ -48,7 +49,7 @@ function* forgotPasswordRequest(action) {
  * Saga which takes latest actionType 'FORGOT_PASSWORD_REQUEST'
  */
 function* forgotPasswordRequestSaga() {
-  yield takeLatest('FORGOT_PASSWORD_REQUEST', forgotPasswordRequest);
+  yield takeLatest('FORGOT_PASSWORD_REQUEST', forgotPassword);
 }
 
 export default forgotPasswordRequestSaga;
