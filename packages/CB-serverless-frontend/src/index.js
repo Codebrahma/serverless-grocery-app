@@ -4,30 +4,27 @@ import { Provider } from 'react-redux';
 import Amplify from 'aws-amplify';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
-
 import './index.css';
 import './utils/string';
 
 import registerServiceWorker from './registerServiceWorker';
-import config from './config';
-
 import store from './store';
 import Routes from './routes';
 
 Amplify.configure({
   Auth: {
     mandatorySignIn: true,
-    region: config.cognito.REGION,
-    userPoolId: config.cognito.USER_POOL_ID,
-    identityPoolId: config.cognito.IDENTITY_POOL_ID,
-    userPoolWebClientId: config.cognito.APP_CLIENT_ID,
+    region: process.env.REACT_APP_REGION,
+    userPoolId: process.env.REACT_APP_USER_POOL_ID,
+    identityPoolId: process.env.REACT_APP_IDENTITY_POOL_ID,
+    userPoolWebClientId: process.env.REACT_APP_APP_CLIENT_ID,
   },
   API: {
     endpoints: [
       {
-        name: 'todo',
-        endpoint: config.apiGateway.URL,
-        region: config.apiGateway.REGION,
+        name: 'groceryApp',
+        endpoint: process.env.REACT_APP_URL,
+        region: process.env.REACT_APP_REGION,
       },
     ],
   },
