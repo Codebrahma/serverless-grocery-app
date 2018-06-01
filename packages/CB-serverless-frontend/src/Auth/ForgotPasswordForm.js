@@ -38,7 +38,7 @@ const renderNewPasswordInput = () => (
         name="password"
         component={TextField}
         type="password"
-        floatingLabelText="password"
+        floatingLabelText="new password"
       />
     </div>
   </React.Fragment>
