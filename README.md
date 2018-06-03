@@ -31,8 +31,13 @@ App will have users who can register / login
 1. Install AWS CLI
 2. Add user based on AWS credentials which will be shared directly.
 3. Auth will be currently based on AWS Cognito. Login / Registration will be handled by the front end auth module directly with the cognito. Lambda functions won't be responsible for auth. It requires an userId (AccessKeyId) based on which we will maintain the DB.
-4. All other APIs will be curently running locally.
+4. All other APIs will be working locally.
 5. Front End would be developed locally and finally deployed on S3.
+
+**Accounts Required to deploy on cloud**
+
+1. Cognito user pool to be created which will manage users in the app. You need to specify it on the front end as mentioned later in the readme. Also For backend refer ```To Setup Backend point 10 ```
+2. Deployment will use S3, API gateway and lambda functions along with DynamoDB. Ensure that you have access in your AWS on which it will be deployed
 
 **To setup Backend:**
 1. Choose a region as per AWS (Our App is ap-south-1).
@@ -44,6 +49,7 @@ App will have users who can register / login
 7. ```npm install -g serverless``` to install serverless globally
 8. ```npm install``` in the backend repository.
 9. ```npm run start``` will start the serverless backend offline.
+10. Certain routes are protected by cognito pool. Change the `serverles.yaml` as per your cognito pool to have authenticated routes.
 
 **To setup Frontend:**
 1. Create .env file under ```packages/CB-serverless-frontend``` folder with below variables:
