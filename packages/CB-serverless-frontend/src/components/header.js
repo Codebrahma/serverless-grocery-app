@@ -80,48 +80,55 @@ class Header extends React.Component {
     });
   };
 
+  renderLeftIcons = () => (
+    <Link to="/" href="/">
+      <IconButton iconStyle={{color: '#fff'}} iconClassName="material-icons">
+        home
+      </IconButton>
+    </Link>
+  )
+
+  renderRightIcons = () => (
+    <RightElementContainer>
+      <Link
+        to="/cart"
+        href="/cart"
+        style={{
+          position: 'relative',
+          margin: '0 1em',
+        }}>
+        <IconButton
+          iconStyle={{
+            color: '#fff',
+            fontSize: 28,
+          }}
+          iconClassName="material-icons">
+          add_shopping_cart
+        </IconButton>
+        {
+          !this.props.isCartDataEmpty? <CartItemsCount>{this.props.cartDataLength}</CartItemsCount> : null
+        }
+      </Link>
+      <Link
+        to="/order-list"
+        href="/order-list"
+        style={{
+          position: 'relative',
+          color: 'white',
+          width: '100px',
+        }}>
+        Order List
+      </Link>
+      <LogoutButton label="logout" onClick={this.handleLogout} />
+    </RightElementContainer>
+  )
+
   render() {
-    const { isCartDataEmpty, cartDataLength } = this.props;
     return (
       <AppHeader
         title={<span>Serverless Shopping App</span>}
-        iconElementLeft={
-          <Link
-            to="/"
-            href="/"
-          >
-            <IconButton
-              iconStyle={{
-                color: '#fff',
-              }}
-              iconClassName="material-icons"
-            >home
-            </IconButton>
-          </Link>}
-        iconElementRight={
-          <RightElementContainer>
-            <Link
-              to="/cart"
-              href="/cart"
-              style={{
-                position: 'relative',
-                margin: '0 2em',
-              }}>
-              <IconButton
-                iconStyle={{
-                  color: '#fff',
-                  fontSize: 28,
-                }}
-                iconClassName="material-icons">
-                add_shopping_cart
-              </IconButton>
-              {
-            !isCartDataEmpty? <CartItemsCount>{cartDataLength}</CartItemsCount> : null
-          }
-            </Link>
-            <LogoutButton label="logout" onClick={this.handleLogout} />
-          </RightElementContainer>
-        }
+        iconElementLeft={this.renderLeftIcons()}
+        iconElementRight={this.renderRightIcons()}
       />
     );
   }
