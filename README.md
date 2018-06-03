@@ -1,3 +1,5 @@
+![image](https://media.giphy.com/media/1sw6syoMDm6QEu9Stk/giphy.gif)
+
 **What this app about ?**
 
 This is a mock grocery purchase app built on the serverless technology.
@@ -59,5 +61,8 @@ REACT_APP_REGION=XXXXXX
 REACT_APP_USER_POOL_ID=XXXXXX
 REACT_APP_APP_CLIENT_ID=XXXXXX
 REACT_APP_IDENTITY_POOL_ID=XXXXXX
+
+you can use 4242 4242 4242 4242 for card number or refer stripe for more.
+
 2. ```npm install``` to install
 3. ```npm run start``` to start
