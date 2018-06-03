@@ -46,6 +46,12 @@ App will have users who can register / login
 9. ```npm run start``` will start the serverless backend offline.
 
 **To setup Frontend:**
-
-1. ```npm install``` to install
-2. ```npm run start``` to start
+1. Create .env file under ```packages/CB-serverless-frontend``` folder with below variables:
+REACT_APP_REGION=XXXXXX
+REACT_APP_URL=http://localhost:3000
+REACT_APP_REGION=XXXXXX
+REACT_APP_USER_POOL_ID=XXXXXX
+REACT_APP_APP_CLIENT_ID=XXXXXX
+REACT_APP_IDENTITY_POOL_ID=XXXXXX
+2. ```npm install``` to install
+3. ```npm run start``` to start
