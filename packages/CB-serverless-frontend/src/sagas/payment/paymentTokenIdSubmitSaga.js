@@ -1,5 +1,5 @@
 import { call, put, takeLatest } from 'redux-saga/effects';
-import PaymentRequests from '../service/payment';
+import PaymentRequests from '../../service/payment';
 
 const { submitPaymentRequest } = PaymentRequests;
 

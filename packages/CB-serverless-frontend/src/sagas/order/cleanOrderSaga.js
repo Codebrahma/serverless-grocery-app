@@ -1,6 +1,5 @@
 import { put, takeLatest } from 'redux-saga/effects';
 
-
 function* cleanOrderAndPayment(action) {
   // remove values in order reducer
   yield put({ type: 'CLEAR_ORDER' });
