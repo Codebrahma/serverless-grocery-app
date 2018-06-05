@@ -1,4 +1,4 @@
-![image](https://media.giphy.com/media/1sw6syoMDm6QEu9Stk/giphy.gif)
+App Demo https://media.giphy.com/media/1sw6syoMDm6QEu9Stk/giphy.gif
 
 **What this app about ?**
 
